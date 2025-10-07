@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Темная тема -->
+    <color name="background_primary">#1C1C1E</color>
+    <color name="background_secondary">#000000</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8E8E93</color>
+    <color name="text_tertiary">#48484A</color>
+    <color name="separator">#38383A</color>
+    <color name="card_background">#2C2C2E</color>
+</resources>

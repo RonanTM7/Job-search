@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.Job" parent="Theme.Material3.DayNight">
+        <!-- Customize your dark theme here. -->
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorOnPrimary">@color/dark_background_primary</item>
+
+        <!-- Фон приложения для темной темы -->
+        <item name="android:windowBackground">@color/dark_background_secondary</item>
+        <item name="android:statusBarColor">@color/dark_background_secondary</item>
+
+        <!-- Стили для карточек -->
+        <item name="cardViewStyle">@style/CardView.Job.Dark</item>
+        <item name="materialCardViewStyle">@style/CardView.Job.Dark</item>
+    </style>
+
+    <style name="CardView.Job.Dark" parent="CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/dark_card_background</item>
+    </style>
+</resources>

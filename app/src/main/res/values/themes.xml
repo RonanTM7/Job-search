@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Job" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/primary_blue</item>
+        <item name="colorOnPrimary">@color/background_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_blue</item>
+        <item name="colorOnPrimaryContainer">@color/background_primary</item>
+
+        <!-- Фон приложения -->
+        <item name="android:windowBackground">@color/background_secondary</item>
+        <item name="android:statusBarColor">@color/background_secondary</item>
+
+        <!-- Стили для карточек -->
+        <item name="cardViewStyle">@style/CardView.Job</item>
+        <item name="materialCardViewStyle">@style/CardView.Job</item>
+    </style>
+
+    <style name="Theme.Job" parent="Base.Theme.Job" />
+
+    <style name="CardView.Job" parent="CardView">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+    </style>
+</resources>
