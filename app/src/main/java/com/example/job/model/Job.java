@@ -1,7 +1,6 @@
 package com.example.job.model;
 
 import com.example.job.R;
-
 import java.io.Serializable;
 
 public class Job implements Serializable {

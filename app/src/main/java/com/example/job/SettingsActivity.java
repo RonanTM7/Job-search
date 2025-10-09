@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         TextView textViewVersion = findViewById(R.id.textViewVersion);
 
         // Установка версии приложения
-        textViewVersion.setText("1.0.0");
+        textViewVersion.setText(R.string.app_version_number);
 
         // Загрузка сохраненной темы
         boolean isDarkTheme = sharedPreferences.getBoolean(THEME_KEY, false);

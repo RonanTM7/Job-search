@@ -6,21 +6,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.job.adapter.JobAdapter;
 import com.example.job.model.Job;
-
 import java.util.ArrayList;
 import java.util.List;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 public class MainActivity extends AppCompatActivity {
@@ -182,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Подтверждение выхода
+        super.onBackPressed();
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setTitle("Выход")
                 .setMessage("Вы уверены, что хотите выйти из приложения?")

@@ -49,14 +49,11 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Для Material3 (если хочешь использовать)
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.core:core-ktx:1.12.0")
 
-    // Для Material3 (если версия Material 1.8.0+)
     implementation("com.google.android.material:material:1.11.0")
 
-    // Или явно Material3
     implementation("androidx.compose.material3:material3:1.1.2")
 }

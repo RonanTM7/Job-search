@@ -70,9 +70,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             jobSalary.setText(job.getSalary());
             jobLocation.setText(job.getLocation());
 
-            // Убрал установку изображения, так как в новом дизайне нет company_logo
-            // companyLogo.setImageResource(job.getLogo());
-
             if (job.isRemote()) {
                 remoteBadge.setVisibility(View.VISIBLE);
             } else {

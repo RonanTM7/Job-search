@@ -7,11 +7,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -44,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Простая имитация входа
+        // Имитация входа
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         prefs.edit().putBoolean("is_logged_in", true).apply();
         prefs.edit().putString("user_email", email).apply();
@@ -56,6 +51,5 @@ public class LoginActivity extends AppCompatActivity {
 
     private void register() {
         Toast.makeText(this, "Переход к регистрации", Toast.LENGTH_SHORT).show();
-        // Можно добавить Activity для регистрации
     }
 }

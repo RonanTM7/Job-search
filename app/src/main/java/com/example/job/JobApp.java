@@ -2,7 +2,6 @@ package com.example.job;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-
 import androidx.appcompat.app.AppCompatDelegate;
 
 public class JobApp extends Application {

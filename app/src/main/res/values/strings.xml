@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JobFinder</string>
+    <string name="app_name">Job Rocket</string>
     <string name="job_title">Android Developer</string>
     <string name="company_name">Яндекс</string>
     <string name="apply_button">Откликнуться на вакансию</string>
@@ -10,4 +10,9 @@
     <string name="remote_work">Удаленно</string>
     <string name="company_logo_desc">Логотип компании</string>
     <string name="favorite_icon_desc">Добавить в избранное</string>
+
+    <string name="app_version_number">Developer edition 1.01</string>
+    <string name="settings">Настройки</string>
+    <string name="dark_theme">Тёмная тема</string>
+    <string name="app_version">Версия приложения</string>
 </resources>
