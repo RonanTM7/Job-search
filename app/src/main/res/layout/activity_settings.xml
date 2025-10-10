@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Настройки"
+        android:text="@string/settings"
         android:textColor="@color/text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -44,7 +44,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Темная тема"
+                    android:text="@string/dark_theme"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
@@ -73,7 +73,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Версия приложения"
+                    android:text="@string/app_version"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
@@ -81,7 +81,7 @@
                     android:id="@+id/textViewVersion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1.0.0"
+                    android:text="@string/app_version_number"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
