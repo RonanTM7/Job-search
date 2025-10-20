@@ -10,6 +10,11 @@
     <string name="remote_work">Удаленно</string>
     <string name="company_logo_desc">Логотип компании</string>
     <string name="favorite_icon_desc">Добавить в избранное</string>
+    <string name="registration">Нет аккаунта? Зарегистрироваться</string>
+    <string name="login_to_job_rocket">Вход в Job Rocket</string>
+    <string name="password">Пароль</string>
+    <string name="log_in">Войти</string>
+    <string name="Email">Email</string>
 
     <string name="app_version_number">Developer edition 1.2</string>
     <string name="settings">Настройки</string>

@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Вход в Job Rocket"
+        android:text="@string/login_to_job_rocket"
         android:textColor="@color/text_primary"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -45,7 +45,7 @@
                     android:id="@+id/editTextEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
+                    android:hint="@string/Email"
                     android:inputType="textEmailAddress"
                     android:padding="16dp" />
 
@@ -63,7 +63,7 @@
                     android:id="@+id/editTextPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Пароль"
+                    android:hint="@string/password"
                     android:inputType="textPassword"
                     android:padding="16dp" />
 
@@ -74,7 +74,7 @@
                 android:id="@+id/buttonLogin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Войти"
+                android:text="@string/log_in"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp"
@@ -90,7 +90,7 @@
         android:id="@+id/textViewRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Нет аккаунта? Зарегистрироваться"
+        android:text="@string/registration"
         android:textColor="@color/primary_blue"
         android:textSize="15sp"
         android:gravity="center"
