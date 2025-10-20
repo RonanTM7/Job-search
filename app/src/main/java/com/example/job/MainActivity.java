@@ -18,9 +18,14 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.job.adapter.CategoryAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import com.example.job.adapter.CategoryAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
     private RecyclerView jobsRecyclerView;
     private RecyclerView categoriesRecyclerView;
     private com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigation;
@@ -37,10 +42,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         applySavedTheme();
         // Проверка авторизации
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
-
-        if (!isLoggedIn) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         jobsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         jobsRecyclerView.setAdapter(jobAdapter);
     }
+
     private void setupCategoryRecyclerView() {
         categoryAdapter = new CategoryAdapter(categories, new CategoryAdapter.OnItemClickListener() {
             @Override
