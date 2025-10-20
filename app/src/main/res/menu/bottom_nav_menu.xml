@@ -7,11 +7,6 @@
         android:title="Главная" />
 
     <item
-        android:id="@+id/nav_search"
-        android:icon="@drawable/ic_search"
-        android:title="Поиск" />
-
-    <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"
         android:title="Профиль" />

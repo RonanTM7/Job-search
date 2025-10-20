@@ -140,22 +140,13 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
                 return true;
-            } else if (itemId == R.id.nav_search) {
-                showSearch();
-                return true;
-            } else if (itemId == R.id.nav_profile) {
+            }  else if (itemId == R.id.nav_profile) {
                 openProfile();
                 return true;
             }
             return false;
         });
     }
-
-    private void showSearch() {
-        // Поиск уже в toolbar
-        Toast.makeText(this, "Используйте поиск вверху", Toast.LENGTH_SHORT).show();
-    }
-
     private void openProfile() {
         startActivity(new Intent(this, ProfileActivity.class));
     }
@@ -166,32 +157,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-
-        // Настройка поиска
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filterJobs(newText);
-                return true;
-            }
-        });
-
-        return true;
-    }
-
     private void filterJobs(String query) {
         filteredJobList.clear();
 

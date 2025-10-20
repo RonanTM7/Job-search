@@ -15,6 +15,10 @@ public class JobDetailActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         binding = ActivityJobDetailBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());

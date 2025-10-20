@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView, emailTextView, phoneTextView;
-    private Button editEmailButton, editPhoneButton, changePasswordButton, buttonLogout;
+    private Button changePasswordButton, buttonLogout, settingsButton;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -26,6 +26,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         setContentView(R.layout.activity_profile);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -34,16 +38,17 @@ public class ProfileActivity extends AppCompatActivity {
         usernameTextView = findViewById(R.id.usernameTextView);
         emailTextView = findViewById(R.id.emailTextView);
         phoneTextView = findViewById(R.id.phoneTextView);
-        editEmailButton = findViewById(R.id.editEmailButton);
-        editPhoneButton = findViewById(R.id.editPhoneButton);
         changePasswordButton = findViewById(R.id.changePasswordButton);
         buttonLogout = findViewById(R.id.buttonLogout);
+        settingsButton = findViewById(R.id.settingsButton);
         loadUserProfile();
 
-        editEmailButton.setOnClickListener(v -> showEditDialog("email"));
-        editPhoneButton.setOnClickListener(v -> showEditDialog("phone"));
         changePasswordButton.setOnClickListener(v -> showChangePasswordDialog());
         buttonLogout.setOnClickListener(v -> logout());
+        settingsButton.setOnClickListener(v -> openSettings());
+    }
+    private void openSettings() {
+        startActivity(new Intent(this, SettingsActivity.class));
     }
     private void loadUserProfile() {
         if (currentUser != null) {
@@ -63,7 +68,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void logout() {
         mAuth.signOut();
-        startActivity(new Intent(this, LoginActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         finish();
     }
 

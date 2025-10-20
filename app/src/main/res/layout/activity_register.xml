@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="32dp"
     android:background="@color/background_secondary">
 
     <TextView
@@ -63,5 +63,15 @@
         android:background="@drawable/ios_button_background"
         android:textColor="@android:color/white"
         android:padding="16dp"/>
+
+    <TextView
+        android:id="@+id/loginTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Уже есть аккаунт? Войти"
+        android:textColor="@color/primary_blue"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:padding="12dp" />
 
 </LinearLayout>
