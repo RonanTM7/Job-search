@@ -17,6 +17,25 @@
         android:textStyle="bold"
         android:layout_marginBottom="24dp" />
 
+    <!-- Заголовок Категории -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Категории"
+        android:textColor="@color/text_secondary"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- RecyclerView для категорий -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categoriesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp" />
+
+
     <!-- RecyclerView для списка вакансий -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/jobsRecyclerView"

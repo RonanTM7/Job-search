@@ -17,13 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.job.adapter.CategoryAdapter;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView jobsRecyclerView;
+    private RecyclerView categoriesRecyclerView;
     private com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigation;
     private JobAdapter jobAdapter;
+    private CategoryAdapter categoryAdapter;
     private List<Job> jobList = new ArrayList<>();
     private List<Job> filteredJobList = new ArrayList<>();
+    private List<String> categories = new ArrayList<>();
     private static final String PREFS_NAME = "AppSettings";
     private static final String THEME_KEY = "isDarkTheme";
 
@@ -44,11 +49,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         jobsRecyclerView = findViewById(R.id.jobsRecyclerView);
+        categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
         bottomNavigation = findViewById(R.id.bottom_navigation);
 
         setupUI();
         setupRecyclerView();
+        setupCategoryRecyclerView();
         loadMockData();
+        setupCategories();
         setupBottomNavigation();
     }
 
@@ -69,19 +77,59 @@ public class MainActivity extends AppCompatActivity {
         jobsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         jobsRecyclerView.setAdapter(jobAdapter);
     }
+    private void setupCategoryRecyclerView() {
+        categoryAdapter = new CategoryAdapter(categories, new CategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String category) {
+                filterJobsByCategory(category);
+            }
+        });
+
+        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        categoriesRecyclerView.setAdapter(categoryAdapter);
+    }
 
     private void loadMockData() {
         jobList.clear();
         filteredJobList.clear();
 
-        jobList.add(new Job("1", "Android Developer", "Яндекс", "150 000 - 200 000 ₽", "Москва", "Описание...", "Требования...", true));
-        jobList.add(new Job("2", "Java Developer", "Сбер", "180 000 - 220 000 ₽", "Москва", "Описание...", "Требования...", false));
-        jobList.add(new Job("3", "Flutter Developer", "VK", "140 000 - 190 000 ₽", "Санкт-Петербург", "Описание...", "Требования...", true));
-        jobList.add(new Job("4", "iOS Developer", "Tinkoff", "160 000 - 210 000 ₽", "Москва", "Описание...", "Требования...", true));
+        jobList.add(new Job("1", "Android Developer", "Яндекс", "150 000 - 200 000 ₽", "Москва", "Описание...", "Требования...", true, "Мобильная разработка"));
+        jobList.add(new Job("2", "Java Developer", "Сбер", "180 000 - 220 000 ₽", "Москва", "Описание...", "Требования...", false, "Бэкенд"));
+        jobList.add(new Job("3", "Flutter Developer", "VK", "140 000 - 190 000 ₽", "Санкт-Петербург", "Описание...", "Требования...", true, "Мобильная разработка"));
+        jobList.add(new Job("4", "iOS Developer", "Tinkoff", "160 000 - 210 000 ₽", "Москва", "Описание...", "Требования...", true, "Мобильная разработка"));
+        jobList.add(new Job("5", "Frontend Developer", "Ozon", "120 000 - 180 000 ₽", "Москва", "Описание...", "Требования...", true, "Фронтенд"));
+        jobList.add(new Job("6", "QA Engineer", "Avito", "100 000 - 150 000 ₽", "Москва", "Описание...", "Требования...", false, "Тестирование"));
+        jobList.add(new Job("7", "Data Scientist", "Mail.ru Group", "200 000 - 250 000 ₽", "Москва", "Описание...", "Требования...", false, "Аналитика"));
+        jobList.add(new Job("8", "Product Manager", "Wildberries", "180 000 - 230 000 ₽", "Москва", "Описание...", "Требования...", false, "Менеджмент"));
 
         filteredJobList.addAll(jobList);
         jobAdapter.notifyDataSetChanged();
     }
+    private void filterJobsByCategory(String category) {
+        filteredJobList.clear();
+
+        if (category.equals("Все")) {
+            filteredJobList.addAll(jobList);
+        } else {
+            for (Job job : jobList) {
+                if (job.getCategory().equals(category)) {
+                    filteredJobList.add(job);
+                }
+            }
+        }
+
+        jobAdapter.notifyDataSetChanged();
+    }
+
+    private void setupCategories() {
+        categories.add("Все");
+        for (Job job : jobList) {
+            if (!categories.contains(job.getCategory())) {
+                categories.add(job.getCategory());
+            }
+        }
+    }
+
     private void setupBottomNavigation() {
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();

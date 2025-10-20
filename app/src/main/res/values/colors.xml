@@ -21,6 +21,7 @@
     <color name="surface">#FFFFFF</color>
     <color name="card_background">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="stroke_color">#E5E5EA</color>
     <!-- Темная тема -->
     <color name="dark_background_primary">#1C1C1E</color>
     <color name="dark_background_secondary">#000000</color>

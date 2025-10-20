@@ -13,11 +13,12 @@ public class Job implements Serializable {
     private String requirements;
     private boolean isRemote;
     private int logoResId;
+    private String category;
 
     public Job() {}
 
     public Job(String id, String title, String company, String salary, String location,
-               String description, String requirements, boolean isRemote) {
+               String description, String requirements, boolean isRemote, String category) {
         this.id = id;
         this.title = title;
         this.company = company;
@@ -26,6 +27,7 @@ public class Job implements Serializable {
         this.description = description;
         this.requirements = requirements;
         this.isRemote = isRemote;
+        this.category = category;
     }
     public int getLogo() {
         return R.drawable.ic_work; // верни дефолтную иконку
@@ -55,5 +57,7 @@ public class Job implements Serializable {
 
     public boolean isRemote() { return isRemote; }
     public void setRemote(boolean remote) { isRemote = remote; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
 }
