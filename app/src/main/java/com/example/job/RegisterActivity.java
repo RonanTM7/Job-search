@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +18,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText usernameEditText, phoneEditText, emailEditText, passwordEditText;
     private Button registerButton;
+    private TextView loginTextView;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -38,8 +40,12 @@ public class RegisterActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         registerButton = findViewById(R.id.registerButton);
+        loginTextView = findViewById(R.id.loginTextView);
 
         registerButton.setOnClickListener(v -> registerUser());
+        loginTextView.setOnClickListener(v -> {
+            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+        });
     }
 
     private void registerUser() {
@@ -96,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 })
                 .addOnFailureListener(e -> {

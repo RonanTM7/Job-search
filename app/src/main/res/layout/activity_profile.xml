@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/ios_button_background"
+        android:background="@drawable/custom_button_background"
         android:padding="12dp"
         android:text="Сменить пароль"
         android:textColor="@color/text_primary" />
@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:background="@drawable/ios_button_background"
+            android:background="@drawable/custom_button_background"
             android:padding="12dp"
             android:text="Настройки"
             android:textColor="@color/text_primary" />
@@ -90,7 +90,7 @@
         android:text="Выйти"
         android:layout_gravity="right"
         android:padding="12dp"
-        android:background="@drawable/ios_button_background"
+        android:background="@drawable/custom_button_background"
         android:textColor="@color/primary_red"/>
 
     </LinearLayout>

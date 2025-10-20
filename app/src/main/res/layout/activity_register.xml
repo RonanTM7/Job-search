@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Зарегистрироваться"
-        android:background="@drawable/ios_button_background"
+        android:background="@drawable/custom_button_background"
         android:textColor="@android:color/white"
         android:padding="16dp"/>
 

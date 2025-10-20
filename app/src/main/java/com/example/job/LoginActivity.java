@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
@@ -15,8 +17,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
     private Button buttonLogin;
-    private TextView textViewRegister;
-
+    private TextView textViewRegister, errorTextView;
+    private ImageButton themeChangeButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -34,10 +36,33 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewRegister = findViewById(R.id.textViewRegister);
+        themeChangeButton = findViewById(R.id.themeChangeButton);
+        errorTextView = findViewById(R.id.errorTextView);
+
+        updateThemeIcon();
+
+        themeChangeButton.setOnClickListener(v -> {
+            int currentNightMode = getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+            if (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            recreate();
+        });
 
         buttonLogin.setOnClickListener(v -> login());
         textViewRegister.setOnClickListener(v -> register());
     }
+    private void updateThemeIcon() {
+        int currentNightMode = getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+        if (currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+            themeChangeButton.setImageResource(R.drawable.ic_sun);
+        } else {
+            themeChangeButton.setImageResource(R.drawable.ic_moon);
+        }
+    }
+
 
     private void login() {
         String email = editTextEmail.getText().toString().trim();
@@ -52,11 +77,11 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(LoginActivity.this, "Вход выполнен!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Ошибка входа: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        errorTextView.setText("Неверный логин или пароль");
+                        errorTextView.setVisibility(TextView.VISIBLE);
                     }
                 });
     }

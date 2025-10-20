@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/background_secondary"
     android:padding="32dp">
+
+    <ImageButton
+        android:id="@+id/themeChangeButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_moon" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,14 +49,23 @@
         android:inputType="textPassword"
         android:background="@drawable/ios_edittext_background"
         android:padding="16dp"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primary_red"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
 
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/log_in"
-        android:background="@drawable/ios_button_background"
+        android:background="@drawable/custom_button_background"
         android:textColor="@android:color/white"
         android:padding="16dp"/>
 
@@ -56,4 +80,6 @@
         android:gravity="center"
         android:padding="12dp" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

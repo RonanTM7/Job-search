@@ -4,6 +4,7 @@
     <color name="primary_blue">#007AFF</color>
     <color name="primary_green">#34C759</color>
     <color name="primary_red">#FF3B30</color>
+    <color name="dark">#000000</color>
 
     <!-- Фоны -->
     <color name="background_primary">#FFFFFF</color>
