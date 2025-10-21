@@ -25,7 +25,8 @@
         android:text="Имя пользователя"
         android:background="@drawable/ios_edittext_background"
         android:padding="16dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/dark"/>
 
     <TextView
         android:id="@+id/emailTextView"
@@ -34,7 +35,8 @@
         android:text="email@example.com"
         android:background="@drawable/ios_edittext_background"
         android:padding="16dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/dark"/>
 
     <TextView
         android:id="@+id/phoneTextView"
@@ -43,7 +45,8 @@
         android:text="+7 (999) 999-99-99"
         android:background="@drawable/ios_edittext_background"
         android:padding="16dp"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="24dp"
+        android:textColor="@color/dark"/>
 
 
     <Button

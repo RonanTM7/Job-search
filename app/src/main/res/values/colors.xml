@@ -9,6 +9,7 @@
     <!-- Фоны -->
     <color name="background_primary">#FFFFFF</color>
     <color name="background_secondary">#F2F2F7</color>
+    <color name="background_secondary_input_line">#38384B</color>
 
     <!-- Текст -->
     <color name="text_primary">#000000</color>
@@ -23,6 +24,7 @@
     <color name="card_background">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="stroke_color">#E5E5EA</color>
+
     <!-- Темная тема -->
     <color name="dark_background_primary">#1C1C1E</color>
     <color name="dark_background_secondary">#000000</color>
