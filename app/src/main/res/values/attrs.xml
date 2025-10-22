@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Объявляем кастомные атрибуты -->
+    <attr name="textColor" format="color|reference" />
+    <attr name="settings_button_color" format="color|reference" />
+</resources>

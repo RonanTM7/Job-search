@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.Job" parent="Theme.Material3.DayNight">
         <!-- Customize your dark theme here. -->
+        <item name="android:fontFamily">@font/open_sans</item>
         <item name="colorPrimary">@color/primary_blue</item>
         <item name="colorOnPrimary">@color/dark_background_primary</item>
 
@@ -12,6 +13,11 @@
         <!-- Стили для карточек -->
         <item name="cardViewStyle">@style/CardView.Job.Dark</item>
         <item name="materialCardViewStyle">@style/CardView.Job.Dark</item>
+
+        <!-- Custom attributes -->
+        <item name="backgroundColor">@color/dark_background_primary</item>
+        <item name="textColor">@color/dark_text_primary</item>
+        <item name="settings_button_color">@color/settings_button_color_dark</item>
     </style>
 
     <style name="CardView.Job.Dark" parent="CardView">

@@ -24,6 +24,7 @@
     <color name="card_background">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="stroke_color">#E5E5EA</color>
+    <color name="settings_button_color">#2D2D2E</color>
 
     <!-- Темная тема -->
     <color name="dark_background_primary">#1C1C1E</color>
@@ -33,4 +34,9 @@
     <color name="dark_text_tertiary">#48484A</color>
     <color name="dark_separator">#38383A</color>
     <color name="dark_card_background">#2C2C2E</color>
+
+    <!-- Settings colors -->
+    <color name="settings_button_color_light">#F2F2F7</color>
+    <color name="settings_button_color_dark">#2C2C2E</color>
+    <color name="phone_number_color">#007AFF</color>
 </resources>

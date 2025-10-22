@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_secondary"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Настройки"
+        android:textSize="24sp"
+        android:textColor="?attr/textColor"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_my_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Мой профиль"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_privacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Конфиденциальность"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_appearance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Оформление"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_about"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="О приложении"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"/>
+
+</LinearLayout>
