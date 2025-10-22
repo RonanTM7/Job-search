@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_secondary"
@@ -13,6 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/todo"
         android:src="@drawable/ic_moon" />
 
     <LinearLayout
@@ -35,6 +35,7 @@
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:hint="@string/Email"
         android:inputType="textEmailAddress"
         android:background="@drawable/ios_edittext_background"
@@ -45,6 +46,7 @@
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:hint="@string/password"
         android:inputType="textPassword"
         android:background="@drawable/ios_edittext_background"
@@ -65,8 +67,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/log_in"
-        android:background="@drawable/custom_button_background"
-        android:textColor="@android:color/white"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
         android:padding="16dp"/>
 
     <!-- Ссылка на регистрацию -->

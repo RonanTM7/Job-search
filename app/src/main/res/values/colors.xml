@@ -21,6 +21,7 @@
 
     <!-- Карточки и поверхности -->
     <color name="surface">#FFFFFF</color>
+    <color name="ggg">#C6C6C8</color>
     <color name="card_background">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="stroke_color">#E5E5EA</color>
@@ -36,7 +37,10 @@
     <color name="dark_card_background">#2C2C2E</color>
 
     <!-- Settings colors -->
-    <color name="settings_button_color_light">#F2F2F7</color>
+    <color name="settings_button_color_light">#FFFFFF</color>
     <color name="settings_button_color_dark">#2C2C2E</color>
     <color name="phone_number_color">#007AFF</color>
+    <color name="logout_button_background">#3E3E40</color>
+    <color name="logout_button_text">#FF453A</color>
+
 </resources>

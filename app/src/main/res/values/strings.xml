@@ -26,4 +26,5 @@
     <string name="_7_999_999_99_99">+7 (999) 999-99-99</string>
     <string name="email_example_com">email@example.com</string>
     <string name="re_change_password">Сменить пароль</string>
+    <string name="todo">TODO</string>
 </resources>

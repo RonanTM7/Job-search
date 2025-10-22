@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.content.Intent;
+
 
 public class MyProfileActivity extends AppCompatActivity {
 
@@ -33,6 +35,13 @@ public class MyProfileActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.btn_back);
 
         loadUserProfile();
+
+        findViewById(R.id.btn_logout).setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
 
         backButton.setOnClickListener(v -> onBackPressed());
     }
