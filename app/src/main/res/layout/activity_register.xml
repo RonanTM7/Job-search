@@ -17,6 +17,7 @@
 
     <EditText
         android:id="@+id/usernameEditText"
+        style="@style/LoginTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -28,6 +29,7 @@
 
     <EditText
         android:id="@+id/phoneEditText"
+        style="@style/LoginTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -39,6 +41,7 @@
 
     <EditText
         android:id="@+id/emailEditText"
+        style="@style/LoginTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -50,6 +53,7 @@
 
     <EditText
         android:id="@+id/passwordEditText"
+        style="@style/LoginTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""

@@ -21,7 +21,7 @@ public class AboutActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> onBackPressed());
 
-        String versionName = getString(R.string.string_app_version_number);
+        String versionName = getString(R.string.app_version_number);
         appVersionTextView.setText("Версия " + versionName);
     }
 }

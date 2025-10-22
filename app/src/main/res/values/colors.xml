@@ -15,6 +15,7 @@
     <color name="text_primary">#000000</color>
     <color name="text_secondary">#8E8E93</color>
     <color name="text_tertiary">#C7C7CC</color>
+    <color name="hint_text_color">#999999</color>
 
     <!-- Разделители -->
     <color name="separator">#C6C6C8</color>

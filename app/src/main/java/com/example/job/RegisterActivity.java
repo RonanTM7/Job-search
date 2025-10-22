@@ -2,7 +2,10 @@ package com.example.job;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,6 +46,46 @@ public class RegisterActivity extends AppCompatActivity {
 
         registerButton.setOnClickListener(v -> registerUser());
         loginTextView.setOnClickListener(v -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
+
+        phoneEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().startsWith("+7")) {
+                    phoneEditText.setText("+7");
+                    phoneEditText.setSelection(phoneEditText.getText().length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phoneNumber = s.toString().replaceAll("[^\\d]", "");
+                if (phoneNumber.length() > 1) {
+                    phoneNumber = phoneNumber.substring(1); // Remove the leading '7'
+                    StringBuilder formatted = new StringBuilder("+7 ");
+                    if (phoneNumber.length() > 0) {
+                        formatted.append(phoneNumber.substring(0, Math.min(3, phoneNumber.length())));
+                    }
+                    if (phoneNumber.length() >= 4) {
+                        formatted.append(" ").append(phoneNumber.substring(3, Math.min(6, phoneNumber.length())));
+                    }
+                    if (phoneNumber.length() >= 7) {
+                        formatted.append(" ").append(phoneNumber.substring(6, Math.min(8, phoneNumber.length())));
+                    }
+                    if (phoneNumber.length() >= 9) {
+                        formatted.append(" ").append(phoneNumber.substring(8, Math.min(10, phoneNumber.length())));
+                    }
+
+                    phoneEditText.removeTextChangedListener(this);
+                    phoneEditText.setText(formatted.toString());
+                    phoneEditText.setSelection(formatted.length());
+                    phoneEditText.addTextChangedListener(this);
+                }
+            }
+        });
     }
 
     private void registerUser() {
@@ -76,17 +119,35 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null) {
-                            saveUserToFirestore(user.getUid(), username, phone, email);
-                        }
+        db.collection("users").whereEqualTo("username", username).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                usernameEditText.setError("Имя пользователя уже занято");
+            } else {
+                db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task2 -> {
+                    if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
+                        emailEditText.setError("Почта уже зарегистрирована");
                     } else {
-                        Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        db.collection("users").whereEqualTo("phone", phone).get().addOnCompleteListener(task3 -> {
+                            if (task3.isSuccessful() && !task3.getResult().isEmpty()) {
+                                phoneEditText.setError("Номер телефона уже зарегистрирован");
+                            } else {
+                                mAuth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(this, authTask -> {
+                                            if (authTask.isSuccessful()) {
+                                                FirebaseUser user = mAuth.getCurrentUser();
+                                                if (user != null) {
+                                                    saveUserToFirestore(user.getUid(), username, phone, email);
+                                                }
+                                            } else {
+                                                Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        });
                     }
                 });
+            }
+        });
     }
 
     private void saveUserToFirestore(String userId, String username, String phone, String email) {
@@ -98,10 +159,16 @@ public class RegisterActivity extends AppCompatActivity {
         db.collection("users").document(userId)
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP, 0, 0);
+                    toast.show();
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast toast = Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP, 0, 0);
+                    toast.show();
+                });
     }
 }

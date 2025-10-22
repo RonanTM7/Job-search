@@ -16,13 +16,14 @@ import com.example.job.adapter.JobAdapter;
 import com.example.job.model.Job;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView jobsRecyclerView;
     private RecyclerView categoriesRecyclerView;
     private JobAdapter jobAdapter;
-    private List<Job> jobList = new ArrayList<>();
+    private final List<Job> jobList = new ArrayList<>();
     private final List<Job> filteredJobList = new ArrayList<>();
     private final List<String> categories = new ArrayList<>();
 
@@ -46,7 +47,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        jobAdapter = new JobAdapter(filteredJobList, job -> openJobDetails(job));
+        jobAdapter = new JobAdapter(filteredJobList, this::openJobDetails);
 
         jobsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         jobsRecyclerView.setAdapter(jobAdapter);
@@ -106,6 +107,6 @@ public class HomeFragment extends Fragment {
         Intent intent = new Intent(getActivity(), JobDetailActivity.class);
         intent.putExtra("job", job);
         startActivity(intent);
-        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

@@ -20,7 +20,6 @@
     <string name="settings">Настройки</string>
     <string name="dark_theme">Тёмная тема</string>
     <string name="app_version">Версия приложения</string>
-    <string name="string_app_version_number">\@string/app_version_number</string>
     <string name="back">Back</string>
     <string name="Confidentiality">Конфиденциальность</string>
     <string name="_7_999_999_99_99">+7 (999) 999-99-99</string>

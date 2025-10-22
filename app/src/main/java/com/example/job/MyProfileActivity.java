@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -37,10 +38,17 @@ public class MyProfileActivity extends AppCompatActivity {
         loadUserProfile();
 
         findViewById(R.id.btn_logout).setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            new AlertDialog.Builder(this)
+                    .setTitle("Выход")
+                    .setMessage("Вы уверены, что хотите выйти?")
+                    .setPositiveButton("Да", (dialog, which) -> {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("Нет", null)
+                    .show();
         });
 
         backButton.setOnClickListener(v -> onBackPressed());
@@ -52,12 +60,24 @@ public class MyProfileActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             usernameTextView.setText(documentSnapshot.getString("username"));
-                            phoneTextView.setText(documentSnapshot.getString("phone"));
+                            String phone = documentSnapshot.getString("phone");
+                            if (phone != null) {
+                                String formattedPhone = formatPhoneNumber(phone);
+                                phoneTextView.setText(formattedPhone);
+                            }
                         }
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(MyProfileActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+
+    private String formatPhoneNumber(String phone) {
+        String digitsOnly = phone.replaceAll("[^\\d]", "");
+        if (digitsOnly.length() == 11) {
+            return "+7 " + digitsOnly.substring(1, 4) + " " + digitsOnly.substring(4, 7) + " " + digitsOnly.substring(7, 9) + " " + digitsOnly.substring(9);
+        }
+        return phone;
     }
 }
