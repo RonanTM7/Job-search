@@ -11,8 +11,8 @@ import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
-    private List<String> categories;
-    private OnItemClickListener listener;
+    private final List<String> categories;
+    private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(String category);

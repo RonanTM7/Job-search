@@ -16,21 +16,13 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        view.findViewById(R.id.btn_my_profile).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), MyProfileActivity.class));
-        });
+        view.findViewById(R.id.btn_my_profile).setOnClickListener(v -> startActivity(new Intent(getActivity(), MyProfileActivity.class)));
 
-        view.findViewById(R.id.btn_privacy).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), PrivacyActivity.class));
-        });
+        view.findViewById(R.id.btn_privacy).setOnClickListener(v -> startActivity(new Intent(getActivity(), PrivacyActivity.class)));
 
-        view.findViewById(R.id.btn_appearance).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), AppearanceActivity.class));
-        });
+        view.findViewById(R.id.btn_appearance).setOnClickListener(v -> startActivity(new Intent(getActivity(), AppearanceActivity.class)));
 
-        view.findViewById(R.id.btn_about).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), AboutActivity.class));
-        });
+        view.findViewById(R.id.btn_about).setOnClickListener(v -> startActivity(new Intent(getActivity(), AboutActivity.class)));
 
         return view;
     }

@@ -1,7 +1,6 @@
 package com.example.job;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +15,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
-    private Button buttonLogin;
-    private TextView textViewRegister, errorTextView;
+    private TextView errorTextView;
     private ImageButton themeChangeButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +32,8 @@ public class LoginActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        textViewRegister = findViewById(R.id.textViewRegister);
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        TextView textViewRegister = findViewById(R.id.textViewRegister);
         themeChangeButton = findViewById(R.id.themeChangeButton);
         errorTextView = findViewById(R.id.errorTextView);
 

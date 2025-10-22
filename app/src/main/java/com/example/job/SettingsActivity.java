@@ -9,7 +9,6 @@ import androidx.appcompat.widget.SwitchCompat;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private SwitchCompat switchDarkTheme;
     private SharedPreferences sharedPreferences;
     private static final String PREFS_NAME = "AppSettings";
     private static final String THEME_KEY = "isDarkTheme";
@@ -27,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         // Инициализация элементов
-        switchDarkTheme = findViewById(R.id.switchDarkTheme);
+        SwitchCompat switchDarkTheme = findViewById(R.id.switchDarkTheme);
         TextView textViewVersion = findViewById(R.id.textViewVersion);
 
         // Установка версии приложения

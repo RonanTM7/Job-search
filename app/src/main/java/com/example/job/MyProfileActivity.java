@@ -12,8 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class MyProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView, phoneTextView;
-    private ImageButton backButton;
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
 
@@ -26,13 +24,13 @@ public class MyProfileActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
 
         usernameTextView = findViewById(R.id.tv_username);
         phoneTextView = findViewById(R.id.tv_phone_number);
-        backButton = findViewById(R.id.btn_back);
+        ImageButton backButton = findViewById(R.id.btn_back);
 
         loadUserProfile();
 

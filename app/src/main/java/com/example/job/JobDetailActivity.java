@@ -32,6 +32,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
         // Обработчик кнопки отклика
         binding.applyButton.setOnClickListener(v -> {
+            assert job != null;
             Toast.makeText(this, "Отклик отправлен на вакансию: " + job.getTitle(), Toast.LENGTH_SHORT).show();
         });
     }

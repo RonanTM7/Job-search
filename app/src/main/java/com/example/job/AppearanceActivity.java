@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 public class AppearanceActivity extends AppCompatActivity {
 
-    private Button lightThemeButton, darkThemeButton;
-    private ImageButton backButton;
     private static final String PREFS_NAME = "AppSettings";
     private static final String THEME_KEY = "isDarkTheme";
 
@@ -23,9 +21,9 @@ public class AppearanceActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        lightThemeButton = findViewById(R.id.btn_light_theme);
-        darkThemeButton = findViewById(R.id.btn_dark_theme);
-        backButton = findViewById(R.id.btn_back);
+        Button lightThemeButton = findViewById(R.id.btn_light_theme);
+        Button darkThemeButton = findViewById(R.id.btn_dark_theme);
+        ImageButton backButton = findViewById(R.id.btn_back);
 
         backButton.setOnClickListener(v -> onBackPressed());
 

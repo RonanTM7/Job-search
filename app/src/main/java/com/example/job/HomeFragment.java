@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,10 +22,9 @@ public class HomeFragment extends Fragment {
     private RecyclerView jobsRecyclerView;
     private RecyclerView categoriesRecyclerView;
     private JobAdapter jobAdapter;
-    private CategoryAdapter categoryAdapter;
     private List<Job> jobList = new ArrayList<>();
-    private List<Job> filteredJobList = new ArrayList<>();
-    private List<String> categories = new ArrayList<>();
+    private final List<Job> filteredJobList = new ArrayList<>();
+    private final List<String> categories = new ArrayList<>();
 
     @Nullable
     @Override
@@ -46,29 +46,20 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        jobAdapter = new JobAdapter(filteredJobList, new JobAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Job job) {
-                openJobDetails(job);
-            }
-        });
+        jobAdapter = new JobAdapter(filteredJobList, job -> openJobDetails(job));
 
         jobsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         jobsRecyclerView.setAdapter(jobAdapter);
     }
 
     private void setupCategoryRecyclerView() {
-        categoryAdapter = new CategoryAdapter(categories, new CategoryAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(String category) {
-                filterJobsByCategory(category);
-            }
-        });
+        CategoryAdapter categoryAdapter = new CategoryAdapter(categories, this::filterJobsByCategory);
 
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         categoriesRecyclerView.setAdapter(categoryAdapter);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void loadMockData() {
         jobList.clear();
         filteredJobList.clear();
@@ -85,6 +76,7 @@ public class HomeFragment extends Fragment {
         filteredJobList.addAll(jobList);
         jobAdapter.notifyDataSetChanged();
     }
+    @SuppressLint("NotifyDataSetChanged")
     private void filterJobsByCategory(String category) {
         filteredJobList.clear();
 

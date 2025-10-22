@@ -15,12 +15,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class PrivacyActivity extends AppCompatActivity {
 
     private TextView phoneNumberTextView, emailTextView;
-    private Button changePasswordButton;
-    private ImageButton backButton;
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
 
@@ -33,14 +32,14 @@ public class PrivacyActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         currentUser = mAuth.getCurrentUser();
 
         phoneNumberTextView = findViewById(R.id.tv_phone_number);
         emailTextView = findViewById(R.id.tv_email);
-        changePasswordButton = findViewById(R.id.btn_change_password);
-        backButton = findViewById(R.id.btn_back);
+        Button changePasswordButton = findViewById(R.id.btn_change_password);
+        ImageButton backButton = findViewById(R.id.btn_back);
 
         loadUserData();
 
@@ -78,7 +77,7 @@ public class PrivacyActivity extends AppCompatActivity {
                 return;
             }
 
-            AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), password);
+            AuthCredential credential = EmailAuthProvider.getCredential(Objects.requireNonNull(currentUser.getEmail()), password);
             currentUser.reauthenticate(credential)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

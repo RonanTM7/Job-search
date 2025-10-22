@@ -1,5 +1,6 @@
 package com.example.job.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,8 @@ import java.util.List;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
-    private List<Job> jobList;
-    private OnItemClickListener onItemClickListener;
+    private final List<Job> jobList;
+    private final OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
         void onItemClick(Job job);
@@ -46,6 +47,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         return jobList.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<Job> newJobs) {
         jobList.clear();
         jobList.addAll(newJobs);
@@ -53,7 +55,11 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     }
 
     public static class JobViewHolder extends RecyclerView.ViewHolder {
-        private TextView jobTitle, companyName, jobSalary, jobLocation, remoteBadge;
+        private final TextView jobTitle;
+        private final TextView companyName;
+        private final TextView jobSalary;
+        private final TextView jobLocation;
+        private final TextView remoteBadge;
 
         public JobViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,12 +82,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
                 remoteBadge.setVisibility(View.GONE);
             }
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(job);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(job));
         }
     }
 }

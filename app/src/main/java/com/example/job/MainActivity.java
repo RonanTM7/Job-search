@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
     private com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigation;
     private static final String PREFS_NAME = "AppSettings";
     private static final String THEME_KEY = "isDarkTheme";
@@ -20,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         applySavedTheme();
         // Проверка авторизации
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             startActivity(new Intent(this, LoginActivity.class));

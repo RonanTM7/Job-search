@@ -13,12 +13,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText usernameEditText, phoneEditText, emailEditText, passwordEditText;
-    private Button registerButton;
-    private TextView loginTextView;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -39,13 +38,11 @@ public class RegisterActivity extends AppCompatActivity {
         phoneEditText = findViewById(R.id.phoneEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        registerButton = findViewById(R.id.registerButton);
-        loginTextView = findViewById(R.id.loginTextView);
+        Button registerButton = findViewById(R.id.registerButton);
+        TextView loginTextView = findViewById(R.id.loginTextView);
 
         registerButton.setOnClickListener(v -> registerUser());
-        loginTextView.setOnClickListener(v -> {
-            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-        });
+        loginTextView.setOnClickListener(v -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
     }
 
     private void registerUser() {
@@ -87,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
                             saveUserToFirestore(user.getUid(), username, phone, email);
                         }
                     } else {
-                        Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -105,8 +102,6 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
