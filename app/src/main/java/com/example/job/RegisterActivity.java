@@ -158,17 +158,17 @@ public class RegisterActivity extends AppCompatActivity {
 
         db.collection("users").document(userId)
                 .set(user)
-                .addOnSuccessListener(aVoid -> {
+                .addOnSuccessListener(aVoid -> runOnUiThread(() -> {
                     Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP, 0, 0);
                     toast.show();
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
-                })
-                .addOnFailureListener(e -> {
+                }))
+                .addOnFailureListener(e -> runOnUiThread(() -> {
                     Toast toast = Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP, 0, 0);
                     toast.show();
-                });
+                }));
     }
 }
