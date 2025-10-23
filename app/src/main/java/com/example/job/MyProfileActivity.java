@@ -1,7 +1,10 @@
 package com.example.job;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -9,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import android.content.Intent;
-
 
 public class MyProfileActivity extends AppCompatActivity {
 
@@ -37,17 +38,26 @@ public class MyProfileActivity extends AppCompatActivity {
 
         loadUserProfile();
 
-        findViewById(R.id.btn_logout).setOnClickListener(v -> new AlertDialog.Builder(this)
-                .setTitle("Выход")
-                .setMessage("Вы уверены, что хотите выйти?")
-                .setPositiveButton("Да", (dialog, which) -> {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                })
-                .setNegativeButton("Нет", null)
-                .show());
+        findViewById(R.id.btn_logout).setOnClickListener(v -> {
+            final Dialog dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_logout);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+            Button btnNo = dialog.findViewById(R.id.btn_no);
+            Button btnYes = dialog.findViewById(R.id.btn_yes);
+
+            btnNo.setOnClickListener(view -> dialog.dismiss());
+            btnYes.setOnClickListener(view -> {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                dialog.dismiss();
+            });
+
+            dialog.show();
+        });
 
         backButton.setOnClickListener(v -> onBackPressed());
     }
