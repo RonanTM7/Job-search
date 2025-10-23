@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Настройки"
+        android:text="@string/settings"
         android:textSize="24sp"
         android:textColor="?attr/textColor"
         android:layout_gravity="center_horizontal"
@@ -19,7 +19,7 @@
         android:id="@+id/btn_my_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Мой профиль"
+        android:text="@string/my_profile"
         android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"
         android:layout_marginBottom="8dp"/>
@@ -28,7 +28,7 @@
         android:id="@+id/btn_privacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Конфиденциальность"
+        android:text="@string/konfidentialiti"
         android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"
         android:layout_marginBottom="8dp"/>
@@ -37,7 +37,7 @@
         android:id="@+id/btn_appearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Оформление"
+        android:text="@string/zemes"
         android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"
         android:layout_marginBottom="8dp"/>
@@ -46,7 +46,7 @@
         android:id="@+id/btn_about"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="О приложении"
+        android:text="@string/info"
         android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"/>
 

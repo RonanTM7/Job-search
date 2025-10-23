@@ -26,4 +26,16 @@
     <string name="email_example_com">email@example.com</string>
     <string name="re_change_password">Сменить пароль</string>
     <string name="todo">TODO</string>
+    <string name="main">Главная</string>
+    <string name="android_developer">Android Developer</string>
+    <string name="_150_000">150 000 ₽</string>
+    <string name="yandex">Яндекс</string>
+    <string name="moskow">Москва</string>
+    <string name="working_remotely">Удаленно</string>
+    <string name="my_profile">Мой профиль</string>
+    <string name="konfidentialiti">Конфиденциальность</string>
+    <string name="zemes">Оформление</string>
+    <string name="info">О приложении</string>
+    <string name="kategories">Категории</string>
+    <string name="job_openings">Вакансии</string>
 </resources>

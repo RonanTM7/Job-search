@@ -14,13 +14,13 @@
         android:padding="8dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:contentDescription="Back" />
+        android:contentDescription="@string/back" />
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="О приложении"
+        android:text="@string/info"
         android:textSize="24sp"
         android:textColor="?attr/textColor"
         android:layout_centerHorizontal="true"

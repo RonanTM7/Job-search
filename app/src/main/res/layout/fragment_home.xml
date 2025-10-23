@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Вакансии"
+        android:text="@string/job_openings"
         android:textColor="@color/text_primary"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Категории"
+        android:text="@string/kategories"
         android:textColor="@color/text_secondary"
         android:textSize="22sp"
         android:textStyle="bold"
