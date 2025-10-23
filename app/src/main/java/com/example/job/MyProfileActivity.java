@@ -54,6 +54,7 @@ public class MyProfileActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 dialog.dismiss();
+                finish();
             });
 
             dialog.show();
