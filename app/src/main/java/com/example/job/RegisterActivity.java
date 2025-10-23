@@ -87,6 +87,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
+        Button registerButton = findViewById(R.id.registerButton);
+        registerButton.setEnabled(false);
+        registerButton.setText("Регистрация...");
+
         String username = usernameEditText.getText().toString().trim();
         String phone = phoneEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
@@ -120,14 +124,20 @@ public class RegisterActivity extends AppCompatActivity {
         db.collection("users").whereEqualTo("username", username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
                 usernameEditText.setError("Имя пользователя уже занято");
+                registerButton.setEnabled(true);
+                registerButton.setText("Зарегистрироваться");
             } else {
                 db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task2 -> {
                     if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
                         emailEditText.setError("Почта уже зарегистрирована");
+                        registerButton.setEnabled(true);
+                        registerButton.setText("Зарегистрироваться");
                     } else {
                         db.collection("users").whereEqualTo("phone", phone).get().addOnCompleteListener(task3 -> {
                             if (task3.isSuccessful() && !task3.getResult().isEmpty()) {
                                 phoneEditText.setError("Номер телефона уже зарегистрирован");
+                                registerButton.setEnabled(true);
+                                registerButton.setText("Зарегистрироваться");
                             } else {
                                 mAuth.createUserWithEmailAndPassword(email, password)
                                         .addOnCompleteListener(this, authTask -> {
@@ -148,7 +158,9 @@ public class RegisterActivity extends AppCompatActivity {
                                                     });
                                                 }
                                             } else {
-                                                Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this, "Ошибка регистрации, проверьте соединение с интернетом", Toast.LENGTH_SHORT).show();
+                                                registerButton.setEnabled(true);
+                                                registerButton.setText("Зарегистрироваться");
                                             }
                                         });
                             }
