@@ -50,6 +50,7 @@ public class MyProfileActivity extends AppCompatActivity {
             btnNo.setOnClickListener(view -> dialog.dismiss());
             btnYes.setOnClickListener(view -> {
                 FirebaseAuth.getInstance().signOut();
+                FirebaseFirestore.getInstance().clearPersistence();
                 Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
