@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
-
     private EditText editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
     private TextView errorTextView;
@@ -60,14 +59,18 @@ public class LoginActivity extends AppCompatActivity {
             themeChangeButton.setImageResource(R.drawable.ic_moon);
         }
     }
-
-
     private void login() {
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        buttonLogin.setEnabled(false);
+        buttonLogin.setText("Вход...");
+
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_SHORT).show();
+            buttonLogin.setEnabled(true);
+            buttonLogin.setText("Войти");
             return;
         }
 
@@ -80,6 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         errorTextView.setText("Неверный логин или пароль");
                         errorTextView.setVisibility(TextView.VISIBLE);
+                        buttonLogin.setEnabled(true);
+                        buttonLogin.setText("Войти");
                     }
                 });
     }

@@ -88,9 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser() {
         Button registerButton = findViewById(R.id.registerButton);
-        registerButton.setEnabled(false);
         registerButton.setText("Регистрация...");
-
         String username = usernameEditText.getText().toString().trim();
         String phone = phoneEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
@@ -98,26 +96,36 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(username)) {
             usernameEditText.setError("Введите имя пользователя");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
             return;
         }
 
         if (TextUtils.isEmpty(phone)) {
             phoneEditText.setError("Введите номер телефона");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
             return;
         }
 
         if (TextUtils.isEmpty(email)) {
             emailEditText.setError("Введите почту");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
             passwordEditText.setError("Введите пароль");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
             return;
         }
 
         if (password.length() < 6) {
             passwordEditText.setError("Пароль должен содержать не менее 6 символов");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
             return;
         }
 
@@ -158,7 +166,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                     });
                                                 }
                                             } else {
-                                                Toast.makeText(RegisterActivity.this, "Ошибка регистрации, проверьте соединение с интернетом", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                                                 registerButton.setEnabled(true);
                                                 registerButton.setText("Зарегистрироваться");
                                             }
