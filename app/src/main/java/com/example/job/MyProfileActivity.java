@@ -37,19 +37,17 @@ public class MyProfileActivity extends AppCompatActivity {
 
         loadUserProfile();
 
-        findViewById(R.id.btn_logout).setOnClickListener(v -> {
-            new AlertDialog.Builder(this)
-                    .setTitle("Выход")
-                    .setMessage("Вы уверены, что хотите выйти?")
-                    .setPositiveButton("Да", (dialog, which) -> {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    })
-                    .setNegativeButton("Нет", null)
-                    .show();
-        });
+        findViewById(R.id.btn_logout).setOnClickListener(v -> new AlertDialog.Builder(this)
+                .setTitle("Выход")
+                .setMessage("Вы уверены, что хотите выйти?")
+                .setPositiveButton("Да", (dialog, which) -> {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Нет", null)
+                .show());
 
         backButton.setOnClickListener(v -> onBackPressed());
     }
@@ -67,14 +65,12 @@ public class MyProfileActivity extends AppCompatActivity {
                             }
                         }
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(MyProfileActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(MyProfileActivity.this, "Ошибка загрузки данных", Toast.LENGTH_SHORT).show());
         }
     }
 
     private String formatPhoneNumber(String phone) {
-        String digitsOnly = phone.replaceAll("[^\\d]", "");
+        String digitsOnly = phone.replaceAll("\\D", "");
         if (digitsOnly.length() == 11) {
             return "+7 " + digitsOnly.substring(1, 4) + " " + digitsOnly.substring(4, 7) + " " + digitsOnly.substring(7, 9) + " " + digitsOnly.substring(9);
         }

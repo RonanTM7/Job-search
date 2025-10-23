@@ -36,9 +36,7 @@ public class JobDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Ваше резюме было отправлено", Toast.LENGTH_SHORT).show();
         });
 
-        binding.backButton.setOnClickListener(v -> {
-            finish();
-        });
+        binding.backButton.setOnClickListener(v -> finish());
     }
 
     private void displayJobDetails(Job job) {

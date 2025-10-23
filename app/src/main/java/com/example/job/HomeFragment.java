@@ -16,7 +16,6 @@ import com.example.job.adapter.JobAdapter;
 import com.example.job.model.Job;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
