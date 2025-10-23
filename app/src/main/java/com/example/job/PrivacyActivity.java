@@ -1,13 +1,14 @@
 package com.example.job;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -62,16 +63,24 @@ public class PrivacyActivity extends AppCompatActivity {
     }
 
     private void showUpdateDialog(String field) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Сменить " + field);
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_edit_data);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        final EditText passwordInput = new EditText(this);
-        passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        passwordInput.setHint("Текущий пароль");
-        builder.setView(passwordInput);
+        TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+        EditText editTextData = dialog.findViewById(R.id.edit_text_data);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnSave = dialog.findViewById(R.id.btn_save);
 
-        builder.setPositiveButton("Подтвердить", (dialog, which) -> {
-            String password = passwordInput.getText().toString();
+        dialogTitle.setText("Введите текущий пароль");
+        editTextData.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        editTextData.setHint("Текущий пароль");
+        btnSave.setText("Подтвердить");
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSave.setOnClickListener(v -> {
+            String password = editTextData.getText().toString();
             if (password.isEmpty()) {
                 Toast.makeText(this, "Пароль не может быть пустым", Toast.LENGTH_SHORT).show();
                 return;
@@ -81,28 +90,36 @@ public class PrivacyActivity extends AppCompatActivity {
             currentUser.reauthenticate(credential)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            dialog.dismiss();
                             showNewValueDialog(field);
                         } else {
                             Toast.makeText(PrivacyActivity.this, "Неверный пароль", Toast.LENGTH_SHORT).show();
                         }
                     });
         });
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
-        builder.show();
+        dialog.show();
     }
 
     private void showNewValueDialog(String field) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Введите новое значение");
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_edit_data);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        final EditText newValueInput = new EditText(this);
+        TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+        EditText editTextData = dialog.findViewById(R.id.edit_text_data);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnSave = dialog.findViewById(R.id.btn_save);
+
+        dialogTitle.setText("Введите новое значение");
         if (field.equals("password")) {
-            newValueInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            editTextData.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
-        builder.setView(newValueInput);
+        editTextData.setHint("Новое значение");
 
-        builder.setPositiveButton("Применить", (dialog, which) -> {
-            String newValue = newValueInput.getText().toString();
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSave.setOnClickListener(v -> {
+            String newValue = editTextData.getText().toString();
             if (newValue.isEmpty()) {
                 Toast.makeText(this, "Поле не может быть пустым", Toast.LENGTH_SHORT).show();
                 return;
@@ -113,6 +130,7 @@ public class PrivacyActivity extends AppCompatActivity {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(PrivacyActivity.this, "Пароль успешно изменен", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
                             } else {
                                 Toast.makeText(PrivacyActivity.this, "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
                             }
@@ -123,10 +141,10 @@ public class PrivacyActivity extends AppCompatActivity {
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(PrivacyActivity.this, "Данные успешно обновлены", Toast.LENGTH_SHORT).show();
                             loadUserData();
+                            dialog.dismiss();
                         });
             }
         });
-        builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());
-        builder.show();
+        dialog.show();
     }
 }
