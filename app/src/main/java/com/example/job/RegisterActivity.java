@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,28 +64,32 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String phoneNumber = s.toString().replaceAll("[^\\d]", "");
+                String phoneNumber = s.toString().replaceAll("\\D", "");
                 if (phoneNumber.length() > 1) {
                     phoneNumber = phoneNumber.substring(1); // Remove the leading '7'
-                    StringBuilder formatted = new StringBuilder("+7 ");
-                    if (phoneNumber.length() > 0) {
-                        formatted.append(phoneNumber.substring(0, Math.min(3, phoneNumber.length())));
-                    }
-                    if (phoneNumber.length() >= 4) {
-                        formatted.append(" ").append(phoneNumber.substring(3, Math.min(6, phoneNumber.length())));
-                    }
-                    if (phoneNumber.length() >= 7) {
-                        formatted.append(" ").append(phoneNumber.substring(6, Math.min(8, phoneNumber.length())));
-                    }
-                    if (phoneNumber.length() >= 9) {
-                        formatted.append(" ").append(phoneNumber.substring(8, Math.min(10, phoneNumber.length())));
-                    }
+                    StringBuilder formatted = getStringBuilder(phoneNumber);
 
                     phoneEditText.removeTextChangedListener(this);
                     phoneEditText.setText(formatted.toString());
                     phoneEditText.setSelection(formatted.length());
                     phoneEditText.addTextChangedListener(this);
                 }
+            }
+
+            @NonNull
+            private static StringBuilder getStringBuilder(String phoneNumber) {
+                StringBuilder formatted = new StringBuilder("+7 ");
+                formatted.append(phoneNumber.substring(0, Math.min(3, phoneNumber.length())));
+                if (phoneNumber.length() >= 4) {
+                    formatted.append(" ").append(phoneNumber.substring(3, Math.min(6, phoneNumber.length())));
+                }
+                if (phoneNumber.length() >= 7) {
+                    formatted.append(" ").append(phoneNumber.substring(6, Math.min(8, phoneNumber.length())));
+                }
+                if (phoneNumber.length() >= 9) {
+                    formatted.append(" ").append(phoneNumber.substring(8, Math.min(10, phoneNumber.length())));
+                }
+                return formatted;
             }
         });
     }
@@ -162,7 +168,9 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP, 0, 0);
                     toast.show();
-                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                     finish();
                 }))
                 .addOnFailureListener(e -> runOnUiThread(() -> {
