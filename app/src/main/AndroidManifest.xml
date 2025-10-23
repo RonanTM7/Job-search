@@ -32,6 +32,8 @@
             android:exported="false" />
         <activity android:name=".AppearanceActivity"
             android:exported="false" />
+        <activity android:name=".ForgotPasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

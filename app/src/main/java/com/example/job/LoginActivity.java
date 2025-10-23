@@ -50,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
 
         buttonLogin.setOnClickListener(v -> login());
         textViewRegister.setOnClickListener(v -> register());
+        findViewById(R.id.textViewForgotPassword).setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+        });
     }
     private void updateThemeIcon() {
         int currentNightMode = getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
