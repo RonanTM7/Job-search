@@ -16,6 +16,7 @@ import com.example.job.adapter.JobAdapter;
 import com.example.job.model.Job;
 import com.example.job.model.Vacancy;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,18 +62,19 @@ public class HomeFragment extends Fragment {
         db.collection("vacancies").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 jobList.clear();
-                for (Vacancy vacancy : task.getResult().toObjects(Vacancy.class)) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Vacancy vacancy = document.toObject(Vacancy.class);
                     // Конвертируем новую модель Vacancy в старую Job для адаптера
                     // Это временное решение, пока адаптер не будет обновлен
                     jobList.add(new Job(
-                            "id", // Здесь можно будет использовать ID документа из Firestore
+                            document.getId(), // Здесь можно будет использовать ID документа из Firestore
                             vacancy.getTitle(),
                             vacancy.getCompanyName(),
                             String.valueOf(vacancy.getSalary()),
                             vacancy.getCity(),
                             vacancy.getDescription(),
                             vacancy.getRequirements(),
-                            true, // Предполагаем, что работа удаленная
+                            "Удалённо".equals(vacancy.getJobFormat()), // Определяем, удаленная ли работа
                             vacancy.getWorkType()
                     ));
                 }
@@ -100,11 +102,11 @@ public class HomeFragment extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void filterJobsByCategory(String category) {
         filteredJobList.clear();
-        if (category.equals("Все")) {
+        if ("Все".equals(category)) {
             filteredJobList.addAll(jobList);
         } else {
             for (Job job : jobList) {
-                if (job.getCategory().equals(category)) {
+                if (job.getCategory() != null && job.getCategory().equals(category)) {
                     filteredJobList.add(job);
                 }
             }

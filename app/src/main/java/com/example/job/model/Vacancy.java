@@ -8,12 +8,13 @@ public class Vacancy {
     private String city;
     private long salary;
     private String workType;
+    private String jobFormat;
 
     // Default constructor is required for Firestore
     public Vacancy() {
     }
 
-    public Vacancy(String companyName, String title, String description, String requirements, String city, long salary, String workType) {
+    public Vacancy(String companyName, String title, String description, String requirements, String city, long salary, String workType, String jobFormat) {
         this.companyName = companyName;
         this.title = title;
         this.description = description;
@@ -21,6 +22,7 @@ public class Vacancy {
         this.city = city;
         this.salary = salary;
         this.workType = workType;
+        this.jobFormat = jobFormat;
     }
 
     public String getCompanyName() {
@@ -77,5 +79,13 @@ public class Vacancy {
 
     public void setWorkType(String workType) {
         this.workType = workType;
+    }
+
+    public String getJobFormat() {
+        return jobFormat;
+    }
+
+    public void setJobFormat(String jobFormat) {
+        this.jobFormat = jobFormat;
     }
 }
