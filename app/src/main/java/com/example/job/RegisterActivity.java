@@ -190,15 +190,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     // Data saved successfully, no need for UI operations here
                 })
-                .addOnSuccessListener(aVoid -> runOnUiThread(() -> {
-                    Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP, 0, 0);
-                    toast.show();
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }))
                 .addOnFailureListener(e -> runOnUiThread(() -> {
                     Toast toast = Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP, 0, 0);
