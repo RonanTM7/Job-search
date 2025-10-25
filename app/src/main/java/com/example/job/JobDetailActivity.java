@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+import com.example.job.utils.FormatUtils;
 
 public class JobDetailActivity extends AppCompatActivity {
     private ActivityJobDetailBinding binding;
@@ -91,7 +92,7 @@ public class JobDetailActivity extends AppCompatActivity {
     private void displayJobDetails(Job job) {
         // Заполняем данные о вакансии
         binding.jobTitle.setText(job.getTitle());
-        binding.salaryText.setText(job.getSalary());
+        binding.salaryText.setText(FormatUtils.formatSalary(job.getSalary()));
         binding.companyName.setText(job.getCompany());
         binding.locationText.setText(job.getLocation());
         binding.descriptionText.setText(job.getDescription());

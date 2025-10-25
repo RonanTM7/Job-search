@@ -76,6 +76,11 @@ public class ResumeActivity extends AppCompatActivity {
 
     private void saveResume() {
         String resumeText = resumeEditText.getText().toString().trim();
+        if (resumeText.isEmpty()) {
+            Toast.makeText(this, "Поле должно быть заполнено", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Map<String, Object> resumeData = new HashMap<>();
         resumeData.put("content", resumeText);
         resumeData.put("userId", currentUser.getUid());

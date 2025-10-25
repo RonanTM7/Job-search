@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.job.R;
 import com.example.job.model.Job;
+import com.example.job.utils.FormatUtils;
 
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         public void bind(final Job job, final OnItemClickListener listener) {
             jobTitle.setText(job.getTitle());
             companyName.setText(job.getCompany());
-            jobSalary.setText(job.getSalary());
+            jobSalary.setText(FormatUtils.formatSalary(job.getSalary()));
             jobLocation.setText(job.getLocation());
 
             if (job.isRemote()) {
