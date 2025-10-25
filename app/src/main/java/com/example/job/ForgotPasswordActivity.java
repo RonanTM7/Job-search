@@ -4,15 +4,19 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText emailEditText;
     private Button sendResetLinkButton;
+    private TextView errorMessageTextView;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +28,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         emailEditText = findViewById(R.id.et_email);
         sendResetLinkButton = findViewById(R.id.btn_send_reset_link);
+        errorMessageTextView = findViewById(R.id.tv_error_message);
         ImageButton backButton = findViewById(R.id.btn_back);
 
         backButton.setOnClickListener(v -> onBackPressed());
@@ -40,14 +46,25 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        mAuth.sendPasswordResetEmail(email)
+        db.collection("users")
+                .whereEqualTo("email", email)
+                .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(ForgotPasswordActivity.this, "Ссылка для сброса пароля отправлена на вашу почту", Toast.LENGTH_SHORT).show();
-                        sendResetLinkButton.setText("Отправлено");
-                        sendResetLinkButton.setEnabled(false);
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        errorMessageTextView.setVisibility(TextView.GONE);
+                        mAuth.sendPasswordResetEmail(email)
+                                .addOnCompleteListener(resetTask -> {
+                                    if (resetTask.isSuccessful()) {
+                                        Toast.makeText(ForgotPasswordActivity.this, "Ссылка для сброса пароля отправлена на вашу почту", Toast.LENGTH_SHORT).show();
+                                        sendResetLinkButton.setText("Отправлено");
+                                        sendResetLinkButton.setEnabled(false);
+                                    } else {
+                                        Toast.makeText(ForgotPasswordActivity.this, "Ошибка: " + resetTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
-                        Toast.makeText(ForgotPasswordActivity.this, "Ошибка: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        errorMessageTextView.setText("такого пользователя не существует");
+                        errorMessageTextView.setVisibility(TextView.VISIBLE);
                     }
                 });
     }
