@@ -39,10 +39,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void sendPasswordResetEmail() {
+        sendResetLinkButton.setEnabled(false);
+        sendResetLinkButton.setText("Отправка...");
         String email = emailEditText.getText().toString().trim();
 
         if (email.isEmpty()) {
             emailEditText.setError("Введите почту");
+            sendResetLinkButton.setEnabled(true);
+            sendResetLinkButton.setText("Сменить пароль");
             return;
         }
 
@@ -56,15 +60,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 .addOnCompleteListener(resetTask -> {
                                     if (resetTask.isSuccessful()) {
                                         Toast.makeText(ForgotPasswordActivity.this, "Ссылка для сброса пароля отправлена на вашу почту", Toast.LENGTH_SHORT).show();
-                                        sendResetLinkButton.setText("Отправлено");
-                                        sendResetLinkButton.setEnabled(false);
+                                        finish();
                                     } else {
                                         Toast.makeText(ForgotPasswordActivity.this, "Ошибка: " + resetTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        sendResetLinkButton.setEnabled(true);
+                                        sendResetLinkButton.setText("Сменить пароль");
                                     }
                                 });
                     } else {
                         errorMessageTextView.setText("такого пользователя не существует");
                         errorMessageTextView.setVisibility(TextView.VISIBLE);
+                        sendResetLinkButton.setEnabled(true);
+                        sendResetLinkButton.setText("Сменить пароль");
                     }
                 });
     }
