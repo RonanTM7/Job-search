@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     favoriteJobIds.add(document.getString("vacancyId"));
                 }
-                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+                jobAdapter.updateFavorites(favoriteJobIds);
             }
             loadDataFromFirestore();
         });
@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
                 }
                 filteredJobList.clear();
                 filteredJobList.addAll(jobList);
-                jobAdapter.notifyDataSetChanged();
+                jobAdapter.updateData(filteredJobList);
                 setupCategories();
             }
         });
@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
         if (favoriteJobIds.contains(vacancyId)) {
             db.collection("favorites").document(favoriteId).delete().addOnSuccessListener(aVoid -> {
                 favoriteJobIds.remove(vacancyId);
-                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+                jobAdapter.updateFavorites(favoriteJobIds);
             });
         } else {
             Map<String, Object> favorite = new HashMap<>();
@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
             favorite.put("vacancyId", vacancyId);
             db.collection("favorites").document(favoriteId).set(favorite).addOnSuccessListener(aVoid -> {
                 favoriteJobIds.add(vacancyId);
-                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+                jobAdapter.updateFavorites(favoriteJobIds);
             });
         }
     }

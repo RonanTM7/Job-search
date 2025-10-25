@@ -17,10 +17,12 @@ import com.example.job.utils.FormatUtils;
 import java.util.List;
 import java.util.Set;
 
+import java.util.ArrayList;
+
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     // Adapter for the list of jobs, handles favorite clicks.
-    private final List<Job> jobList;
+    private final List<Job> jobList = new ArrayList<>();
     private final OnItemClickListener onItemClickListener;
     private final OnFavoriteClickListener onFavoriteClickListener;
     private Set<String> favoriteJobIds;
@@ -33,8 +35,9 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         void onFavoriteClick(Job job);
     }
 
-    public JobAdapter(List<Job> jobList, Set<String> favoriteJobIds, OnItemClickListener onItemClickListener, OnFavoriteClickListener onFavoriteClickListener) {
-        this.jobList = jobList;
+    @SuppressLint("NotifyDataSetChanged")
+    public JobAdapter(List<Job> initialJobs, Set<String> favoriteJobIds, OnItemClickListener onItemClickListener, OnFavoriteClickListener onFavoriteClickListener) {
+        this.jobList.addAll(initialJobs);
         this.favoriteJobIds = favoriteJobIds;
         this.onItemClickListener = onItemClickListener;
         this.onFavoriteClickListener = onFavoriteClickListener;
@@ -67,8 +70,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyDataSetChanged();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setFavoriteJobIds(Set<String> newFavoriteJobIds) {
+    public void updateFavorites(Set<String> newFavoriteJobIds) {
         this.favoriteJobIds = newFavoriteJobIds;
         notifyDataSetChanged();
     }

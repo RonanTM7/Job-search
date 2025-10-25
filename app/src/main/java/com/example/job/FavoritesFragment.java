@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.job.adapter.JobAdapter;
 import com.example.job.databinding.FragmentFavoritesBinding;
 import com.example.job.model.Job;
+import com.example.job.model.Vacancy;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -23,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FavoritesFragment extends Fragment implements JobAdapter.OnFavoriteClickListener {
-//dsda//
+    //dsda//
     private FragmentFavoritesBinding binding;
     private JobAdapter jobAdapter;
     private FirebaseFirestore db;
@@ -75,12 +77,22 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
     }
 
     private void fetchJobsByIds(List<String> jobIds) {
-        db.collection("vacancies").whereIn("id", jobIds).get().addOnCompleteListener(task -> {
+        db.collection("vacancies").whereIn(FieldPath.documentId(), jobIds).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 favoriteJobs.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Job job = document.toObject(Job.class);
-                    job.setId(document.getId());
+                    Vacancy vacancy = document.toObject(Vacancy.class);
+                    Job job = new Job(
+                            document.getId(),
+                            vacancy.getTitle(),
+                            vacancy.getCompanyName(),
+                            String.valueOf(vacancy.getSalary()),
+                            vacancy.getCity(),
+                            vacancy.getDescription(),
+                            vacancy.getRequirements(),
+                            "Удалённо".equals(vacancy.getJobFormat()),
+                            vacancy.getWorkType()
+                    );
                     favoriteJobs.add(job);
                 }
                 jobAdapter.updateData(favoriteJobs);
@@ -98,9 +110,9 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
         if (favoriteJobIds.contains(vacancyId)) {
             db.collection("favorites").document(favoriteId).delete().addOnSuccessListener(aVoid -> {
                 favoriteJobIds.remove(vacancyId);
-                favoriteJobs = favoriteJobs.stream().filter(j -> !j.getId().equals(vacancyId)).collect(Collectors.toList());
+                favoriteJobs.removeIf(j -> j.getId().equals(vacancyId));
                 jobAdapter.updateData(favoriteJobs);
-                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+                jobAdapter.updateFavorites(favoriteJobIds);
             });
         }
     }
