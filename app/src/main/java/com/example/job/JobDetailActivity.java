@@ -1,6 +1,5 @@
 package com.example.job;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;

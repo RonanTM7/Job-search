@@ -14,7 +14,7 @@
         android:padding="8dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:contentDescription="Back" />
+        android:contentDescription="@string/back" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -32,7 +32,7 @@
         android:id="@+id/btn_light_theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Светлая тема"
+        android:text="@string/white_theme"
         android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"
         android:layout_below="@id/tv_title"

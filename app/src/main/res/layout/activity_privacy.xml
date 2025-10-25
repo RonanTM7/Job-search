@@ -20,7 +20,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Confidentiality"
+        android:text="@string/confidentialiti"
         android:textSize="24sp"
         android:textColor="?attr/textColor"
         android:layout_centerHorizontal="true"
@@ -61,7 +61,7 @@
         android:layout_below="@id/tv_email"
         android:layout_marginTop="16dp"
         android:backgroundTint="?attr/settings_button_color"
-        android:text="@string/re_change_password"
+        android:text="@string/re_сhange_password"
         android:textColor="?attr/textColor" />
 
 </RelativeLayout>

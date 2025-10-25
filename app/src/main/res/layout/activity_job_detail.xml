@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_back"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Назад"
+            android:contentDescription="@string/back"
             app:tint="@color/primary_blue"
             android:layout_marginBottom="16dp"/>
 
@@ -47,7 +47,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Android Developer"
+                        android:text="@string/work_type"
                         android:textColor="@color/text_primary"
                         android:textSize="22sp"
                         android:textStyle="bold" />
@@ -56,7 +56,7 @@
                         android:id="@+id/salary_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/_150_000"
+                        android:text="@string/money"
                         android:textColor="@color/primary_green"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -68,7 +68,7 @@
                     android:id="@+id/company_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/yandex"
+                    android:text="@string/kompany"
                     android:textColor="@color/text_secondary"
                     android:textSize="16sp"
                     android:layout_marginTop="4dp" />
@@ -84,17 +84,17 @@
                         android:id="@+id/location_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/moskow"
+                        android:text="@string/sity"
                         android:textColor="@color/text_secondary"
                         android:textSize="14sp"
-                        android:drawableStart="@drawable/ic_location"
-                        android:drawablePadding="4dp" />
+                        android:drawablePadding="4dp"
+                        app:drawableStartCompat="@drawable/ic_location" />
 
                     <TextView
                         android:id="@+id/remote_badge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/remote_work"
+                        android:text="@string/kompany"
                         android:textColor="@color/primary_blue"
                         android:textSize="13sp"
                         android:background="@drawable/ios_tag_background"
@@ -115,7 +115,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Описание"
+                    android:text="@string/description"
                     android:textColor="@color/text_primary"
                     android:textSize="17sp"
                     android:textStyle="bold"
@@ -125,7 +125,7 @@
                     android:id="@+id/description_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Полное описание вакансии..."
+                    android:text="@string/full_description"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:layout_marginTop="8dp"
@@ -135,7 +135,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Требования"
+                    android:text="@string/requirements"
                     android:textColor="@color/text_primary"
                     android:textSize="17sp"
                     android:textStyle="bold"
@@ -145,7 +145,7 @@
                     android:id="@+id/requirements_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Требования к кандидату..."
+                    android:text="@string/full_requirements"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:layout_marginTop="8dp"
@@ -157,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="24dp"
-                    android:text="Отправить резюме"
+                    android:text="@string/send_rezume"
                     android:textSize="16sp"
                     app:cornerRadius="12dp"
                     app:backgroundTint="@color/primary_blue"

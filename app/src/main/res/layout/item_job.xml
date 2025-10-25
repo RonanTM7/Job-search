@@ -26,7 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/android_developer"
+                android:text="@string/work_type"
                 android:textColor="@color/text_primary"
                 android:textSize="17sp"
                 android:textStyle="bold" />
@@ -35,7 +35,7 @@
                 android:id="@+id/job_salary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_150_000"
+                android:text="@string/money"
                 android:textColor="@color/primary_green"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -55,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/yandex"
+                android:text="@string/kompany"
                 android:textColor="@color/text_secondary"
                 android:textSize="15sp" />
 
@@ -63,7 +63,7 @@
                 android:id="@+id/job_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/moskow"
+                android:text="@string/sity"
                 android:textColor="@color/text_tertiary"
                 android:textSize="14sp" />
 

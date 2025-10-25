@@ -28,7 +28,7 @@
         android:id="@+id/btn_privacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/konfidentialiti"
+        android:text="@string/confidentialiti"
         android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"
         android:layout_marginBottom="8dp"/>

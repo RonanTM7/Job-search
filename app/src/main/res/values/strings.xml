@@ -1,42 +1,92 @@
 <resources>
-    <string name="app_name">Job Rocket</string>
-    <string name="job_title">Android Developer</string>
-    <string name="company_name">Яндекс</string>
-    <string name="apply_button">Откликнуться на вакансию</string>
-    <string name="job_title_android">Android Developer</string>
-    <string name="company_yandex">Яндекс</string>
-    <string name="salary_android">150 000 ₽</string>
-    <string name="location_moscow">Москва</string>
-    <string name="remote_work">Удалённо</string>
-    <string name="company_logo_desc">Логотип компании</string>
-    <string name="favorite_icon_desc">Добавить в избранное</string>
-    <string name="registration">Нет аккаунта? Зарегистрироваться</string>
-    <string name="login_to_job_rocket">Вход в Job Rocket</string>
-    <string name="password">Пароль</string>
-    <string name="log_in">Войти</string>
-    <string name="Email">Email</string>
+    <!-- Регистрация -->
+    <string name="register">Регистрация</string>
+    <string name="user_name">Имя пользователя</string>
+    <string name="mobile_number">Номер телефона</string>
+    <string name="email">Почта</string>
+    <string name="registr">Зарегистрироваться</string>
+    <string name="already_account">Уже есть аккаунт? Войти</string>
 
-    <string name="app_version_number">Reliase 1</string>
-    <string name="settings">Настройки</string>
-    <string name="dark_theme">Тёмная тема</string>
-    <string name="app_version">Версия приложения</string>
-    <string name="back">Back</string>
-    <string name="Confidentiality">Конфиденциальность</string>
-    <string name="_7_999_999_99_99">+7 (999) 999-99-99</string>
-    <string name="email_example_com">email@example.com</string>
-    <string name="re_change_password">Сменить пароль</string>
-    <string name="todo">TODO</string>
+    <!-- Восстановление пароля -->
+    <string name="password_recovery">Восстановление пароля</string>
+    <string name="password_recovery_message">Введите почту привязанную к вашему аккаунту, мы вам пришлем ссылку для смены пароля</string>
+
+    <!-- Вход -->
+    <string name="login_to_job_rocket">Вход в Job Rocket</string>
+    <string name="log_in">Войти</string>
+    <string name="registration">Нет аккаунта? Зарегистрироваться</string>
+    <string name="forgot_your_password">Забыли пароль?</string>
+
+    <!-- навигационная панель -->
     <string name="main">Главная</string>
-    <string name="android_developer">Android Developer</string>
-    <string name="_150_000">150 000 ₽</string>
-    <string name="yandex">Яндекс</string>
-    <string name="moskow">Москва</string>
-    <string name="working_remotely">Удалённо</string>
+
+    <!-- Страница вакансий -->
+    <string name="kategories">Категории</string>
+
+    <!-- Макет вакансий -->
+    <string name="work_type">Тип работы</string>
+    <string name="money">зп</string>
+    <string name="kompany">компания</string>
+    <string name="sity">город</string>
+    <string name="working_remotely">Удалённо </string>
+    <string name="description">Описание</string>
+    <string name="full_description">Полное описание вакансии...</string>
+    <string name="requirements">Требования</string>
+    <string name="full_requirements">Требования к кандидату...</string>
+    <string name="send_rezume">Отправить резюме</string>
+
+    <!-- Страница избранные -->
+    <string name="favorites">Избранное</string>
+    <string name="favorite_icon_desc">Добавить в избранное</string>
+
+    <!-- Найстройки -->
+    <string name="settings">Настройки</string>
     <string name="my_profile">Мой профиль</string>
-    <string name="konfidentialiti">Конфиденциальность</string>
+    <string name="confidentialiti">Конфиденциальность</string>
     <string name="zemes">Оформление</string>
     <string name="info">О приложении</string>
-    <string name="kategories">Категории</string>
+
+    <!-- Мой профиль -->
+    <string name="Username">Username</string>
+    <string name="log_out">Выйти</string>
+
+    <!-- Мое резюме-->
+    <string name="change_you_resume">Напишите здесь ваше резюме...</string>
+    <string name="saved">Сохранить</string>
+
+    <!-- выход-->
+    <string name="out">Выход</string>
+    <string name="realy_out">Вы уверены, что хотите выйти?</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+
+    <!-- Конфиденциальность -->
+    <string name="email_example_com">email@example.com</string>
+
+    <!-- Оформление -->
+    <string name="white_theme">Светлая тема</string>
+    <string name="dark_theme">Тёмная тема</string>
+
+    <!-- О приложении -->
+    <string name="app_version_number">Reliase 1.1</string>
+    <string name="app_version">Версия приложения</string>
+
+    <!-- Общие -->
+    <string name="_7_999_999_99_99">+7 (999) 999-99-99</string>
+    <string name="back">Back</string>
+    <string name="Email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="re_сhange_password">Сменить пароль</string>
+    <string name="my_resume">Мое резюме</string>
     <string name="job_openings">Вакансии</string>
-    <string name="favorites">Избранное</string>
+
+    <!-- Диалогове окно -->
+    <string name="reshange_data">Изменить данные</string>
+    <string name="new_data">Новые данные</string>
+    <string name="disagree">Отмена</string>
+    <string name="aple">Сохранить</string>
+
+    <!-- не распределенные -->
+    <string name="app_name">Job Rocket</string>
+    <string name="todo">TODO</string>
 </resources>

@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText emailEditText;
@@ -62,7 +64,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                         Toast.makeText(ForgotPasswordActivity.this, "Ссылка для сброса пароля отправлена на вашу почту", Toast.LENGTH_SHORT).show();
                                         finish();
                                     } else {
-                                        Toast.makeText(ForgotPasswordActivity.this, "Ошибка: " + resetTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ForgotPasswordActivity.this, "Ошибка: " + Objects.requireNonNull(resetTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                                         sendResetLinkButton.setEnabled(true);
                                         sendResetLinkButton.setText("Сменить пароль");
                                     }

@@ -32,7 +32,7 @@
         android:id="@+id/tv_app_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Версия 1.5.5"
+        android:text="@string/app_version"
         android:background="?attr/settings_button_color"
         android:padding="16dp"
         android:layout_below="@id/tv_title"

@@ -20,7 +20,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Мое резюме"
+        android:text="@string/my_resume"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="?attr/textColor"
@@ -39,7 +39,7 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/edit_text_me"
         android:gravity="top"
-        android:hint="Напишите здесь ваше резюме..."
+        android:hint="@string/change_you_resume"
         android:inputType="textMultiLine"
         android:padding="16dp"
         android:textColor="?attr/textColor"
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:backgroundTint="?attr/settings_button_color"
-        android:text="Сохранить"
+        android:text="@string/saved"
         android:textColor="?attr/textColor" />
 
 </RelativeLayout>

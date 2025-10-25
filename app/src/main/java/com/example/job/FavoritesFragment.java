@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class FavoritesFragment extends Fragment implements JobAdapter.OnFavoriteClickListener {
     //dsda//
@@ -30,8 +29,8 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
     private JobAdapter jobAdapter;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private List<Job> favoriteJobs = new ArrayList<>();
-    private Set<String> favoriteJobIds = new HashSet<>();
+    private final List<Job> favoriteJobs = new ArrayList<>();
+    private final Set<String> favoriteJobIds = new HashSet<>();
 
 
     @Nullable
@@ -58,6 +57,7 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
     }
 
     private void loadFavoriteJobs() {
+        assert mAuth.getCurrentUser() != null;
         String userId = mAuth.getCurrentUser().getUid();
         db.collection("favorites").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -103,6 +103,7 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
 
     @Override
     public void onFavoriteClick(Job job) {
+        assert mAuth.getCurrentUser() != null;
         String userId = mAuth.getCurrentUser().getUid();
         String vacancyId = job.getId();
         String favoriteId = userId + "_" + vacancyId;

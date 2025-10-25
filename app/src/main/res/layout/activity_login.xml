@@ -88,7 +88,7 @@
         android:id="@+id/textViewForgotPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Забыли пароль?"
+        android:text="@string/forgot_your_password"
         android:textColor="@color/primary_blue"
         android:textSize="15sp"
         android:gravity="center"

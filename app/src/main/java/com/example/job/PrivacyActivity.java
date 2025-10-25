@@ -66,7 +66,7 @@ public class PrivacyActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_edit_data);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
 
         TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
         EditText editTextData = dialog.findViewById(R.id.edit_text_data);
@@ -104,7 +104,7 @@ public class PrivacyActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_edit_data);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
 
         TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
         EditText editTextData = dialog.findViewById(R.id.edit_text_data);

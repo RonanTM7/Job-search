@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class MyProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView, phoneTextView;
@@ -48,7 +50,7 @@ public class MyProfileActivity extends AppCompatActivity {
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.dialog_logout);
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
 
             Button btnNo = dialog.findViewById(R.id.btn_no);
             Button btnYes = dialog.findViewById(R.id.btn_yes);

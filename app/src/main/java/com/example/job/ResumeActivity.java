@@ -3,7 +3,6 @@ package com.example.job;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,7 +19,6 @@ public class ResumeActivity extends AppCompatActivity {
 
     private EditText resumeEditText;
     private Button saveResumeButton;
-    private FirebaseFirestore db;
     private FirebaseUser currentUser;
     private DocumentReference resumeRef;
 
@@ -33,7 +31,7 @@ public class ResumeActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         resumeEditText = findViewById(R.id.et_resume);
         saveResumeButton = findViewById(R.id.btn_save_resume);
