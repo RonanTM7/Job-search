@@ -81,8 +81,15 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        if (mAuth.getCurrentUser().isEmailVerified()) {
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
+                        } else {
+                            errorTextView.setText("Пожалуйста, подтвердите вашу почту");
+                            errorTextView.setVisibility(TextView.VISIBLE);
+                            buttonLogin.setEnabled(true);
+                            buttonLogin.setText("Войти");
+                        }
                     } else {
                         errorTextView.setText("Неверный логин или пароль");
                         errorTextView.setVisibility(TextView.VISIBLE);

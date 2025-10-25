@@ -18,6 +18,7 @@
         app:itemIconTint="@drawable/bottom_nav_colors"
         app:itemTextColor="@drawable/bottom_nav_colors"
         app:backgroundTint="?attr/backgroundColor"
-        app:elevation="8dp" />
+        app:elevation="8dp"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

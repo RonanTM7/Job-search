@@ -41,24 +41,43 @@
         android:clickable="true"
         android:focusable="true" />
 
-    <TextView
-        android:id="@+id/tv_email"
+    <RelativeLayout
+        android:id="@+id/email_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/email_example_com"
-        android:textColor="@color/phone_number_color"
-        android:background="@drawable/phone_number_background"
-        android:padding="16dp"
         android:layout_below="@id/tv_phone_number"
         android:layout_marginTop="8dp"
+        android:background="@drawable/phone_number_background"
+        android:padding="16dp"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email_example_com"
+            android:textColor="@color/phone_number_color"
+            android:layout_centerVertical="true"/>
+
+        <ImageButton
+            android:id="@+id/btn_refresh_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_refresh"
+            android:background="?android:attr/selectableItemBackground"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:contentDescription="@string/refresh" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_change_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_email"
+        android:layout_below="@id/email_container"
         android:layout_marginTop="16dp"
         android:backgroundTint="?attr/settings_button_color"
         android:text="@string/re_сhange_password"

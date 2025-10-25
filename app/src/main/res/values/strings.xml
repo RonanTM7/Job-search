@@ -62,6 +62,7 @@
 
     <!-- Конфиденциальность -->
     <string name="email_example_com">email@example.com</string>
+    <string name="refresh">Обновить</string>
 
     <!-- Оформление -->
     <string name="white_theme">Светлая тема</string>

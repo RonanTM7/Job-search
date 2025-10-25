@@ -152,11 +152,12 @@ public class RegisterActivity extends AppCompatActivity {
                                             if (authTask.isSuccessful()) {
                                                 FirebaseUser user = mAuth.getCurrentUser();
                                                 if (user != null) {
+                                                    user.sendEmailVerification();
                                                     saveUserToFirestore(user.getUid(), username, phone, email);
 
                                                     // Redirect immediately after successful auth
                                                     runOnUiThread(() -> {
-                                                        Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно", Toast.LENGTH_SHORT);
+                                                        Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно. Пожалуйста, подтвердите вашу почту.", Toast.LENGTH_SHORT);
                                                         toast.setGravity(Gravity.TOP, 0, 0);
                                                         toast.show();
                                                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
