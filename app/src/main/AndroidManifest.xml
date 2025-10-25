@@ -37,6 +37,9 @@
         <activity android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".ResumeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

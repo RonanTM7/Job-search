@@ -36,6 +36,12 @@ public class MyProfileActivity extends AppCompatActivity {
         phoneTextView = findViewById(R.id.tv_phone_number);
         ImageButton backButton = findViewById(R.id.btn_back);
 
+        Button myResumeButton = findViewById(R.id.btn_my_resume);
+
+        myResumeButton.setOnClickListener(v -> {
+            startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
+        });
+
         loadUserProfile();
 
         findViewById(R.id.btn_logout).setOnClickListener(v -> {

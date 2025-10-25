@@ -38,7 +38,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
         binding.applyButton.setOnClickListener(v -> {
             if (job != null && currentUser != null) {
-                applyToJob(job);
+                checkResumeAndApply(job);
             }
         });
 
@@ -56,6 +56,15 @@ public class JobDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void checkResumeAndApply(Job job) {
+        db.collection("resumes").document(currentUser.getUid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().exists()) {
+                applyToJob(job);
+            } else {
+                Toast.makeText(this, "Сначала создайте резюме", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private void applyToJob(Job job) {
         String applicationId = currentUser.getUid() + "_" + job.getId();
         Map<String, Object> application = new HashMap<>();
