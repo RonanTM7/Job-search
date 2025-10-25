@@ -15,12 +15,17 @@ import com.example.job.adapter.CategoryAdapter;
 import com.example.job.adapter.JobAdapter;
 import com.example.job.model.Job;
 import com.example.job.model.Vacancy;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClickListener {
 
     private RecyclerView jobsRecyclerView;
     private RecyclerView categoriesRecyclerView;
@@ -28,7 +33,9 @@ public class HomeFragment extends Fragment {
     private final List<Job> jobList = new ArrayList<>();
     private final List<Job> filteredJobList = new ArrayList<>();
     private final List<String> categories = new ArrayList<>();
+    private final Set<String> favoriteJobIds = new HashSet<>();
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     @Nullable
     @Override
@@ -43,16 +50,27 @@ public class HomeFragment extends Fragment {
         jobsRecyclerView = view.findViewById(R.id.jobsRecyclerView);
         categoriesRecyclerView = view.findViewById(R.id.categoriesRecyclerView);
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         setupRecyclerView();
         setupCategoryRecyclerView();
-        // Этот метод теперь просто загружает вакансии из Firestore
-        loadDataFromFirestore();
+        loadFavoriteJobIds();
     }
 
-    /**
-     * Загружает данные о вакансиях из Firestore.
-     */
+    private void loadFavoriteJobIds() {
+        String userId = mAuth.getCurrentUser().getUid();
+        db.collection("favorites").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                favoriteJobIds.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    favoriteJobIds.add(document.getString("vacancyId"));
+                }
+                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+            }
+            loadDataFromFirestore();
+        });
+    }
+
     private void loadDataFromFirestore() {
         loadVacancies();
     }
@@ -64,31 +82,28 @@ public class HomeFragment extends Fragment {
                 jobList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Vacancy vacancy = document.toObject(Vacancy.class);
-                    // Конвертируем новую модель Vacancy в старую Job для адаптера
-                    // Это временное решение, пока адаптер не будет обновлен
                     jobList.add(new Job(
-                            document.getId(), // Здесь можно будет использовать ID документа из Firestore
+                            document.getId(),
                             vacancy.getTitle(),
                             vacancy.getCompanyName(),
                             String.valueOf(vacancy.getSalary()),
                             vacancy.getCity(),
                             vacancy.getDescription(),
                             vacancy.getRequirements(),
-                            "Удалённо".equals(vacancy.getJobFormat()), // Определяем, удаленная ли работа
+                            "Удалённо".equals(vacancy.getJobFormat()),
                             vacancy.getWorkType()
                     ));
                 }
                 filteredJobList.clear();
                 filteredJobList.addAll(jobList);
                 jobAdapter.notifyDataSetChanged();
-                // Обновляем категории после загрузки вакансий
                 setupCategories();
             }
         });
     }
 
     private void setupRecyclerView() {
-        jobAdapter = new JobAdapter(filteredJobList, this::openJobDetails);
+        jobAdapter = new JobAdapter(filteredJobList, favoriteJobIds, this::openJobDetails, this);
         jobsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         jobsRecyclerView.setAdapter(jobAdapter);
     }
@@ -115,14 +130,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupCategories() {
-        categories.clear(); // Очищаем старые категории
+        categories.clear();
         categories.add("Все");
         for (Job job : jobList) {
             if (!categories.contains(job.getCategory())) {
                 categories.add(job.getCategory());
             }
         }
-        // Обновляем адаптер категорий
         if (categoriesRecyclerView.getAdapter() != null) {
             categoriesRecyclerView.getAdapter().notifyDataSetChanged();
         }
@@ -133,5 +147,27 @@ public class HomeFragment extends Fragment {
         intent.putExtra("job", job);
         startActivity(intent);
         requireActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void onFavoriteClick(Job job) {
+        String userId = mAuth.getCurrentUser().getUid();
+        String vacancyId = job.getId();
+        String favoriteId = userId + "_" + vacancyId;
+
+        if (favoriteJobIds.contains(vacancyId)) {
+            db.collection("favorites").document(favoriteId).delete().addOnSuccessListener(aVoid -> {
+                favoriteJobIds.remove(vacancyId);
+                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+            });
+        } else {
+            Map<String, Object> favorite = new HashMap<>();
+            favorite.put("userId", userId);
+            favorite.put("vacancyId", vacancyId);
+            db.collection("favorites").document(favoriteId).set(favorite).addOnSuccessListener(aVoid -> {
+                favoriteJobIds.add(vacancyId);
+                jobAdapter.setFavoriteJobIds(favoriteJobIds);
+            });
+        }
     }
 }

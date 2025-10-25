@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,19 +15,29 @@ import com.example.job.model.Job;
 import com.example.job.utils.FormatUtils;
 
 import java.util.List;
+import java.util.Set;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
+    // Adapter for the list of jobs, handles favorite clicks.
     private final List<Job> jobList;
     private final OnItemClickListener onItemClickListener;
+    private final OnFavoriteClickListener onFavoriteClickListener;
+    private Set<String> favoriteJobIds;
 
     public interface OnItemClickListener {
         void onItemClick(Job job);
     }
 
-    public JobAdapter(List<Job> jobList, OnItemClickListener onItemClickListener) {
+    public interface OnFavoriteClickListener {
+        void onFavoriteClick(Job job);
+    }
+
+    public JobAdapter(List<Job> jobList, Set<String> favoriteJobIds, OnItemClickListener onItemClickListener, OnFavoriteClickListener onFavoriteClickListener) {
         this.jobList = jobList;
+        this.favoriteJobIds = favoriteJobIds;
         this.onItemClickListener = onItemClickListener;
+        this.onFavoriteClickListener = onFavoriteClickListener;
     }
 
     @NonNull
@@ -40,7 +51,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
         Job job = jobList.get(position);
-        holder.bind(job, onItemClickListener);
+        boolean isFavorite = favoriteJobIds.contains(job.getId());
+        holder.bind(job, isFavorite, onItemClickListener, onFavoriteClickListener);
     }
 
     @Override
@@ -55,12 +67,19 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFavoriteJobIds(Set<String> newFavoriteJobIds) {
+        this.favoriteJobIds = newFavoriteJobIds;
+        notifyDataSetChanged();
+    }
+
     public static class JobViewHolder extends RecyclerView.ViewHolder {
         private final TextView jobTitle;
         private final TextView companyName;
         private final TextView jobSalary;
         private final TextView jobLocation;
         private final TextView remoteBadge;
+        private final ImageButton favoriteButton;
 
         public JobViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,9 +88,10 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             jobSalary = itemView.findViewById(R.id.job_salary);
             jobLocation = itemView.findViewById(R.id.job_location);
             remoteBadge = itemView.findViewById(R.id.remote_badge);
+            favoriteButton = itemView.findViewById(R.id.favorite_button);
         }
 
-        public void bind(final Job job, final OnItemClickListener listener) {
+        public void bind(final Job job, final boolean isFavorite, final OnItemClickListener listener, final OnFavoriteClickListener favoriteListener) {
             jobTitle.setText(job.getTitle());
             companyName.setText(job.getCompany());
             jobSalary.setText(FormatUtils.formatSalary(job.getSalary()));
@@ -83,6 +103,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
                 remoteBadge.setVisibility(View.GONE);
             }
 
+            favoriteButton.setImageResource(isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
+            favoriteButton.setOnClickListener(v -> favoriteListener.onFavoriteClick(job));
             itemView.setOnClickListener(v -> listener.onItemClick(job));
         }
     }

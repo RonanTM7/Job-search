@@ -47,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container, new HomeFragment())
                         .commit();
                 return true;
+            } else if (itemId == R.id.nav_favorites) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new FavoritesFragment())
+                        .commit();
+                return true;
             } else if (itemId == R.id.nav_settings) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new SettingsFragment())
