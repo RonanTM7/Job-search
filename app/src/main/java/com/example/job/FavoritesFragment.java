@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 public class FavoritesFragment extends Fragment implements JobAdapter.OnFavoriteClickListener {
-    //dsda//
     private FragmentFavoritesBinding binding;
     private JobAdapter jobAdapter;
     private FirebaseFirestore db;
