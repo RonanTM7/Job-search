@@ -52,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container, new FavoritesFragment())
                         .commit();
                 return true;
+            } else if (itemId == R.id.nav_applications) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ApplicationsFragment())
+                        .commit();
+                return true;
             } else if (itemId == R.id.nav_settings) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new SettingsFragment())

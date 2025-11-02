@@ -19,6 +19,7 @@
 
     <!-- навигационная панель -->
     <string name="main">Главная</string>
+    <string name="my_applications">Мои отклики</string>
 
     <!-- Страница вакансий -->
     <string name="kategories">Категории</string>
