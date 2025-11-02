@@ -31,9 +31,9 @@
     <string name="sity">город</string>
     <string name="working_remotely">Удалённо </string>
     <string name="description">Описание</string>
-    <string name="full_description">Полное описание вакансии...</string>
+    <string name="full_description">Полное описание вакансии</string>
     <string name="requirements">Требования</string>
-    <string name="full_requirements">Требования к кандидату...</string>
+    <string name="full_requirements">Требования к кандидату</string>
     <string name="send_rezume">Отправить резюме</string>
 
     <!-- Страница избранные -->
@@ -52,7 +52,7 @@
     <string name="log_out">Выйти</string>
 
     <!-- Мое резюме-->
-    <string name="change_you_resume">Напишите здесь ваше резюме...</string>
+    <string name="change_you_resume">Напишите здесь ваше резюме</string>
     <string name="saved">Сохранить</string>
 
     <!-- выход-->
@@ -70,8 +70,11 @@
     <string name="dark_theme">Тёмная тема</string>
 
     <!-- О приложении -->
-    <string name="app_version_number">Reliase 1.1</string>
+    <string name="app_version_number">Reliase 1.2</string>
     <string name="app_version">Версия приложения</string>
+    <string name="beta_testers_title">Участники ЗБТ</string>
+    <string name="beta_testers_list">ggdayang\nOTBMadara\nzenite_tm\nslamy\n-vaibov\nkra_kota</string>
+
 
     <!-- Общие -->
     <string name="_7_999_999_99_99">+7 (999) 999-99-99</string>

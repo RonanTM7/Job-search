@@ -38,4 +38,25 @@
         android:layout_below="@id/tv_title"
         android:layout_marginTop="16dp"/>
 
+    <TextView
+        android:id="@+id/tv_beta_testers_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/beta_testers_title"
+        android:background="?attr/settings_button_color"
+        android:padding="16dp"
+        android:layout_below="@id/tv_app_version"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/tv_beta_testers_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/beta_testers_list"
+        android:background="?attr/settings_button_color"
+        android:padding="16dp"
+        android:layout_below="@id/tv_beta_testers_title"
+        android:layout_marginTop="1dp"/>
+
+
 </RelativeLayout>
