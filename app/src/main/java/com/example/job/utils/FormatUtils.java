@@ -24,7 +24,7 @@ public class FormatUtils {
 
             return formattedMin + " - " + formattedMax + " ₽";
         } catch (NumberFormatException e) {
-            return salary; // Return original if not a number
+            return salary;
         }
     }
 }

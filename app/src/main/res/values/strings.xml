@@ -9,7 +9,7 @@
 
     <!-- Восстановление пароля -->
     <string name="password_recovery">Восстановление пароля</string>
-    <string name="password_recovery_message">Введите почту привязанную к вашему аккаунту, мы вам пришлем ссылку для смены пароля</string>
+    <string name="password_recovery_message">Введите почту привязанную к вашему аккаунту, мы пришлем вам ссылку для смены пароля</string>
 
     <!-- Вход -->
     <string name="login_to_job_rocket">Вход в Job Rocket</string>

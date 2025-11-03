@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +29,6 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
     private FirebaseAuth mAuth;
     private final List<Job> favoriteJobs = new ArrayList<>();
     private final Set<String> favoriteJobIds = new HashSet<>();
-
 
     @Nullable
     @Override

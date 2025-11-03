@@ -89,7 +89,6 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void displayJobDetails(Job job) {
-        // Заполняем данные о вакансии
         binding.jobTitle.setText(job.getTitle());
         binding.salaryText.setText(FormatUtils.formatSalary(job.getSalary()));
         binding.companyName.setText(job.getCompany());
@@ -97,12 +96,10 @@ public class JobDetailActivity extends AppCompatActivity {
         binding.descriptionText.setText(job.getDescription());
         binding.requirementsText.setText(job.getRequirements());
 
-        // Показываем/скрываем бейдж "Удаленно"
         if (job.isRemote()) {
             binding.remoteBadge.setVisibility(android.view.View.VISIBLE);
         } else {
             binding.remoteBadge.setVisibility(android.view.View.GONE);
         }
     }
-
 }

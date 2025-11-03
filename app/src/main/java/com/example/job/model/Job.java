@@ -1,21 +1,18 @@
 package com.example.job.model;
 
-import com.example.job.R;
 import java.io.Serializable;
 
 public class Job implements Serializable {
     private String id;
-    private String title;
-    private String company;
-    private String salary;
-    private String location;
-    private String description;
-    private String requirements;
-    private boolean isRemote;
-    private int logoResId;
-    private String category;
+    private final String title;
+    private final String company;
+    private final String salary;
+    private final String location;
+    private final String description;
+    private final String requirements;
+    private final boolean isRemote;
+    private final String category;
 
-    public Job() {}
 
     public Job(String id, String title, String company, String salary, String location,
                String description, String requirements, boolean isRemote, String category) {
@@ -29,35 +26,23 @@ public class Job implements Serializable {
         this.isRemote = isRemote;
         this.category = category;
     }
-    public int getLogo() {
-        return R.drawable.ic_work; // верни дефолтную иконку
-    }
 
-    // Геттеры и сеттеры
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
     public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
 
     public String getCompany() { return company; }
-    public void setCompany(String company) { this.company = company; }
 
     public String getSalary() { return salary; }
-    public void setSalary(String salary) { this.salary = salary; }
 
     public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
 
     public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
 
     public String getRequirements() { return requirements; }
-    public void setRequirements(String requirements) { this.requirements = requirements; }
 
     public boolean isRemote() { return isRemote; }
-    public void setRemote(boolean remote) { isRemote = remote; }
     public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
 
 }

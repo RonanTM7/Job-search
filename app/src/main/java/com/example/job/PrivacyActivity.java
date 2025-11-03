@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.Objects;
 
 public class PrivacyActivity extends AppCompatActivity {
@@ -64,17 +63,14 @@ public class PrivacyActivity extends AppCompatActivity {
                         String newEmail = freshUser.getEmail();
                         String userId = freshUser.getUid();
 
-                        // Attempt to update Firestore, but don't rely on it for UI
                         db.collection("users").document(userId).update("email", newEmail)
                                 .addOnSuccessListener(aVoid -> {
-                                    // Success is optional, the UI is already updated by loadUserData
                                     Toast.makeText(PrivacyActivity.this, "Почта успешно обновлена.", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
-                                    // Log or handle the failure silently if needed
                                 });
 
-                        loadUserData(); // Reload UI from Auth
+                        loadUserData();
                         refreshEmailButton.setVisibility(ImageButton.GONE);
 
                     }
@@ -100,10 +96,8 @@ public class PrivacyActivity extends AppCompatActivity {
     private void loadUserData() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            // Set email directly from Auth - this is the source of truth
             emailTextView.setText(user.getEmail());
 
-            // Load other data like phone number from Firestore
             db.collection("users").document(user.getUid()).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {

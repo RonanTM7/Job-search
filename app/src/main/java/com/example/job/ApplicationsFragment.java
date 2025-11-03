@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +29,7 @@ public class ApplicationsFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private final List<Job> appliedJobs = new ArrayList<>();
-    private final Set<String> favoriteJobIds = new HashSet<>(); // Keep this to show correct favorite status
+    private final Set<String> favoriteJobIds = new HashSet<>();
 
     @Nullable
     @Override
@@ -50,7 +49,6 @@ public class ApplicationsFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        // Favorite click listener is null because we don't handle favorite clicks here.
         jobAdapter = new JobAdapter(appliedJobs, favoriteJobIds, this::openJobDetails, null);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(jobAdapter);
@@ -63,7 +61,6 @@ public class ApplicationsFragment extends Fragment {
         }
         String userId = mAuth.getCurrentUser().getUid();
 
-        // First, get the list of favorite job IDs to correctly display the favorite status icon
         db.collection("favorites").whereEqualTo("userId", userId).get().addOnCompleteListener(favoriteTask -> {
             if (favoriteTask.isSuccessful()) {
                 favoriteJobIds.clear();
@@ -72,7 +69,6 @@ public class ApplicationsFragment extends Fragment {
                 }
             }
 
-            // Now, get the list of applied job IDs
             db.collection("applications").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Set<String> appliedIds = new HashSet<>();
@@ -113,7 +109,7 @@ public class ApplicationsFragment extends Fragment {
                     appliedJobs.add(job);
                 }
                 jobAdapter.updateData(appliedJobs);
-                jobAdapter.updateFavorites(favoriteJobIds); // Update favorites status in adapter
+                jobAdapter.updateFavorites(favoriteJobIds);
             }
             binding.progressBar.setVisibility(View.GONE);
         });

@@ -64,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String phoneNumber = s.toString().replaceAll("\\D", "");
                 if (phoneNumber.length() > 1) {
-                    phoneNumber = phoneNumber.substring(1); // Remove the leading '7'
+                    phoneNumber = phoneNumber.substring(1);
                     StringBuilder formatted = new StringBuilder("+7 ");
                     formatted.append(phoneNumber.substring(0, Math.min(3, phoneNumber.length())));
                     if (phoneNumber.length() >= 4) {
@@ -155,7 +155,6 @@ public class RegisterActivity extends AppCompatActivity {
                                                     user.sendEmailVerification();
                                                     saveUserToFirestore(user.getUid(), username, phone, email);
 
-                                                    // Redirect immediately after successful auth
                                                     runOnUiThread(() -> {
                                                         Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно. Пожалуйста, подтвердите вашу почту.", Toast.LENGTH_SHORT);
                                                         toast.setGravity(Gravity.TOP, 0, 0);
@@ -189,7 +188,6 @@ public class RegisterActivity extends AppCompatActivity {
         db.collection("users").document(userId)
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
-                    // Data saved successfully, no need for UI operations here
                 })
                 .addOnFailureListener(e -> runOnUiThread(() -> {
                     Toast toast = Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT);

@@ -6,22 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.job.R;
 import com.example.job.model.Job;
 import com.example.job.utils.FormatUtils;
-
 import java.util.List;
 import java.util.Set;
-
 import java.util.ArrayList;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
-    // Adapter for the list of jobs, handles favorite clicks.
     private final List<Job> jobList = new ArrayList<>();
     private final OnItemClickListener onItemClickListener;
     private final OnFavoriteClickListener onFavoriteClickListener;
