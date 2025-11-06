@@ -115,6 +115,20 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEditText.setError("Введите корректный адрес электронной почты");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
+            return;
+        }
+
+        if (phone.length() != 16) {
+            phoneEditText.setError("Введите корректный номер телефона");
+            registerButton.setEnabled(true);
+            registerButton.setText("Зарегистрироваться");
+            return;
+        }
+
         if (TextUtils.isEmpty(password)) {
             passwordEditText.setError("Введите пароль");
             registerButton.setEnabled(true);

@@ -25,4 +25,9 @@
         <item name="cardElevation">0dp</item>
         <item name="cardBackgroundColor">@color/dark_card_background</item>
     </style>
+
+    <style name="LoginTextInput" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">@color/hint_text_color</item>
+        <item name="android:textColor">@color/dark_text_primary</item>
+    </style>
 </resources>

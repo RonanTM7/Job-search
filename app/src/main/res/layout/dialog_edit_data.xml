@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:hint="@string/new_data"
+        android:textColor="?attr/textColor"
         style="@style/LoginTextInput"/>
 
     <LinearLayout

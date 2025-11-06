@@ -70,10 +70,10 @@
     <string name="dark_theme">Тёмная тема</string>
 
     <!-- О приложении -->
-    <string name="app_version_number">Reliase 1.2</string>
+    <string name="app_version_number">Reliase 1.3</string>
     <string name="app_version">Версия приложения</string>
     <string name="beta_testers_title">Участники ЗБТ</string>
-    <string name="beta_testers_list">ggdayang\nOTBMadara\nzenite_tm\nslamy\n-vaibov\nkra_kota</string>
+    <string name="beta_testers_list">OTBMadara\nggdayang\nslamy\n-vaibov\nkra_kota\nzenite_tm\nSkyWaCkr</string>
 
 
     <!-- Общие -->

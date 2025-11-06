@@ -10,10 +10,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private TextView errorTextView;
     private ImageButton themeChangeButton;
     @Override
@@ -28,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
@@ -78,25 +81,34 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // вход
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        if (mAuth.getCurrentUser().isEmailVerified()) {
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
-                        } else {
-                            errorTextView.setText("Пожалуйста, подтвердите вашу почту");
-                            errorTextView.setVisibility(TextView.VISIBLE);
-                            buttonLogin.setEnabled(true);
-                            buttonLogin.setText("Войти");
-                        }
-                    } else {
-                        errorTextView.setText("Неверный логин или пароль");
-                        errorTextView.setVisibility(TextView.VISIBLE);
-                        buttonLogin.setEnabled(true);
-                        buttonLogin.setText("Войти");
-                    }
-                });
+        db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult().isEmpty()) {
+                errorTextView.setText("Пользователя с такой почтой не существует");
+                errorTextView.setVisibility(TextView.VISIBLE);
+                buttonLogin.setEnabled(true);
+                buttonLogin.setText("Войти");
+            } else {
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, authTask -> {
+                            if (authTask.isSuccessful()) {
+                                if (mAuth.getCurrentUser().isEmailVerified()) {
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    finish();
+                                } else {
+                                    errorTextView.setText("Пожалуйста, подтвердите вашу почту");
+                                    errorTextView.setVisibility(TextView.VISIBLE);
+                                    buttonLogin.setEnabled(true);
+                                    buttonLogin.setText("Войти");
+                                }
+                            } else {
+                                errorTextView.setText("Неверный логин или пароль");
+                                errorTextView.setVisibility(TextView.VISIBLE);
+                                buttonLogin.setEnabled(true);
+                                buttonLogin.setText("Войти");
+                            }
+                        });
+            }
+        });
     }
 
     private void register() {

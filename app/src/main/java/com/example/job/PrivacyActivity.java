@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import android.text.TextWatcher;
+import android.text.Editable;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -137,7 +139,7 @@ public class PrivacyActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             dialog.dismiss();
                             FirebaseUser freshUser = FirebaseAuth.getInstance().getCurrentUser();
-                            showNewValueDialog(field, freshUser);
+                            showNewValueDialog(field, freshUser, password);
                         } else {
                             Toast.makeText(PrivacyActivity.this, "Неверный пароль", Toast.LENGTH_SHORT).show();
                         }
@@ -146,7 +148,7 @@ public class PrivacyActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void showNewValueDialog(String field, FirebaseUser user) {
+    private void showNewValueDialog(String field, FirebaseUser user, String oldPassword) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_edit_data);
@@ -159,7 +161,45 @@ public class PrivacyActivity extends AppCompatActivity {
 
         dialogTitle.setText("Введите новое значение");
         if (field.equals("password")) {
-            editTextData.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            editTextData.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        } else if (field.equals("phone")) {
+            editTextData.setInputType(InputType.TYPE_CLASS_PHONE);
+            editTextData.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!s.toString().startsWith("+7")) {
+                        editTextData.setText("+7");
+                        editTextData.setSelection(editTextData.getText().length());
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String phoneNumber = s.toString().replaceAll("\\D", "");
+                    if (phoneNumber.length() > 1) {
+                        phoneNumber = phoneNumber.substring(1);
+                        StringBuilder formatted = new StringBuilder("+7 ");
+                        formatted.append(phoneNumber.substring(0, Math.min(3, phoneNumber.length())));
+                        if (phoneNumber.length() >= 4) {
+                            formatted.append(" ").append(phoneNumber.substring(3, Math.min(6, phoneNumber.length())));
+                        }
+                        if (phoneNumber.length() >= 7) {
+                            formatted.append(" ").append(phoneNumber.substring(6, Math.min(8, phoneNumber.length())));
+                        }
+                        if (phoneNumber.length() >= 9) {
+                            formatted.append(" ").append(phoneNumber.substring(8, Math.min(10, phoneNumber.length())));
+                        }
+
+                        editTextData.removeTextChangedListener(this);
+                        editTextData.setText(formatted.toString());
+                        editTextData.setSelection(formatted.length());
+                        editTextData.addTextChangedListener(this);
+                    }
+                }
+            });
         }
         editTextData.setHint("Новое значение");
 
@@ -182,6 +222,18 @@ public class PrivacyActivity extends AppCompatActivity {
             }
 
             if (field.equals("password")) {
+                if (newValue.length() < 6) {
+                    Toast.makeText(this, "Пароль слишком короткий", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (newValue.length() > 16) {
+                    Toast.makeText(this, "Пароль слишком длинный", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (newValue.equals(oldPassword)) {
+                    Toast.makeText(this, "Пароль должен отличаться от установленного", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 user.updatePassword(newValue)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -192,6 +244,10 @@ public class PrivacyActivity extends AppCompatActivity {
                             }
                         });
             } else if (field.equals("email")) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newValue).matches()) {
+                    Toast.makeText(this, "Введите корректный адрес электронной почты", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 user.verifyBeforeUpdateEmail(newValue)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -206,7 +262,15 @@ public class PrivacyActivity extends AppCompatActivity {
                                 Toast.makeText(PrivacyActivity.this, "Ошибка: " + errorMessage, Toast.LENGTH_LONG).show();
                             }
                         });
-            } else {
+            } else if (field.equals("phone")) {
+                if (newValue.equals(phoneNumberTextView.getText().toString())) {
+                    Toast.makeText(this, "Номер должен отличаться от используемого сейчас", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (newValue.length() != 16) {
+                    Toast.makeText(this, "Введите корректный номер телефона", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 db.collection("users").document(user.getUid())
                         .update(field, newValue)
                         .addOnSuccessListener(aVoid -> {
