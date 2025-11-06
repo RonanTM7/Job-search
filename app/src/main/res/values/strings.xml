@@ -94,4 +94,5 @@
     <!-- не распределенные -->
     <string name="app_name">Job Rocket</string>
     <string name="todo">TODO</string>
+    <string name="show_all">Показать полностью</string>
 </resources>

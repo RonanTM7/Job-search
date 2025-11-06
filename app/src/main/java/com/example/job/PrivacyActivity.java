@@ -117,6 +117,7 @@ public class PrivacyActivity extends AppCompatActivity {
 
         TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
         EditText editTextData = dialog.findViewById(R.id.edit_text_data);
+        TextView textError = dialog.findViewById(R.id.text_error);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         Button btnSave = dialog.findViewById(R.id.btn_save);
 
@@ -125,11 +126,23 @@ public class PrivacyActivity extends AppCompatActivity {
         editTextData.setHint("Текущий пароль");
         btnSave.setText("Подтвердить");
 
+        editTextData.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textError.setVisibility(TextView.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
         btnCancel.setOnClickListener(v -> dialog.dismiss());
         btnSave.setOnClickListener(v -> {
             String password = editTextData.getText().toString();
             if (password.isEmpty()) {
-                Toast.makeText(this, "Пароль не может быть пустым", Toast.LENGTH_SHORT).show();
+                textError.setText("Пароль не может быть пустым");
+                textError.setVisibility(TextView.VISIBLE);
                 return;
             }
 
@@ -141,7 +154,8 @@ public class PrivacyActivity extends AppCompatActivity {
                             FirebaseUser freshUser = FirebaseAuth.getInstance().getCurrentUser();
                             showNewValueDialog(field, freshUser, password);
                         } else {
-                            Toast.makeText(PrivacyActivity.this, "Неверный пароль", Toast.LENGTH_SHORT).show();
+                            textError.setText("Неверный пароль");
+                            textError.setVisibility(TextView.VISIBLE);
                         }
                     });
         });
@@ -156,6 +170,7 @@ public class PrivacyActivity extends AppCompatActivity {
 
         TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
         EditText editTextData = dialog.findViewById(R.id.edit_text_data);
+        TextView textError = dialog.findViewById(R.id.text_error);
         Button btnCancel = dialog.findViewById(R.id.btn_cancel);
         Button btnSave = dialog.findViewById(R.id.btn_save);
 
@@ -170,6 +185,7 @@ public class PrivacyActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    textError.setVisibility(TextView.GONE);
                     if (!s.toString().startsWith("+7")) {
                         editTextData.setText("+7");
                         editTextData.setSelection(editTextData.getText().length());
@@ -207,31 +223,37 @@ public class PrivacyActivity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String newValue = editTextData.getText().toString();
             if (newValue.isEmpty()) {
-                Toast.makeText(this, "Поле не может быть пустым", Toast.LENGTH_SHORT).show();
+                textError.setText("Поле не может быть пустым");
+                textError.setVisibility(TextView.VISIBLE);
                 return;
             }
 
             if (field.equals("email") && newValue.equals(user.getEmail())) {
-                Toast.makeText(this, "Вы ввели тот же адрес электронной почты.", Toast.LENGTH_SHORT).show();
+                textError.setText("Вы ввели тот же адрес электронной почты.");
+                textError.setVisibility(TextView.VISIBLE);
                 return;
             }
 
             if (user == null) {
-                Toast.makeText(this, "Не удалось обновить данные. Попробуйте снова.", Toast.LENGTH_SHORT).show();
+                textError.setText("Не удалось обновить данные. Попробуйте снова.");
+                textError.setVisibility(TextView.VISIBLE);
                 return;
             }
 
             if (field.equals("password")) {
                 if (newValue.length() < 6) {
-                    Toast.makeText(this, "Пароль слишком короткий", Toast.LENGTH_SHORT).show();
+                    textError.setText("Пароль слишком короткий");
+                    textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
                 if (newValue.length() > 16) {
-                    Toast.makeText(this, "Пароль слишком длинный", Toast.LENGTH_SHORT).show();
+                    textError.setText("Пароль слишком длинный");
+                    textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
                 if (newValue.equals(oldPassword)) {
-                    Toast.makeText(this, "Пароль должен отличаться от установленного", Toast.LENGTH_SHORT).show();
+                    textError.setText("Пароль должен отличаться от установленного");
+                    textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
                 user.updatePassword(newValue)
@@ -240,12 +262,14 @@ public class PrivacyActivity extends AppCompatActivity {
                                 Toast.makeText(PrivacyActivity.this, "Пароль успешно изменен", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             } else {
-                                Toast.makeText(PrivacyActivity.this, "Ошибка при смене пароля", Toast.LENGTH_SHORT).show();
+                                textError.setText("Ошибка при смене пароля");
+                                textError.setVisibility(TextView.VISIBLE);
                             }
                         });
             } else if (field.equals("email")) {
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newValue).matches()) {
-                    Toast.makeText(this, "Введите корректный адрес электронной почты", Toast.LENGTH_SHORT).show();
+                    textError.setText("Введите корректный адрес электронной почты");
+                    textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
                 user.verifyBeforeUpdateEmail(newValue)
@@ -259,16 +283,19 @@ public class PrivacyActivity extends AppCompatActivity {
                                 if (task.getException() != null) {
                                     errorMessage = task.getException().getClass().getSimpleName() + ": " + task.getException().getMessage();
                                 }
-                                Toast.makeText(PrivacyActivity.this, "Ошибка: " + errorMessage, Toast.LENGTH_LONG).show();
+                                textError.setText("Ошибка: " + errorMessage);
+                                textError.setVisibility(TextView.VISIBLE);
                             }
                         });
             } else if (field.equals("phone")) {
                 if (newValue.equals(phoneNumberTextView.getText().toString())) {
-                    Toast.makeText(this, "Номер должен отличаться от используемого сейчас", Toast.LENGTH_SHORT).show();
+                    textError.setText("Номер должен отличаться от используемого сейчас");
+                    textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
                 if (newValue.length() != 16) {
-                    Toast.makeText(this, "Введите корректный номер телефона", Toast.LENGTH_SHORT).show();
+                    textError.setText("Введите корректный номер телефона");
+                    textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
                 db.collection("users").document(user.getUid())
@@ -277,6 +304,10 @@ public class PrivacyActivity extends AppCompatActivity {
                             Toast.makeText(PrivacyActivity.this, "Данные успешно обновлены", Toast.LENGTH_SHORT).show();
                             loadUserData();
                             dialog.dismiss();
+                        })
+                        .addOnFailureListener(e -> {
+                            textError.setText("Не удалось обновить номер телефона.");
+                            textError.setVisibility(TextView.VISIBLE);
                         });
             }
         });

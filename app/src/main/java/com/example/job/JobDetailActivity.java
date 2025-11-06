@@ -1,6 +1,7 @@
 package com.example.job;
 
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -43,6 +44,19 @@ public class JobDetailActivity extends AppCompatActivity {
         });
 
         binding.backButton.setOnClickListener(v -> finish());
+
+        binding.expandDescription.setOnClickListener(v -> toggleMaxLines(binding.descriptionText, binding.expandDescription));
+        binding.expandRequirements.setOnClickListener(v -> toggleMaxLines(binding.requirementsText, binding.expandRequirements));
+    }
+
+    private void toggleMaxLines(TextView textView, TextView expandView) {
+        if (textView.getMaxLines() == 4) {
+            textView.setMaxLines(Integer.MAX_VALUE);
+            expandView.setText("Скрыть");
+        } else {
+            textView.setMaxLines(4);
+            expandView.setText("Показать полностью");
+        }
     }
 
     private void checkIfApplied(Job job) {

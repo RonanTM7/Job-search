@@ -3,4 +3,5 @@
     <!-- Объявляем кастомные атрибуты -->
     <attr name="textColor" format="color|reference" />
     <attr name="settings_button_color" format="color|reference" />
+    <attr name="separatorColor" format="color|reference" />
 </resources>
