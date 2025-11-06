@@ -75,7 +75,7 @@ public class JobDetailActivity extends AppCompatActivity {
             if (task.isSuccessful() && task.getResult().exists()) {
                 applyToJob(job);
             } else {
-                Toast.makeText(this, "Сначала создайте резюме", Toast.LENGTH_SHORT).show();
+                com.example.job.CustomToast.showToast(this, "Сначала создайте резюме", 4000);
             }
         });
     }
@@ -88,10 +88,10 @@ public class JobDetailActivity extends AppCompatActivity {
 
         db.collection("applications").document(applicationId).set(application)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Ваше резюме было отправлено", Toast.LENGTH_SHORT).show();
+                    com.example.job.CustomToast.showToast(this, "Ваше резюме было отправлено", 4000);
                     updateApplyButton(true);
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> com.example.job.CustomToast.showToast(this, "Ошибка: " + e.getMessage(), 4000));
     }
 
     private void updateApplyButton(boolean applied) {

@@ -1,50 +1,41 @@
-package com.example.job.utils;
+package com.example.job;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.os.Handler;
-import android.os.Looper;
-
-import com.example.job.R;
+import android.widget.Toast;
 
 public class CustomToast {
 
-    public static void show(Activity activity, String message) {
-        if (activity == null || activity.isFinishing()) {
-            return;
-        }
-
-        ViewGroup rootView = (ViewGroup) activity.findViewById(android.R.id.content);
+    public static void showToast(Activity activity, String message, int duration) {
         LayoutInflater inflater = activity.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.custom_toast_layout, null);
+        View layout = inflater.inflate(R.layout.custom_toast, null);
 
-        TextView text = layout.findViewById(R.id.custom_toast_text);
+        TextView text = (TextView) layout.findViewById(R.id.toast_text);
         text.setText(message);
 
-        ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        int marginTop = (int) (16 * activity.getResources().getDisplayMetrics().density);
-        params.setMargins(0, marginTop, 0, 0);
+        final Toast toast = new Toast(activity.getApplicationContext());
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 50);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
 
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(params);
-        layout.setLayoutParams(layoutParams);
-
-        rootView.addView(layout);
-
-        layout.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            layout.setX((rootView.getWidth() - layout.getWidth()) / 2f);
-        });
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (layout.getParent() != null) {
-                rootView.removeView(layout);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.show();
             }
-        }, 4000);
+        }, 0);
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, duration);
     }
 }

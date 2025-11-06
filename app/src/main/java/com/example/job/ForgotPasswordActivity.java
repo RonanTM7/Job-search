@@ -1,15 +1,17 @@
 package com.example.job;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Objects;
+
+
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -60,10 +62,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         mAuth.sendPasswordResetEmail(email)
                                 .addOnCompleteListener(resetTask -> {
                                     if (resetTask.isSuccessful()) {
-                                        Toast.makeText(ForgotPasswordActivity.this, "Ссылка для сброса пароля отправлена на вашу почту", Toast.LENGTH_SHORT).show();
+                                        Intent resultIntent = new Intent();
+                                        resultIntent.putExtra("TOAST_MESSAGE", "Ссылка для сброса пароля отправлена на вашу почту");
+                                        setResult(RESULT_OK, resultIntent);
                                         finish();
                                     } else {
-                                        Toast.makeText(ForgotPasswordActivity.this, "Ошибка: " + Objects.requireNonNull(resetTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                        com.example.job.CustomToast.showToast(ForgotPasswordActivity.this, "Ошибка: " + Objects.requireNonNull(resetTask.getException()).getMessage(), 4000);
                                         sendResetLinkButton.setEnabled(true);
                                         sendResetLinkButton.setText("Сменить пароль");
                                     }

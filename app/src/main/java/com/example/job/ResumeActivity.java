@@ -84,10 +84,10 @@ public class ResumeActivity extends AppCompatActivity {
         resumeData.put("userId", currentUser.getUid());
 
         resumeRef.set(resumeData).addOnSuccessListener(aVoid -> {
-            Toast.makeText(ResumeActivity.this, "Сохранено", Toast.LENGTH_SHORT).show();
+            CustomToast.showToast(ResumeActivity.this, "Сохранено", 4000);
             saveResumeButton.setText("Редактировать");
         }).addOnFailureListener(e -> {
-            Toast.makeText(ResumeActivity.this, "Ошибка сохранения", Toast.LENGTH_SHORT).show();
+            CustomToast.showToast(ResumeActivity.this, "Ошибка сохранения", 4000);
         });
     }
 }

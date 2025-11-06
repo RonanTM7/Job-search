@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -170,17 +168,15 @@ public class RegisterActivity extends AppCompatActivity {
                                                     saveUserToFirestore(user.getUid(), username, phone, email);
 
                                                     runOnUiThread(() -> {
-                                                        Toast toast = Toast.makeText(RegisterActivity.this, "Регистрация прошла успешно. Пожалуйста, подтвердите вашу почту.", Toast.LENGTH_SHORT);
-                                                        toast.setGravity(Gravity.TOP, 0, 0);
-                                                        toast.show();
                                                         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                                        intent.putExtra("TOAST_MESSAGE", "Регистрация прошла успешно. Пожалуйста, подтвердите вашу почту.");
                                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                         startActivity(intent);
                                                         finish();
                                                     });
                                                 }
                                             } else {
-                                                Toast.makeText(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                                com.example.job.CustomToast.showToast(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), 4000);
                                                 registerButton.setEnabled(true);
                                                 registerButton.setText("Зарегистрироваться");
                                             }
@@ -204,9 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                 })
                 .addOnFailureListener(e -> runOnUiThread(() -> {
-                    Toast toast = Toast.makeText(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP, 0, 0);
-                    toast.show();
+                    com.example.job.CustomToast.showToast(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), 4000);
                 }));
     }
 }
