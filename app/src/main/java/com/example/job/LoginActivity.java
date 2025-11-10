@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.job.utils.CustomToast;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
@@ -44,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         if (getIntent().hasExtra("TOAST_MESSAGE")) {
             String message = getIntent().getStringExtra("TOAST_MESSAGE");
             if (message != null && !message.isEmpty()) {
-                com.example.job.CustomToast.showToast(LoginActivity.this, message, 4000);
+                CustomToast.showToast(LoginActivity.this, message, 4000);
                 getIntent().removeExtra("TOAST_MESSAGE");
             }
         }
@@ -75,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == FORGOT_PASSWORD_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             String message = data.getStringExtra("TOAST_MESSAGE");
             if (message != null) {
-                com.example.job.CustomToast.showToast(LoginActivity.this, message, 4000);
+                CustomToast.showToast(LoginActivity.this, message, 4000);
             }
         }
     }
@@ -97,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = editTextPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            com.example.job.CustomToast.showToast(this, "Заполните все поля", 4000);
+            CustomToast.showToast(this, "Заполните все поля", 4000);
             buttonLogin.setEnabled(true);
             buttonLogin.setText("Войти");
             return;

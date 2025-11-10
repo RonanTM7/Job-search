@@ -2,7 +2,6 @@ package com.example.job;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.example.job.databinding.ActivityJobDetailBinding;
@@ -13,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 import com.example.job.utils.FormatUtils;
+import com.example.job.utils.CustomToast;
 
 public class JobDetailActivity extends AppCompatActivity {
     private ActivityJobDetailBinding binding;
@@ -75,7 +75,7 @@ public class JobDetailActivity extends AppCompatActivity {
             if (task.isSuccessful() && task.getResult().exists()) {
                 applyToJob(job);
             } else {
-                com.example.job.CustomToast.showToast(this, "Сначала создайте резюме", 4000);
+                CustomToast.showToast(this, "Сначала создайте резюме", 4000);
             }
         });
     }
@@ -88,10 +88,10 @@ public class JobDetailActivity extends AppCompatActivity {
 
         db.collection("applications").document(applicationId).set(application)
                 .addOnSuccessListener(aVoid -> {
-                    com.example.job.CustomToast.showToast(this, "Ваше резюме было отправлено", 4000);
+                    CustomToast.showToast(this, "Ваше резюме было отправлено", 4000);
                     updateApplyButton(true);
                 })
-                .addOnFailureListener(e -> com.example.job.CustomToast.showToast(this, "Ошибка: " + e.getMessage(), 4000));
+                .addOnFailureListener(e -> CustomToast.showToast(this, "Ошибка: " + e.getMessage(), 4000));
     }
 
     private void updateApplyButton(boolean applied) {

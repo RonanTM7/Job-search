@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_secondary"
+    android:padding="16dp">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_back"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="8dp"
+        android:contentDescription="@string/back" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сменить почту"
+        android:textSize="24sp"
+        android:textColor="?attr/textColor"
+        android:layout_centerHorizontal="true"
+        android:layout_alignTop="@id/btn_back"
+        android:layout_alignBottom="@id/btn_back"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="32dp"
+        android:text="Нажав на кнопку сменить почту вы автоматически выйдите из аккаунта и сможете обратно войти лишь после подтверждения нового адреса электронной почты."
+        android:textSize="14sp"
+        android:textColor="?attr/textColor"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/edit_text_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_info"
+        android:layout_marginTop="16dp"
+        android:hint="Почта для входа"
+        android:inputType="textEmailAddress"
+        style="@style/LoginTextInput" />
+
+    <Button
+        android:id="@+id/btn_change_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_text_email"
+        android:layout_marginTop="16dp"
+        android:text="Сменить почту"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor" />
+
+    <TextView
+        android:id="@+id/text_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_change_email"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>

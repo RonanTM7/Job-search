@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import com.example.job.utils.CustomToast;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -176,7 +177,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                     });
                                                 }
                                             } else {
-                                                com.example.job.CustomToast.showToast(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), 4000);
+                                                CustomToast.showToast(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), 4000);
                                                 registerButton.setEnabled(true);
                                                 registerButton.setText("Зарегистрироваться");
                                             }
@@ -200,7 +201,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                 })
                 .addOnFailureListener(e -> runOnUiThread(() -> {
-                    com.example.job.CustomToast.showToast(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), 4000);
+                    CustomToast.showToast(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), 4000);
                 }));
     }
 }

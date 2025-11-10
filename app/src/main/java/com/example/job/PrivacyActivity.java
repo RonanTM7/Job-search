@@ -50,13 +50,25 @@ public class PrivacyActivity extends AppCompatActivity {
         loadUserData();
 
         backButton.setOnClickListener(v -> onBackPressed());
-        phoneNumberTextView.setOnClickListener(v -> showUpdateDialog("phone"));
-        emailTextView.setOnClickListener(v -> showUpdateDialog("email"));
+        phoneNumberTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(PrivacyActivity.this, NewChangePhoneActivity.class);
+            startActivity(intent);
+        });
+        emailTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(PrivacyActivity.this, NewChangeEmailActivity.class);
+            startActivity(intent);
+        });
         changePasswordButton.setOnClickListener(v -> {
             Intent intent = new Intent(PrivacyActivity.this, CheckCurrentPasswordActivity.class);
             startActivity(intent);
         });
         refreshEmailButton.setOnClickListener(v -> refreshEmailData());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserData();
     }
 
     private void refreshEmailData() {

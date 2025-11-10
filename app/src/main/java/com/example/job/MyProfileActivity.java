@@ -7,12 +7,12 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Objects;
+import com.example.job.utils.CustomToast;
 
 public class MyProfileActivity extends AppCompatActivity {
 
@@ -83,7 +83,7 @@ public class MyProfileActivity extends AppCompatActivity {
                             }
                         }
                     })
-                    .addOnFailureListener(e -> com.example.job.CustomToast.showToast(MyProfileActivity.this, "Ошибка загрузки данных", 4000));
+                    .addOnFailureListener(e -> CustomToast.showToast(MyProfileActivity.this, "Ошибка загрузки данных", 4000));
         }
     }
 

@@ -46,6 +46,12 @@
             android:name=".ResumeActivity"
             android:exported="false" />
         <activity
+            android:name=".NewChangeEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NewChangePhoneActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 
