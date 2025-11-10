@@ -34,6 +34,15 @@
         <activity android:name=".ForgotPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".CheckCurrentPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EnterNewPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ConfirmNewPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".ResumeActivity"
             android:exported="false" />
         <activity

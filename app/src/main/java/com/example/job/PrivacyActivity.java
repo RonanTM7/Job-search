@@ -52,7 +52,10 @@ public class PrivacyActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
         phoneNumberTextView.setOnClickListener(v -> showUpdateDialog("phone"));
         emailTextView.setOnClickListener(v -> showUpdateDialog("email"));
-        changePasswordButton.setOnClickListener(v -> showUpdateDialog("password"));
+        changePasswordButton.setOnClickListener(v -> {
+            Intent intent = new Intent(PrivacyActivity.this, CheckCurrentPasswordActivity.class);
+            startActivity(intent);
+        });
         refreshEmailButton.setOnClickListener(v -> refreshEmailData());
     }
 
@@ -175,9 +178,7 @@ public class PrivacyActivity extends AppCompatActivity {
         Button btnSave = dialog.findViewById(R.id.btn_save);
 
         dialogTitle.setText("Введите новое значение");
-        if (field.equals("password")) {
-            editTextData.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        } else if (field.equals("phone")) {
+        if (field.equals("phone")) {
             editTextData.setInputType(InputType.TYPE_CLASS_PHONE);
             editTextData.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -240,33 +241,7 @@ public class PrivacyActivity extends AppCompatActivity {
                 return;
             }
 
-            if (field.equals("password")) {
-                if (newValue.length() < 6) {
-                    textError.setText("Пароль слишком короткий");
-                    textError.setVisibility(TextView.VISIBLE);
-                    return;
-                }
-                if (newValue.length() > 16) {
-                    textError.setText("Пароль слишком длинный");
-                    textError.setVisibility(TextView.VISIBLE);
-                    return;
-                }
-                if (newValue.equals(oldPassword)) {
-                    textError.setText("Пароль должен отличаться от установленного");
-                    textError.setVisibility(TextView.VISIBLE);
-                    return;
-                }
-                user.updatePassword(newValue)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(PrivacyActivity.this, "Пароль успешно изменен", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            } else {
-                                textError.setText("Ошибка при смене пароля");
-                                textError.setVisibility(TextView.VISIBLE);
-                            }
-                        });
-            } else if (field.equals("email")) {
+            if (field.equals("email")) {
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(newValue).matches()) {
                     textError.setText("Введите корректный адрес электронной почты");
                     textError.setVisibility(TextView.VISIBLE);

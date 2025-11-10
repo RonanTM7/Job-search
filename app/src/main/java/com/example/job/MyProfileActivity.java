@@ -83,7 +83,7 @@ public class MyProfileActivity extends AppCompatActivity {
                             }
                         }
                     })
-                    .addOnFailureListener(e -> CustomToast.showToast(MyProfileActivity.this, "Ошибка загрузки данных", 4000));
+                    .addOnFailureListener(e -> com.example.job.CustomToast.showToast(MyProfileActivity.this, "Ошибка загрузки данных", 4000));
         }
     }
 
