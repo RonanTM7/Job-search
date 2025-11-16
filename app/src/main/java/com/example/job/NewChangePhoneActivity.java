@@ -44,40 +44,54 @@ public class NewChangePhoneActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         editTextPhone.addTextChangedListener(new TextWatcher() {
+            private boolean formatting;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 textError.setVisibility(TextView.GONE);
-                if (!s.toString().startsWith("+7")) {
-                    editTextPhone.setText("+7");
-                    editTextPhone.setSelection(editTextPhone.getText().length());
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                String phoneNumber = s.toString().replaceAll("\\\\D", "");
-                if (phoneNumber.length() > 1) {
-                    phoneNumber = phoneNumber.substring(1);
-                    StringBuilder formatted = new StringBuilder("+7 ");
-                    formatted.append(phoneNumber.substring(0, Math.min(3, phoneNumber.length())));
-                    if (phoneNumber.length() >= 4) {
-                        formatted.append(" ").append(phoneNumber.substring(3, Math.min(6, phoneNumber.length())));
-                    }
-                    if (phoneNumber.length() >= 7) {
-                        formatted.append(" ").append(phoneNumber.substring(6, Math.min(8, phoneNumber.length())));
-                    }
-                    if (phoneNumber.length() >= 9) {
-                        formatted.append(" ").append(phoneNumber.substring(8, Math.min(10, phoneNumber.length())));
-                    }
+                if (formatting) return;
 
-                    editTextPhone.removeTextChangedListener(this);
-                    editTextPhone.setText(formatted.toString());
-                    editTextPhone.setSelection(formatted.length());
-                    editTextPhone.addTextChangedListener(this);
+                formatting = true;
+
+                String digits = s.toString().replaceAll("\\D", "");
+
+                if (!digits.startsWith("7")) {
+                    if (digits.startsWith("8")) {
+                        digits = "7" + digits.substring(1);
+                    } else {
+                        digits = "7" + digits;
+                    }
                 }
+
+                if (digits.length() > 11) {
+                    digits = digits.substring(0, 11);
+                }
+
+                StringBuilder formatted = new StringBuilder("+7");
+                if (digits.length() > 1) {
+                    formatted.append(" ").append(digits.substring(1, Math.min(4, digits.length())));
+                }
+                if (digits.length() > 4) {
+                    formatted.append(" ").append(digits.substring(4, Math.min(7, digits.length())));
+                }
+                if (digits.length() > 7) {
+                    formatted.append(" ").append(digits.substring(7, Math.min(9, digits.length())));
+                }
+                if (digits.length() > 9) {
+                    formatted.append(" ").append(digits.substring(9, Math.min(11, digits.length())));
+                }
+
+                s.replace(0, s.length(), formatted.toString());
+                editTextPhone.setSelection(s.length());
+
+                formatting = false;
             }
         });
 
