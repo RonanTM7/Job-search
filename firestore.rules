@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Вспомогательная функция для проверки аутентификации пользователя
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Вспомогательная функция для проверки, является ли пользователь владельцем документа
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Коллекция пользователей
+    match /users/{userId} {
+      allow read, update: if isOwner(userId);
+      allow create: if isOwner(userId);
+    }
+
+    // Коллекция вакансий
+    match /vacancies/{vacancyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Коллекция резюме
+    match /resumes/{userId} {
+      allow read, create, update: if isOwner(userId);
+    }
+
+    // Коллекция избранного
+    match /favorites/{favoriteId} {
+      allow read, delete: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+
+    // Коллекция откликов (заявок)
+    match /applications/{applicationId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+
+    // Коллекция обновлений (история изменений)
+    match /updates/{updateId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

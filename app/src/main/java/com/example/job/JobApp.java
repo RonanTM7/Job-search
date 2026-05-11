@@ -153,15 +153,15 @@ public class JobApp extends Application {
 
         // Список Activity где НУЖНО оставить пользователя
         boolean shouldStay = className.equals("JobDetailActivity") ||
-                           className.equals("CheckCurrentPasswordActivity") ||
-                           className.equals("EnterNewPasswordActivity") ||
-                           className.equals("ConfirmNewPasswordActivity") ||
-                           className.equals("NewChangeEmailActivity") ||
-                           className.equals("NewChangePhoneActivity") ||
-                           className.equals("LoginActivity") ||
-                           className.equals("RegisterActivity") ||
-                           className.equals("ForgotPasswordActivity") ||
-                           className.equals("MainActivity");
+                className.equals("CheckCurrentPasswordActivity") ||
+                className.equals("EnterNewPasswordActivity") ||
+                className.equals("ConfirmNewPasswordActivity") ||
+                className.equals("NewChangeEmailActivity") ||
+                className.equals("NewChangePhoneActivity") ||
+                className.equals("LoginActivity") ||
+                className.equals("RegisterActivity") ||
+                className.equals("ForgotPasswordActivity") ||
+                className.equals("MainActivity");
 
         if (!shouldStay) {
             Intent intent = new Intent(this, MainActivity.class);
@@ -173,11 +173,11 @@ public class JobApp extends Application {
             if (className.equals("MainActivity") && currentActivity instanceof MainActivity) {
                 ((MainActivity) currentActivity).onNewIntent(new Intent().putExtra("REFRESH_DATA", true));
             } else if (className.equals("MainActivity")) {
-                 // На всякий случай, если currentActivity уже не MainActivity
-                 Intent intent = new Intent(this, MainActivity.class);
-                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                 intent.putExtra("REFRESH_DATA", true);
-                 startActivity(intent);
+                // На всякий случай, если currentActivity уже не MainActivity
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("REFRESH_DATA", true);
+                startActivity(intent);
             }
         }
 

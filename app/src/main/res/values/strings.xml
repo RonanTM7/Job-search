@@ -102,4 +102,10 @@
     <string name="try_again">Попробовать снова</string>
     <string name="connection_restored">Подключение установлено</string>
     <string name="connection_restored_toast">Подключение к интернету восстановлено</string>
+
+    <!-- Updates -->
+    <string name="what_new">Что нового?</string>
+    <string name="updates_history">История обновлений</string>
+    <string name="version_prefix">Версия </string>
+    <string name="no_updates">Пока обновлений нет</string>
 </resources>
