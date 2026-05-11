@@ -54,27 +54,27 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        db.collection("users")
-                .whereEqualTo("email", email)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(resetTask -> {
+                    if (resetTask.isSuccessful()) {
                         errorMessageTextView.setVisibility(TextView.GONE);
-                        mAuth.sendPasswordResetEmail(email)
-                                .addOnCompleteListener(resetTask -> {
-                                    if (resetTask.isSuccessful()) {
-                                        Intent resultIntent = new Intent();
-                                        resultIntent.putExtra("TOAST_MESSAGE", "Ссылка для сброса пароля отправлена на вашу почту");
-                                        setResult(RESULT_OK, resultIntent);
-                                        finish();
-                                    } else {
-                                        CustomToast.showToast(ForgotPasswordActivity.this, "Ошибка: " + Objects.requireNonNull(resetTask.getException()).getMessage(), 4000);
-                                        sendResetLinkButton.setEnabled(true);
-                                        sendResetLinkButton.setText("Сменить пароль");
-                                    }
-                                });
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("TOAST_MESSAGE", "Ссылка для сброса пароля отправлена на вашу почту");
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
                     } else {
-                        errorMessageTextView.setText("такого пользователя не существует");
+                        String errorMessage = "Ошибка отправки письма";
+                        Exception exception = resetTask.getException();
+                        if (exception != null) {
+                            String message = exception.getMessage();
+                            if (message != null && (message.contains("user-not-found") || message.contains("no user"))) {
+                                errorMessage = "Пользователя с такой почтой не существует";
+                            } else if (message != null && (message.contains("network") || message.contains("connection"))) {
+                                errorMessage = "Ошибка сети, проверьте соединение";
+                                CustomToast.showToast(ForgotPasswordActivity.this, errorMessage, 4000);
+                            }
+                        }
+                        errorMessageTextView.setText(errorMessage.toLowerCase());
                         errorMessageTextView.setVisibility(TextView.VISIBLE);
                         sendResetLinkButton.setEnabled(true);
                         sendResetLinkButton.setText("Сменить пароль");

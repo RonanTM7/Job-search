@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.job.utils.CustomToast;
 
@@ -105,34 +106,37 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // вход
-        db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult().isEmpty()) {
-                errorTextView.setText("Пользователя с такой почтой не существует");
-                errorTextView.setVisibility(TextView.VISIBLE);
-                buttonLogin.setEnabled(true);
-                buttonLogin.setText("Войти");
-            } else {
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, authTask -> {
-                            if (authTask.isSuccessful()) {
-                                if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()) {
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                    finish();
-                                } else {
-                                    errorTextView.setText("Пожалуйста, подтвердите вашу почту");
-                                    errorTextView.setVisibility(TextView.VISIBLE);
-                                    buttonLogin.setEnabled(true);
-                                    buttonLogin.setText("Войти");
-                                }
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, authTask -> {
+                    if (authTask.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            if (user.isEmailVerified()) {
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
                             } else {
-                                errorTextView.setText("Неверный логин или пароль");
+                                errorTextView.setText("Пожалуйста, подтвердите вашу почту");
                                 errorTextView.setVisibility(TextView.VISIBLE);
                                 buttonLogin.setEnabled(true);
                                 buttonLogin.setText("Войти");
                             }
-                        });
-            }
-        });
+                        }
+                    } else {
+                        String errorMessage = "Неверный логин или пароль";
+                        Exception exception = authTask.getException();
+                        if (exception != null) {
+                            String message = exception.getMessage();
+                            if (message != null && (message.contains("network") || message.contains("connection"))) {
+                                errorMessage = "Ошибка входа, проверьте соединение с интернетом";
+                                CustomToast.showToast(LoginActivity.this, errorMessage, 4000);
+                            }
+                        }
+                        errorTextView.setText(errorMessage);
+                        errorTextView.setVisibility(TextView.VISIBLE);
+                        buttonLogin.setEnabled(true);
+                        buttonLogin.setText("Войти");
+                    }
+                });
     }
 
     private void register() {
