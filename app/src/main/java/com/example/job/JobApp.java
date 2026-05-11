@@ -20,6 +20,7 @@ import com.example.job.utils.CustomToast;
 public class JobApp extends Application {
 
     private Activity currentActivity;
+    private String activityBeforeNoInternet;
     private boolean isNoInternetVisible = false;
     private boolean isManualRecoveryInProgress = false;
 
@@ -54,18 +55,10 @@ public class JobApp extends Application {
             }
 
             @Override
-            public void onActivityPaused(@NonNull Activity activity) {
-                if (currentActivity == activity) {
-                    // We don't null it here because we might need it for starting NoInternetActivity
-                }
-            }
+            public void onActivityPaused(@NonNull Activity activity) {}
 
             @Override
-            public void onActivityStopped(@NonNull Activity activity) {
-                if (currentActivity == activity) {
-                    // currentActivity = null; // Potential issue if app goes to background
-                }
-            }
+            public void onActivityStopped(@NonNull Activity activity) {}
 
             @Override
             public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {}
@@ -77,7 +70,12 @@ public class JobApp extends Application {
                 }
                 if (activity instanceof NoInternetActivity) {
                     isNoInternetVisible = false;
-                    isManualRecoveryInProgress = false;
+
+                    // Если восстановление было ручным, перенаправляем здесь
+                    if (isManualRecoveryInProgress) {
+                        redirectIfNeeded();
+                        isManualRecoveryInProgress = false;
+                    }
                 }
             }
         });
@@ -119,7 +117,7 @@ public class JobApp extends Application {
                     if (isNoInternetVisible && !isManualRecoveryInProgress) {
                         if (currentActivity instanceof NoInternetActivity) {
                             currentActivity.finish();
-                            isNoInternetVisible = false;
+                            // isNoInternetVisible = false; // Будет обнулено в onDestroy
 
                             // Показываем уведомление только при автоматическом восстановлении
                             CustomToast.showToast(currentActivity, getString(R.string.connection_restored_toast), 4000);
@@ -134,6 +132,9 @@ public class JobApp extends Application {
             public void onLost(@NonNull Network network) {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (!isNoInternetVisible && currentActivity != null && !(currentActivity instanceof NoInternetActivity)) {
+                        // Сохраняем имя текущей активности перед переходом
+                        activityBeforeNoInternet = currentActivity.getClass().getSimpleName();
+
                         Intent intent = new Intent(currentActivity, NoInternetActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
@@ -145,9 +146,10 @@ public class JobApp extends Application {
     }
 
     private void redirectIfNeeded() {
-        if (currentActivity == null) return;
-
-        String className = currentActivity.getClass().getSimpleName();
+        // Мы используем сохраненное имя активности, так как NoInternetActivity уже может быть закрыта,
+        // а currentActivity еще не обновлена на предыдущую.
+        String className = activityBeforeNoInternet;
+        if (className == null) return;
 
         // Список Activity где НУЖНО оставить пользователя
         boolean shouldStay = className.equals("JobDetailActivity") ||
@@ -162,15 +164,23 @@ public class JobApp extends Application {
                            className.equals("MainActivity");
 
         if (!shouldStay) {
-            Intent intent = new Intent(currentActivity, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("REFRESH_DATA", true);
             startActivity(intent);
-        } else if (className.equals("MainActivity")) {
-            // Если уже на главной, просто вызываем обновление
-            ((MainActivity) currentActivity).onNewIntent(new Intent().putExtra("REFRESH_DATA", true));
-        } else if (className.equals("JobDetailActivity")) {
-            // Для деталей вакансии можно тоже добавить обновление если нужно
+        } else {
+            // Если мы остаемся, и это MainActivity, нужно обновить данные
+            if (className.equals("MainActivity") && currentActivity instanceof MainActivity) {
+                ((MainActivity) currentActivity).onNewIntent(new Intent().putExtra("REFRESH_DATA", true));
+            } else if (className.equals("MainActivity")) {
+                 // На всякий случай, если currentActivity уже не MainActivity
+                 Intent intent = new Intent(this, MainActivity.class);
+                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                 intent.putExtra("REFRESH_DATA", true);
+                 startActivity(intent);
+            }
         }
+
+        activityBeforeNoInternet = null;
     }
 }
