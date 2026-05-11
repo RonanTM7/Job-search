@@ -1,6 +1,7 @@
 package com.example.job;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ public class AboutActivity extends AppCompatActivity {
         appVersionTextView.setText("Версия " + versionName);
 
         findViewById(R.id.tv_what_new).setOnClickListener(v -> {
-            android.content.Intent intent = new android.content.Intent(AboutActivity.this, UpdatesActivity.class);
+            Intent intent = new Intent(AboutActivity.this, UpdatesActivity.class);
             startActivity(intent);
         });
     }
