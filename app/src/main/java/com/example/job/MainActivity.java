@@ -17,6 +17,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getIntent().getBooleanExtra("REFRESH_DATA", false)) {
+            refreshCurrentFragment();
+        }
         applySavedTheme();
         // Проверка авторизации
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -65,6 +69,28 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent.getBooleanExtra("REFRESH_DATA", false)) {
+            refreshCurrentFragment();
+        }
+    }
+
+    private void refreshCurrentFragment() {
+        androidx.fragment.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (currentFragment instanceof HomeFragment) {
+            ((HomeFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+        } else if (currentFragment instanceof FavoritesFragment) {
+            ((FavoritesFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+        } else if (currentFragment instanceof ApplicationsFragment) {
+            ((ApplicationsFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+        } else if (currentFragment instanceof SettingsFragment) {
+            ((SettingsFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+        }
     }
 
     private void applySavedTheme() {
