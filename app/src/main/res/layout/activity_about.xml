@@ -36,7 +36,21 @@
         android:background="?attr/settings_button_color"
         android:padding="16dp"
         android:layout_below="@id/tv_title"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/open_sans"
+        android:textColor="?attr/textColor"/>
+
+    <TextView
+        android:id="@+id/tv_what_new"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/what_new"
+        android:background="?attr/settings_button_color"
+        android:padding="16dp"
+        android:layout_below="@id/tv_app_version"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/open_sans"
+        android:textColor="@color/primary_blue"/>
 
     <TextView
         android:id="@+id/tv_beta_testers_title"
@@ -45,8 +59,10 @@
         android:text="@string/beta_testers_title"
         android:background="?attr/settings_button_color"
         android:padding="16dp"
-        android:layout_below="@id/tv_app_version"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/tv_what_new"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/open_sans"
+        android:textColor="?attr/textColor"/>
 
     <TextView
         android:id="@+id/tv_beta_testers_list"

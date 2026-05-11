@@ -23,5 +23,10 @@ public class AboutActivity extends AppCompatActivity {
 
         String versionName = getString(R.string.app_version_number);
         appVersionTextView.setText("Версия " + versionName);
+
+        findViewById(R.id.tv_what_new).setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(AboutActivity.this, UpdatesActivity.class);
+            startActivity(intent);
+        });
     }
 }
