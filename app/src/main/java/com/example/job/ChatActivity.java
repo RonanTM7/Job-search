@@ -80,7 +80,11 @@ public class ChatActivity extends AppCompatActivity {
         db.collection("chats").document(chatId).collection("messages")
                 .orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshot, e) -> {
-                    if (e != null || snapshot == null) return;
+                    if (e != null) {
+                        android.widget.Toast.makeText(this, "Ошибка загрузки: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (snapshot == null) return;
                     List<Message> messages = new ArrayList<>();
                     for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
                         messages.add(doc.toObject(Message.class));
