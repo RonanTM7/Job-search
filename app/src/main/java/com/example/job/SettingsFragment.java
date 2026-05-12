@@ -24,6 +24,8 @@ public class SettingsFragment extends Fragment {
 
         view.findViewById(R.id.btn_about).setOnClickListener(v -> startActivity(new Intent(getActivity(), AboutActivity.class)));
 
+        view.findViewById(R.id.btn_support).setOnClickListener(v -> startActivity(new Intent(getActivity(), ChatActivity.class)));
+
         return view;
     }
 }

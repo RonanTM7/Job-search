@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     private com.google.android.material.bottomnavigation.BottomNavigationView bottomNavigation;
     private static final String PREFS_NAME = "AppSettings";
     private static final String THEME_KEY = "isDarkTheme";
+    private com.google.firebase.firestore.ListenerRegistration userStatusListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,14 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        if ("ronanauf@gmail.com".equals(currentUser.getEmail())) {
+            startActivity(new Intent(this, AdminMainActivity.class));
+            finish();
+            return;
+        }
+
+        listenToUserStatus(currentUser.getUid());
 
         setContentView(R.layout.activity_main);
 
@@ -90,6 +99,38 @@ public class MainActivity extends AppCompatActivity {
             ((ApplicationsFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
         } else if (currentFragment instanceof SettingsFragment) {
             ((SettingsFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+        }
+    }
+
+    private void listenToUserStatus(String uid) {
+        userStatusListener = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("users").document(uid)
+                .addSnapshotListener((snapshot, e) -> {
+                    if (e != null) return;
+                    if (snapshot != null && snapshot.exists()) {
+                        String status = snapshot.getString("status");
+                        if ("blocked".equals(status)) {
+                            Intent intent = new Intent(MainActivity.this, BlockedActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else if ("deleted".equals(status)) {
+                            FirebaseAuth.getInstance().signOut();
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.putExtra("TOAST_MESSAGE", "Ваш аккаунт был удален");
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (userStatusListener != null) {
+            userStatusListener.remove();
         }
     }
 

@@ -16,6 +16,7 @@
 
         <!-- Custom attributes -->
         <item name="backgroundColor">@color/dark_background_primary</item>
+        <item name="background_secondary">@color/dark_background_secondary</item>
         <item name="textColor">@color/dark_text_primary</item>
         <item name="settings_button_color">@color/settings_button_color_dark</item>
         <item name="separatorColor">@color/dark_separator</item>
