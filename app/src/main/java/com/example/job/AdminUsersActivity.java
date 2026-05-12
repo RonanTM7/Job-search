@@ -68,8 +68,13 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
 
     @Override
     public void onResetPassword(User user) {
-        FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail())
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Ссылка отправлена", Toast.LENGTH_SHORT).show())
+        String email = user.getEmail();
+        if (email == null || email.isEmpty() || email.startsWith("deleted_")) {
+            Toast.makeText(this, "Некорректный email или пользователь удален", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email.trim())
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Ссылка отправлена на " + email, Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(this, "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
