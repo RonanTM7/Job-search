@@ -161,6 +161,11 @@ public class JobApp extends Application {
                 className.equals("LoginActivity") ||
                 className.equals("RegisterActivity") ||
                 className.equals("ForgotPasswordActivity") ||
+                className.equals("AdminMainActivity") ||
+                className.equals("AdminUsersActivity") ||
+                className.equals("AdminChatsActivity") ||
+                className.equals("ChatActivity") ||
+                className.equals("ResumeActivity") ||
                 className.equals("MainActivity");
 
         if (!shouldStay) {

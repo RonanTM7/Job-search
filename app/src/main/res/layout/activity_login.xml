@@ -94,6 +94,16 @@
         android:gravity="center"
         android:padding="12dp" />
 
+        <TextView
+            android:id="@+id/textViewSupport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Написать в поддержку"
+            android:textColor="@color/primary_blue"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:padding="12dp" />
+
     </LinearLayout>
 
 </RelativeLayout>

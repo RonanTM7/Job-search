@@ -108,4 +108,20 @@
     <string name="updates_history">История обновлений</string>
     <string name="version_prefix">Версия </string>
     <string name="no_updates">Пока обновлений нет</string>
+
+    <!-- Admin & Chat -->
+    <string name="admin_panel">Панель администратора</string>
+    <string name="users">Пользователи</string>
+    <string name="chats">Чаты</string>
+    <string name="exit_admin">Выйти из админки</string>
+    <string name="support_chat">Поддержка</string>
+    <string name="write_to_support">Написать в поддержку</string>
+    <string name="account_blocked">Ваш аккаунт заблокирован</string>
+    <string name="blocked_details">За подробностями обратитесь в чат поддержки</string>
+    <string name="open_support_chat">Открыть чат с поддержкой</string>
+    <string name="ok">ОК</string>
+    <string name="user_status_prefix">Статус: </string>
+    <string name="status_active">Активен</string>
+    <string name="status_blocked">Заблокирован</string>
+    <string name="status_deleted">Удален</string>
 </resources>

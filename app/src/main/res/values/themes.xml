@@ -18,6 +18,7 @@
 
         <!-- Custom attributes -->
         <item name="backgroundColor">@color/background_primary</item>
+        <item name="background_secondary">@color/background_secondary</item>
         <item name="textColor">@color/text_primary</item>
         <item name="settings_button_color">@color/settings_button_color_light</item>
         <item name="separatorColor">@color/separator</item>
