@@ -57,8 +57,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         } else {
             // Guest mode
-            currentUserId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-            chatId = "guest_" + currentUserId;
+            String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            currentUserId = "guest_" + androidId;
+            chatId = "guest_" + androidId;
+            registerGuestInFirestore(androidId);
         }
 
         recyclerMessages = findViewById(R.id.recycler_messages);
@@ -94,6 +96,17 @@ public class ChatActivity extends AppCompatActivity {
                         recyclerMessages.scrollToPosition(messages.size() - 1);
                     }
                 });
+    }
+
+    private void registerGuestInFirestore(String androidId) {
+        java.util.Map<String, Object> guest = new java.util.HashMap<>();
+        guest.put("username", "Гость (" + androidId.substring(0, Math.min(4, androidId.length())) + ")");
+        guest.put("status", "active");
+        guest.put("email", "guest_" + androidId + "@device.id");
+        guest.put("phone", "N/A");
+
+        db.collection("users").document(currentUserId).set(guest, com.google.firebase.firestore.SetOptions.merge())
+                .addOnFailureListener(e -> android.util.Log.e("ChatActivity", "Guest reg failed", e));
     }
 
     private void sendMessage() {

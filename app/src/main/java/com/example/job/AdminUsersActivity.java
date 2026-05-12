@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,9 +47,12 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
             List<User> deleted = new ArrayList<>();
 
             for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
+                String uid = doc.getId();
+                if (uid.startsWith("guest_")) continue;
+
                 User user = doc.toObject(User.class);
                 if (user != null) {
-                    user.setUid(doc.getId());
+                    user.setUid(uid);
                     if ("ronanauf@gmail.com".equals(user.getEmail())) continue;
 
                     String status = user.getStatus();
