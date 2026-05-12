@@ -99,7 +99,8 @@ public class ChatActivity extends AppCompatActivity {
         String messageId = db.collection("chats").document(chatId).collection("messages").document().getId();
         Message message = new Message(messageId, currentUserId, text, System.currentTimeMillis(), isAdmin);
 
-        db.collection("chats").document(chatId).collection("messages").document(messageId).set(message);
+        db.collection("chats").document(chatId).collection("messages").document(messageId).set(message)
+                .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка отправки: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
 
         // Update chat metadata for admin list
         java.util.Map<String, Object> chatMeta = new java.util.HashMap<>();
@@ -111,15 +112,21 @@ public class ChatActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 db.collection("users").document(user.getUid()).get().addOnSuccessListener(doc -> {
-                    chatMeta.put("userName", doc.getString("username"));
+                    chatMeta.put("userName", doc.getString("username") != null ? doc.getString("username") : "Пользователь");
+                    db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge())
+                            .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка меты: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
+                }).addOnFailureListener(e -> {
+                    chatMeta.put("userName", "Пользователь (ошибка)");
                     db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
                 });
             } else {
                 chatMeta.put("userName", "Гость");
-                db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+                db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge())
+                        .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка меты гостя: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
             }
         } else {
-            db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+            db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge())
+                    .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка меты админа: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
         }
 
         editMessage.setText("");
