@@ -63,7 +63,7 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
             all.addAll(blocked);
             all.addAll(deleted);
             adapter.setUsers(all);
-        });
+        }).addOnFailureListener(e -> Toast.makeText(this, "Ошибка загрузки юзеров: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
     @Override

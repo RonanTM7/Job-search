@@ -50,7 +50,12 @@ public class AdminChatsActivity extends AppCompatActivity {
         db.collection("chats")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshot, e) -> {
-                    if (e != null || snapshot == null) return;
+                    if (e != null) {
+                        android.widget.Toast.makeText(this, "Ошибка чатов: " + e.getMessage(), android.widget.Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (snapshot == null) return;
+
                     List<ChatMeta> chats = new ArrayList<>();
                     for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
                         chats.add(doc.toObject(ChatMeta.class));
