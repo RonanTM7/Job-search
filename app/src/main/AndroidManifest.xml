@@ -63,6 +63,22 @@
             android:exported="false"
             android:theme="@style/Theme.Job" />
         <activity
+            android:name=".BlockedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".AdminMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminUsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminChatsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

@@ -144,49 +144,76 @@ public class RegisterActivity extends AppCompatActivity {
 
         db.collection("users").whereEqualTo("username", username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                usernameEditText.setError("Имя пользователя уже занято");
-                registerButton.setEnabled(true);
-                registerButton.setText("Зарегистрироваться");
-            } else {
-                db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task2 -> {
-                    if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
+                boolean isOccupied = false;
+                for (com.google.firebase.firestore.DocumentSnapshot doc : task.getResult()) {
+                    if (!"deleted".equals(doc.getString("status"))) {
+                        isOccupied = true;
+                        break;
+                    }
+                }
+                if (isOccupied) {
+                    usernameEditText.setError("Имя пользователя уже занято");
+                    registerButton.setEnabled(true);
+                    registerButton.setText("Зарегистрироваться");
+                    return;
+                }
+            }
+            db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task2 -> {
+                if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
+                    boolean isOccupied = false;
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : task2.getResult()) {
+                        if (!"deleted".equals(doc.getString("status"))) {
+                            isOccupied = true;
+                            break;
+                        }
+                    }
+                    if (isOccupied) {
                         emailEditText.setError("Почта уже зарегистрирована");
                         registerButton.setEnabled(true);
                         registerButton.setText("Зарегистрироваться");
-                    } else {
-                        db.collection("users").whereEqualTo("phone", phone).get().addOnCompleteListener(task3 -> {
-                            if (task3.isSuccessful() && !task3.getResult().isEmpty()) {
-                                phoneEditText.setError("Номер телефона уже зарегистрирован");
-                                registerButton.setEnabled(true);
-                                registerButton.setText("Зарегистрироваться");
-                            } else {
-                                mAuth.createUserWithEmailAndPassword(email, password)
-                                        .addOnCompleteListener(this, authTask -> {
-                                            if (authTask.isSuccessful()) {
-                                                FirebaseUser user = mAuth.getCurrentUser();
-                                                if (user != null) {
-                                                    user.sendEmailVerification();
-                                                    saveUserToFirestore(user.getUid(), username, phone, email);
-
-                                                    runOnUiThread(() -> {
-                                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                                        intent.putExtra("TOAST_MESSAGE", "Регистрация прошла успешно. Пожалуйста, подтвердите вашу почту.");
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                        startActivity(intent);
-                                                        finish();
-                                                    });
-                                                }
-                                            } else {
-                                                CustomToast.showToast(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), 4000);
-                                                registerButton.setEnabled(true);
-                                                registerButton.setText("Зарегистрироваться");
-                                            }
-                                        });
-                            }
-                        });
+                        return;
                     }
+                }
+                db.collection("users").whereEqualTo("phone", phone).get().addOnCompleteListener(task3 -> {
+                    if (task3.isSuccessful() && !task3.getResult().isEmpty()) {
+                        boolean isOccupied = false;
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : task3.getResult()) {
+                            if (!"deleted".equals(doc.getString("status"))) {
+                                isOccupied = true;
+                                break;
+                            }
+                        }
+                        if (isOccupied) {
+                            phoneEditText.setError("Номер телефона уже зарегистрирован");
+                            registerButton.setEnabled(true);
+                            registerButton.setText("Зарегистрироваться");
+                            return;
+                        }
+                    }
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(this, authTask -> {
+                                if (authTask.isSuccessful()) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    if (user != null) {
+                                        user.sendEmailVerification();
+                                        saveUserToFirestore(user.getUid(), username, phone, email);
+
+                                        runOnUiThread(() -> {
+                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            intent.putExtra("TOAST_MESSAGE", "Регистрация прошла успешно. Пожалуйста, подтвердите вашу почту.");
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        });
+                                    }
+                                } else {
+                                    CustomToast.showToast(RegisterActivity.this, "Ошибка регистрации: " + Objects.requireNonNull(authTask.getException()).getMessage(), 4000);
+                                    registerButton.setEnabled(true);
+                                    registerButton.setText("Зарегистрироваться");
+                                }
+                            });
                 });
-            }
+            });
         });
     }
 
@@ -195,6 +222,7 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("username", username);
         user.put("phone", phone);
         user.put("email", email);
+        user.put("status", "active");
 
         db.collection("users").document(userId)
                 .set(user)

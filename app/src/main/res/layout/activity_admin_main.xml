@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="?attr/backgroundColor">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Панель администратора"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="48dp"/>
+
+    <Button
+        android:id="@+id/btn_users"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Пользователи"
+        android:padding="16dp"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_chats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Чаты"
+        android:padding="16dp"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_exit_admin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выйти из админки"
+        android:padding="16dp"
+        android:backgroundTint="@color/primary_red"
+        android:textColor="@color/background_primary"/>
+
+</LinearLayout>

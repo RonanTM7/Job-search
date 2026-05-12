@@ -69,6 +69,9 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
             startActivityForResult(intent, FORGOT_PASSWORD_REQUEST_CODE);
         });
+        findViewById(R.id.textViewSupport).setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ChatActivity.class));
+        });
     }
 
     @Override
@@ -111,15 +114,53 @@ public class LoginActivity extends AppCompatActivity {
                     if (authTask.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            if (user.isEmailVerified()) {
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finish();
-                            } else {
-                                errorTextView.setText("Пожалуйста, подтвердите вашу почту");
-                                errorTextView.setVisibility(TextView.VISIBLE);
-                                buttonLogin.setEnabled(true);
-                                buttonLogin.setText("Войти");
-                            }
+                            db.collection("users").document(user.getUid()).get().addOnCompleteListener(dbTask -> {
+                                if (dbTask.isSuccessful() && dbTask.getResult() != null) {
+                                    String status = dbTask.getResult().getString("status");
+                                    if ("blocked".equals(status)) {
+                                        mAuth.signOut();
+                                        errorTextView.setText("этот аккаунт заблокирован");
+                                        errorTextView.setVisibility(TextView.VISIBLE);
+                                        buttonLogin.setEnabled(true);
+                                        buttonLogin.setText("Войти");
+                                    } else if ("deleted".equals(status)) {
+                                        mAuth.signOut();
+                                        errorTextView.setText("Аккаунт удален, зарегистрируйтесь под новыми данными");
+                                        errorTextView.setVisibility(TextView.VISIBLE);
+                                        buttonLogin.setEnabled(true);
+                                        buttonLogin.setText("Войти");
+                                    } else {
+                                        if (user.isEmailVerified() || email.equals("ronanauf@gmail.com")) {
+                                            if (email.equals("ronanauf@gmail.com")) {
+                                                startActivity(new Intent(LoginActivity.this, AdminMainActivity.class));
+                                            } else {
+                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                            }
+                                            finish();
+                                        } else {
+                                            errorTextView.setText("Пожалуйста, подтвердите вашу почту");
+                                            errorTextView.setVisibility(TextView.VISIBLE);
+                                            buttonLogin.setEnabled(true);
+                                            buttonLogin.setText("Войти");
+                                        }
+                                    }
+                                } else {
+                                    // If no doc in Firestore, but Auth succeeds (shouldn't happen with normal flow)
+                                    if (user.isEmailVerified() || email.equals("ronanauf@gmail.com")) {
+                                        if (email.equals("ronanauf@gmail.com")) {
+                                            startActivity(new Intent(LoginActivity.this, AdminMainActivity.class));
+                                        } else {
+                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                        }
+                                        finish();
+                                    } else {
+                                        errorTextView.setText("Пожалуйста, подтвердите вашу почту");
+                                        errorTextView.setVisibility(TextView.VISIBLE);
+                                        buttonLogin.setEnabled(true);
+                                        buttonLogin.setText("Войти");
+                                    }
+                                }
+                            });
                         }
                     } else {
                         String errorMessage = "Неверный логин или пароль";

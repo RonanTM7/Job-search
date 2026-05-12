@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="?attr/backgroundColor">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ваш аккаунт заблокирован"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_red"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="За подробностями обратитесь в чат поддержки"
+        android:textSize="16sp"
+        android:textColor="?attr/textColor"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btn_support_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Открыть чат с поддержкой"
+        android:backgroundTint="@color/primary_blue"
+        android:textColor="@color/background_primary"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ОК"
+        android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"/>
+
+</LinearLayout>

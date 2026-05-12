@@ -48,6 +48,15 @@
         android:layout_height="wrap_content"
         android:text="@string/info"
         android:backgroundTint="?attr/settings_button_color"
+        android:textColor="?attr/textColor"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btn_support"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Написать в поддержку"
+        android:backgroundTint="?attr/settings_button_color"
         android:textColor="?attr/textColor"/>
 
 </LinearLayout>
