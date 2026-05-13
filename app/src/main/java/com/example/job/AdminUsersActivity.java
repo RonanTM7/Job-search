@@ -30,7 +30,7 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
         setContentView(R.layout.activity_admin_users);
 
         db = FirebaseFirestore.getInstance();
-        recyclerUsers = findViewById(R.id.recycler_users);
+        recyclerUsers = findViewById(R.id.recycler_admin_users);
         recyclerUsers.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AdminUserAdapter(this);
         recyclerUsers.setAdapter(adapter);

@@ -41,6 +41,6 @@
         android:layout_height="wrap_content"
         android:text="Выйти"
         android:padding="16dp"
-        android:textColor="@color/logout_button_text"/>
+        android:textColor="@color/primary_red"/>
 
 </LinearLayout>

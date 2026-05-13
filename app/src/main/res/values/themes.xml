@@ -38,7 +38,7 @@
     </style>
     <style name="SettingsButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/ios_button_background</item>
-        <item name="android:backgroundTint">?attr/settings_button_color</item>
+        <item name="backgroundTint">?attr/settings_button_color</item>
         <item name="android:textColor">?attr/textColor</item>
     </style>
 </resources>
