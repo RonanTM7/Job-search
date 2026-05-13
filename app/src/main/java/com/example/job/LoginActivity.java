@@ -98,7 +98,11 @@ public class LoginActivity extends AppCompatActivity {
                                 .addOnFailureListener(e -> android.util.Log.e("LoginActivity", "Guest Firestore reg failed", e));
                     }
                 } else {
-                    android.util.Log.e("LoginActivity", "Anonymous auth failed", task.getException());
+                    Exception e = task.getException();
+                    android.util.Log.e("LoginActivity", "Anonymous auth failed", e);
+                    if (e != null && e.getMessage() != null && e.getMessage().contains("restricted to administrators")) {
+                        android.util.Log.e("LoginActivity", "ACTION REQUIRED: Enable 'Anonymous' provider in Firebase Console -> Authentication -> Sign-in method");
+                    }
                 }
             });
         }

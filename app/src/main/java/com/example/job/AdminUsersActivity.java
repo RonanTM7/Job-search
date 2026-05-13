@@ -48,9 +48,11 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
 
             for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
                 String uid = doc.getId();
-                if (uid.startsWith("guest_")) continue;
-
                 User user = doc.toObject(User.class);
+                if (user == null) continue;
+
+                if (uid.startsWith("guest_") || (user.getEmail() != null && user.getEmail().endsWith("@anonymous.auth"))) continue;
+
                 if (user != null) {
                     user.setUid(uid);
                     if ("ronanauf@gmail.com".equals(user.getEmail())) continue;
