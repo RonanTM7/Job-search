@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="32dp"
-    android:background="?attr/backgroundColor">
+    android:background="@color/background_secondary">
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,31 +18,29 @@
 
     <Button
         android:id="@+id/btn_users"
+        style="@style/SettingsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Пользователи"
         android:padding="16dp"
-        android:backgroundTint="?attr/settings_button_color"
-        android:textColor="?attr/textColor"
         android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btn_chats"
+        style="@style/SettingsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Чаты"
         android:padding="16dp"
-        android:backgroundTint="?attr/settings_button_color"
-        android:textColor="?attr/textColor"
         android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btn_exit_admin"
+        style="@style/SettingsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Выйти"
         android:padding="16dp"
-        android:backgroundTint="@color/primary_red"
-        android:textColor="@color/background_primary"/>
+        android:textColor="@color/primary_red"/>
 
 </LinearLayout>
