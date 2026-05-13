@@ -69,9 +69,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
             startActivityForResult(intent, FORGOT_PASSWORD_REQUEST_CODE);
         });
-        findViewById(R.id.textViewSupport).setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, ChatActivity.class));
-        });
 
         registerGuestIfNeeded();
     }

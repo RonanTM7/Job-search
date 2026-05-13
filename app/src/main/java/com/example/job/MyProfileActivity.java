@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,38 +39,56 @@ public class MyProfileActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.btn_back);
 
         Button myResumeButton = findViewById(R.id.btn_my_resume);
+        Button logoutButton = findViewById(R.id.btn_logout);
 
         myResumeButton.setOnClickListener(v -> {
-            startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
+            if (currentUser != null && currentUser.isAnonymous()) {
+                CustomToast.showToast(MyProfileActivity.this, "Для начала зарегистрируйтесь", 4000);
+                Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
+            }
         });
 
         if (currentUser != null && currentUser.isAnonymous()) {
             usernameTextView.setText("Гость");
             phoneTextView.setText("Не авторизован");
+            logoutButton.setText("Войти");
+            logoutButton.setTextColor(ContextCompat.getColor(this, R.color.primary_blue));
         } else {
             loadUserProfile();
         }
 
-        findViewById(R.id.btn_logout).setOnClickListener(v -> {
-            final Dialog dialog = new Dialog(this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_logout);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
-
-            Button btnNo = dialog.findViewById(R.id.btn_no);
-            Button btnYes = dialog.findViewById(R.id.btn_yes);
-
-            btnNo.setOnClickListener(view -> dialog.dismiss());
-            btnYes.setOnClickListener(view -> {
-                FirebaseAuth.getInstance().signOut();
+        logoutButton.setOnClickListener(v -> {
+            if (currentUser != null && currentUser.isAnonymous()) {
                 Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                dialog.dismiss();
                 finish();
-            });
+            } else {
+                final Dialog dialog = new Dialog(this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_logout);
+                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
 
-            dialog.show();
+                Button btnNo = dialog.findViewById(R.id.btn_no);
+                Button btnYes = dialog.findViewById(R.id.btn_yes);
+
+                btnNo.setOnClickListener(view -> dialog.dismiss());
+                btnYes.setOnClickListener(view -> {
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    dialog.dismiss();
+                    finish();
+                });
+
+                dialog.show();
+            }
         });
 
         backButton.setOnClickListener(v -> onBackPressed());

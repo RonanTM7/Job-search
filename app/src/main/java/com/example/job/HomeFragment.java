@@ -15,6 +15,7 @@ import com.example.job.adapter.CategoryAdapter;
 import com.example.job.adapter.JobAdapter;
 import com.example.job.model.Job;
 import com.example.job.model.Vacancy;
+import com.example.job.utils.CustomToast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -158,7 +159,10 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
     public void onFavoriteClick(Job job) {
         assert mAuth.getCurrentUser() != null;
         if (mAuth.getCurrentUser().isAnonymous()) {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
+            CustomToast.showToast(getActivity(), "Для начала авторизуйтесь", 4000);
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             return;
         }
         String userId = mAuth.getCurrentUser().getUid();
