@@ -39,8 +39,10 @@ public class JobDetailActivity extends AppCompatActivity {
         }
 
         binding.applyButton.setOnClickListener(v -> {
-            if (job != null && currentUser != null) {
-                if (currentUser.isAnonymous()) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (job != null && user != null) {
+                if (user.isAnonymous()) {
+                    CustomToast.showToast(this, "Для начала авторизуйтесь", 4000);
                     startActivity(new Intent(this, LoginActivity.class));
                 } else {
                     checkResumeAndApply(job);
@@ -65,8 +67,9 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void checkIfApplied(Job job) {
-        if (currentUser != null) {
-            String applicationId = currentUser.getUid() + "_" + job.getId();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && !user.isAnonymous()) {
+            String applicationId = user.getUid() + "_" + job.getId();
             db.collection("applications").document(applicationId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult().exists()) {
                     updateApplyButton(true);
@@ -76,7 +79,10 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void checkResumeAndApply(Job job) {
-        db.collection("resumes").document(currentUser.getUid()).get().addOnCompleteListener(task -> {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null || user.isAnonymous()) return;
+
+        db.collection("resumes").document(user.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 applyToJob(job);
             } else {
@@ -85,9 +91,12 @@ public class JobDetailActivity extends AppCompatActivity {
         });
     }
     private void applyToJob(Job job) {
-        String applicationId = currentUser.getUid() + "_" + job.getId();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null || user.isAnonymous()) return;
+
+        String applicationId = user.getUid() + "_" + job.getId();
         Map<String, Object> application = new HashMap<>();
-        application.put("userId", currentUser.getUid());
+        application.put("userId", user.getUid());
         application.put("vacancyId", job.getId());
         application.put("timestamp", System.currentTimeMillis());
 

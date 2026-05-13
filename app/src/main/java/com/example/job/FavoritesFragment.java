@@ -54,7 +54,10 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
     }
 
     private void loadFavoriteJobs() {
-        assert mAuth.getCurrentUser() != null;
+        if (mAuth.getCurrentUser() == null || mAuth.getCurrentUser().isAnonymous()) {
+            binding.progressBar.setVisibility(View.GONE);
+            return;
+        }
         String userId = mAuth.getCurrentUser().getUid();
         db.collection("favorites").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

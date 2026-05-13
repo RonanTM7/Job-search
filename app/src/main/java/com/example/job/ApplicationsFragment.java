@@ -55,7 +55,7 @@ public class ApplicationsFragment extends Fragment {
     }
 
     private void loadAppliedJobs() {
-        if (mAuth.getCurrentUser() == null) {
+        if (mAuth.getCurrentUser() == null || mAuth.getCurrentUser().isAnonymous()) {
             binding.progressBar.setVisibility(View.GONE);
             return;
         }

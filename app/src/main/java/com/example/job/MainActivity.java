@@ -30,22 +30,19 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser == null) {
             // Если пользователя нет, регистрируем как гостя
             mAuth.signInAnonymously().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    if (user != null) {
-                        registerGuestInFirestore(user, savedInstanceState);
-                    }
+                if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
+                    registerGuestInFirestore(mAuth.getCurrentUser());
+                    initApp(mAuth.getCurrentUser(), savedInstanceState);
                 }
             });
             return;
-        } else if (currentUser.isAnonymous()) {
-            // Если пользователь уже гость, убеждаемся что он есть в базе и инициализируем
-            registerGuestInFirestore(currentUser, savedInstanceState);
-            return;
         }
 
-        // Если пользователь анонимный, позволяем ему видеть MainActivity (вакансии)
-        // Но скрываем/блокируем функции, требующие полной регистрации (favorites, applications)
+        if (currentUser.isAnonymous()) {
+            registerGuestInFirestore(currentUser);
+            initApp(currentUser, savedInstanceState);
+            return;
+        }
 
         if ("ronanauf@gmail.com".equals(currentUser.getEmail())) {
             startActivity(new Intent(this, AdminMainActivity.class));
@@ -56,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         initApp(currentUser, savedInstanceState);
     }
 
-    private void registerGuestInFirestore(FirebaseUser user, Bundle savedInstanceState) {
+    private void registerGuestInFirestore(FirebaseUser user) {
         String uid = user.getUid();
         com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
         java.util.Map<String, Object> guest = new java.util.HashMap<>();
@@ -66,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
         guest.put("phone", "N/A");
 
         db.collection("users").document(uid).set(guest, com.google.firebase.firestore.SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    initApp(user, savedInstanceState);
-                })
                 .addOnFailureListener(e -> android.util.Log.e("MainActivity", "Guest Firestore reg failed", e));
     }
 
@@ -88,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        boolean isAnonymous = user != null && user.isAnonymous();
-
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            boolean isAnonymous = user == null || user.isAnonymous();
+
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
                 getSupportFragmentManager().beginTransaction()
@@ -100,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nav_favorites) {
                 if (isAnonymous) {
+                    com.example.job.utils.CustomToast.showToast(this, "Для начала авторизуйтесь", 4000);
                     startActivity(new Intent(this, LoginActivity.class));
                     return false;
                 }
@@ -109,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nav_applications) {
                 if (isAnonymous) {
+                    com.example.job.utils.CustomToast.showToast(this, "Для начала авторизуйтесь", 4000);
                     startActivity(new Intent(this, LoginActivity.class));
                     return false;
                 }
