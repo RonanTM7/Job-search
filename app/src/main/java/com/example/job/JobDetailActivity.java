@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,7 +40,11 @@ public class JobDetailActivity extends AppCompatActivity {
 
         binding.applyButton.setOnClickListener(v -> {
             if (job != null && currentUser != null) {
-                checkResumeAndApply(job);
+                if (currentUser.isAnonymous()) {
+                    startActivity(new Intent(this, LoginActivity.class));
+                } else {
+                    checkResumeAndApply(job);
+                }
             }
         });
 

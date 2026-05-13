@@ -59,6 +59,10 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
 
     private void loadFavoriteJobIds() {
         assert mAuth.getCurrentUser() != null;
+        if (mAuth.getCurrentUser().isAnonymous()) {
+            loadDataFromFirestore();
+            return;
+        }
         String userId = mAuth.getCurrentUser().getUid();
         db.collection("favorites").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -153,6 +157,10 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
     @Override
     public void onFavoriteClick(Job job) {
         assert mAuth.getCurrentUser() != null;
+        if (mAuth.getCurrentUser().isAnonymous()) {
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            return;
+        }
         String userId = mAuth.getCurrentUser().getUid();
         String vacancyId = job.getId();
         String favoriteId = userId + "_" + vacancyId;
