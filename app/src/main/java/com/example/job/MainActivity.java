@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             return;
+        } else if (currentUser.isAnonymous()) {
+            // Если пользователь уже гость, убеждаемся что он есть в базе и инициализируем
+            registerGuestInFirestore(currentUser, savedInstanceState);
+            return;
         }
 
         // Если пользователь анонимный, позволяем ему видеть MainActivity (вакансии)

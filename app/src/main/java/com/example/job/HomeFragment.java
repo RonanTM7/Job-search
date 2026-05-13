@@ -17,6 +17,7 @@ import com.example.job.model.Job;
 import com.example.job.model.Vacancy;
 import com.example.job.utils.CustomToast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
@@ -59,8 +60,8 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
     }
 
     private void loadFavoriteJobIds() {
-        assert mAuth.getCurrentUser() != null;
-        if (mAuth.getCurrentUser().isAnonymous()) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null || user.isAnonymous()) {
             loadDataFromFirestore();
             return;
         }
@@ -157,8 +158,8 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
 
     @Override
     public void onFavoriteClick(Job job) {
-        assert mAuth.getCurrentUser() != null;
-        if (mAuth.getCurrentUser().isAnonymous()) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null || user.isAnonymous()) {
             CustomToast.showToast(getActivity(), "Для начала авторизуйтесь", 4000);
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
