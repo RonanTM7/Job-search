@@ -134,6 +134,11 @@ public class ChatActivity extends AppCompatActivity {
                     chatId = newUser.getUid();
                     registerGuestInFirestore(androidId);
                 }
+            }).addOnFailureListener(e -> {
+                android.util.Log.e("ChatActivity", "Anonymous auth failed", e);
+                if (e.getMessage() != null && e.getMessage().contains("restricted to administrators")) {
+                    android.util.Log.e("ChatActivity", "ACTION REQUIRED: Enable 'Anonymous' provider in Firebase Console");
+                }
             });
         }
     }
