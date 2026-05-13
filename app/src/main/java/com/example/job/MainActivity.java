@@ -26,11 +26,16 @@ public class MainActivity extends AppCompatActivity {
         // Проверка авторизации
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        // Если пользователя нет совсем, идем в LoginActivity (там будет анонимный вход)
         if (currentUser == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
+
+        // Если пользователь анонимный, позволяем ему видеть MainActivity (вакансии)
+        // Но скрываем/блокируем функции, требующие полной регистрации (favorites, applications)
 
         if ("ronanauf@gmail.com".equals(currentUser.getEmail())) {
             startActivity(new Intent(this, AdminMainActivity.class));
@@ -53,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        boolean isAnonymous = user != null && user.isAnonymous();
+
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
@@ -61,11 +69,19 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 return true;
             } else if (itemId == R.id.nav_favorites) {
+                if (isAnonymous) {
+                    startActivity(new Intent(this, LoginActivity.class));
+                    return false;
+                }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new FavoritesFragment())
                         .commit();
                 return true;
             } else if (itemId == R.id.nav_applications) {
+                if (isAnonymous) {
+                    startActivity(new Intent(this, LoginActivity.class));
+                    return false;
+                }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new ApplicationsFragment())
                         .commit();

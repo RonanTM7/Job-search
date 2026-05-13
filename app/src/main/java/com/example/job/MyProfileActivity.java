@@ -43,7 +43,12 @@ public class MyProfileActivity extends AppCompatActivity {
             startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
         });
 
-        loadUserProfile();
+        if (currentUser != null && currentUser.isAnonymous()) {
+            usernameTextView.setText("Гость");
+            phoneTextView.setText("Не авторизован");
+        } else {
+            loadUserProfile();
+        }
 
         findViewById(R.id.btn_logout).setOnClickListener(v -> {
             final Dialog dialog = new Dialog(this);

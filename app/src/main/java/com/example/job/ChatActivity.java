@@ -41,6 +41,11 @@ public class ChatActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        // Default guest ID to avoid crash
+        currentUserId = "guest_" + androidId;
+        chatId = "guest_" + androidId;
+
         if (user != null) {
             currentUserId = user.getUid();
             chatId = user.getUid();
@@ -55,11 +60,12 @@ public class ChatActivity extends AppCompatActivity {
                     ((TextView)findViewById(R.id.chat_title)).setText(userName);
                 }
             }
+
+            if (user.isAnonymous()) {
+                registerGuestInFirestore(androidId);
+            }
         } else {
-            // Guest mode
-            String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-            currentUserId = "guest_" + androidId;
-            chatId = "guest_" + androidId;
+            // This case handles user == null but normally LoginActivity signs in anonymously
             registerGuestInFirestore(androidId);
         }
 
@@ -99,14 +105,37 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void registerGuestInFirestore(String androidId) {
-        java.util.Map<String, Object> guest = new java.util.HashMap<>();
-        guest.put("username", "Гость (" + androidId.substring(0, Math.min(4, androidId.length())) + ")");
-        guest.put("status", "active");
-        guest.put("email", "guest_" + androidId + "@device.id");
-        guest.put("phone", "N/A");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && user.isAnonymous()) {
+            boolean chatIdChanged = !currentUserId.equals(user.getUid());
+            currentUserId = user.getUid();
+            chatId = user.getUid();
 
-        db.collection("users").document(currentUserId).set(guest, com.google.firebase.firestore.SetOptions.merge())
-                .addOnFailureListener(e -> android.util.Log.e("ChatActivity", "Guest reg failed", e));
+            if (chatIdChanged) {
+                adapter = new MessageAdapter(currentUserId);
+                recyclerMessages.setAdapter(adapter);
+                loadMessages();
+            }
+
+            java.util.Map<String, Object> guest = new java.util.HashMap<>();
+            guest.put("username", "Гость (" + currentUserId.substring(0, Math.min(4, currentUserId.length())) + ")");
+            guest.put("status", "active");
+            guest.put("email", "guest_" + currentUserId + "@anonymous.auth");
+            guest.put("phone", "N/A");
+
+            db.collection("users").document(currentUserId).set(guest, com.google.firebase.firestore.SetOptions.merge())
+                    .addOnFailureListener(e -> android.util.Log.e("ChatActivity", "Guest reg failed", e));
+        } else if (user == null) {
+            // If still no user, try to sign in anonymously
+            FirebaseAuth.getInstance().signInAnonymously().addOnSuccessListener(authResult -> {
+                FirebaseUser newUser = authResult.getUser();
+                if (newUser != null) {
+                    currentUserId = newUser.getUid();
+                    chatId = newUser.getUid();
+                    registerGuestInFirestore(androidId);
+                }
+            });
+        }
     }
 
     private void sendMessage() {
