@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "987278489865",
+    "firebase_url": "https://jobsearchbd-be5af-default-rtdb.firebaseio.com",
     "project_id": "jobsearchbd-be5af",
     "storage_bucket": "jobsearchbd-be5af.firebasestorage.app"
   },
@@ -10,6 +11,25 @@
         "mobilesdk_app_id": "1:987278489865:android:1337b3a638d9d979703bd8",
         "android_client_info": {
           "package_name": "com.example.job"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYbBe0Sci8Nve1wkT7OmUuAcifP5s8L8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987278489865:android:62d037caa33e8bc3703bd8",
+        "android_client_info": {
+          "package_name": "job.search.app"
         }
       },
       "oauth_client": [],

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-        namespace = "com.example.job"
+    namespace = "job.search.app"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.job"
+        applicationId = "job.search.app"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
