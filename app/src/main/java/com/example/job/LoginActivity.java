@@ -78,17 +78,29 @@ public class LoginActivity extends AppCompatActivity {
 
     private void registerGuestIfNeeded() {
         if (mAuth.getCurrentUser() == null) {
-            String androidId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-            String guestId = "guest_" + androidId;
+            mAuth.signInAnonymously().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        String uid = user.getUid();
+                        java.util.Map<String, Object> guest = new java.util.HashMap<>();
+                        guest.put("username", "Гость (" + uid.substring(0, Math.min(4, uid.length())) + ")");
+                        guest.put("status", "active");
+                        guest.put("email", "guest_" + uid + "@anonymous.auth");
+                        guest.put("phone", "N/A");
 
-            java.util.Map<String, Object> guest = new java.util.HashMap<>();
-            guest.put("username", "Гость (" + androidId.substring(0, Math.min(4, androidId.length())) + ")");
-            guest.put("status", "active");
-            guest.put("email", "guest_" + androidId + "@device.id");
-            guest.put("phone", "N/A");
-
-            db.collection("users").document(guestId).set(guest, com.google.firebase.firestore.SetOptions.merge())
-                    .addOnFailureListener(e -> android.util.Log.e("LoginActivity", "Guest reg failed", e));
+                        db.collection("users").document(uid).set(guest, com.google.firebase.firestore.SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                    // Once anonymous sign in and firestore reg is successful, go to MainActivity
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> android.util.Log.e("LoginActivity", "Guest Firestore reg failed", e));
+                    }
+                } else {
+                    android.util.Log.e("LoginActivity", "Anonymous auth failed", task.getException());
+                }
+            });
         }
     }
 
