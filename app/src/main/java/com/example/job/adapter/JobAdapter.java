@@ -65,6 +65,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateFavorites(Set<String> newFavoriteJobIds) {
         this.favoriteJobIds = newFavoriteJobIds;
         notifyDataSetChanged();

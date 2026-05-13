@@ -228,8 +228,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                 })
-                .addOnFailureListener(e -> runOnUiThread(() -> {
-                    CustomToast.showToast(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), 4000);
-                }));
+                .addOnFailureListener(e -> runOnUiThread(() -> CustomToast.showToast(RegisterActivity.this, "Ошибка сохранения данных: " + e.getMessage(), 4000)));
     }
 }

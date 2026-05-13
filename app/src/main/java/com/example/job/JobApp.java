@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.example.job.utils.CustomToast;
 
-public class JobApp extends Application {
+public class    JobApp extends Application {
 
     private Activity currentActivity;
     private String activityBeforeNoInternet;

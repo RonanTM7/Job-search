@@ -1,5 +1,6 @@
 package com.example.job.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import java.util.List;
 public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.UserViewHolder> {
 
     private List<User> users = new ArrayList<>();
-    private OnUserActionListener listener;
+    private final OnUserActionListener listener;
 
     public interface OnUserActionListener {
         void onResetPassword(User user);
@@ -28,6 +29,7 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
         this.listener = listener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setUsers(List<User> users) {
         this.users = users;
         notifyDataSetChanged();
@@ -40,6 +42,7 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.User
         return new UserViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = users.get(position);

@@ -1,10 +1,9 @@
 package com.example.job.adapter;
 
-import android.view.Gravity;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -18,12 +17,13 @@ import java.util.List;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     private List<Message> messages = new ArrayList<>();
-    private String currentUserId;
+    private final String currentUserId;
 
     public MessageAdapter(String currentUserId) {
         this.currentUserId = currentUserId;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setMessages(List<Message> messages) {
         this.messages = messages;
         notifyDataSetChanged();

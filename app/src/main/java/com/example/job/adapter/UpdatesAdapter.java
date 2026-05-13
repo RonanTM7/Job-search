@@ -1,5 +1,6 @@
 package com.example.job.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ public class UpdatesAdapter extends RecyclerView.Adapter<UpdatesAdapter.UpdateVi
 
     private List<Update> updateList = new ArrayList<>();
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setUpdates(List<Update> updates) {
         this.updateList = updates;
         notifyDataSetChanged();

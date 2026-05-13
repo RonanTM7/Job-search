@@ -69,43 +69,6 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
             startActivityForResult(intent, FORGOT_PASSWORD_REQUEST_CODE);
         });
-        findViewById(R.id.textViewSupport).setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, ChatActivity.class));
-        });
-
-        registerGuestIfNeeded();
-    }
-
-    private void registerGuestIfNeeded() {
-        if (mAuth.getCurrentUser() == null) {
-            mAuth.signInAnonymously().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    if (user != null) {
-                        String uid = user.getUid();
-                        java.util.Map<String, Object> guest = new java.util.HashMap<>();
-                        guest.put("username", "Гость (" + uid.substring(0, Math.min(4, uid.length())) + ")");
-                        guest.put("status", "active");
-                        guest.put("email", "guest_" + uid + "@anonymous.auth");
-                        guest.put("phone", "N/A");
-
-                        db.collection("users").document(uid).set(guest, com.google.firebase.firestore.SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> {
-                                    // Once anonymous sign in and firestore reg is successful, go to MainActivity
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                    finish();
-                                })
-                                .addOnFailureListener(e -> android.util.Log.e("LoginActivity", "Guest Firestore reg failed", e));
-                    }
-                } else {
-                    Exception e = task.getException();
-                    android.util.Log.e("LoginActivity", "Anonymous auth failed", e);
-                    if (e != null && e.getMessage() != null && e.getMessage().contains("restricted to administrators")) {
-                        android.util.Log.e("LoginActivity", "ACTION REQUIRED: Enable 'Anonymous' provider in Firebase Console -> Authentication -> Sign-in method");
-                    }
-                }
-            });
-        }
     }
 
     @Override

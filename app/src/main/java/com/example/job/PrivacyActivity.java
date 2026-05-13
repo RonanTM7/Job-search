@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -177,6 +178,7 @@ public class PrivacyActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     private void showNewValueDialog(String field, FirebaseUser user, String oldPassword) {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -19,7 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class NewChangePhoneActivity extends AppCompatActivity {
 
     private EditText editTextPhone;
-    private Button btnChangePhone;
     private TextView textError;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
@@ -37,7 +36,7 @@ public class NewChangePhoneActivity extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         editTextPhone = findViewById(R.id.edit_text_phone);
-        btnChangePhone = findViewById(R.id.btn_change_phone);
+        Button btnChangePhone = findViewById(R.id.btn_change_phone);
         textError = findViewById(R.id.text_error);
         ImageButton backButton = findViewById(R.id.btn_back);
 
@@ -85,7 +84,7 @@ public class NewChangePhoneActivity extends AppCompatActivity {
                     formatted.append(" ").append(digits.substring(7, Math.min(9, digits.length())));
                 }
                 if (digits.length() > 9) {
-                    formatted.append(" ").append(digits.substring(9, Math.min(11, digits.length())));
+                    formatted.append(" ").append(digits.substring(9));
                 }
 
                 s.replace(0, s.length(), formatted.toString());

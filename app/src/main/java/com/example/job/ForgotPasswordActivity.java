@@ -12,8 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Objects;
 import com.example.job.utils.CustomToast;
 
-
-
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     private EditText emailEditText;

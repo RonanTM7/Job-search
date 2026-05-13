@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.EditText;
@@ -22,7 +23,6 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerMessages;
     private MessageAdapter adapter;
     private EditText editMessage;
-    private ImageButton btnSend;
     private FirebaseFirestore db;
     private String chatId;
     private String currentUserId;
@@ -41,7 +41,7 @@ public class ChatActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        @SuppressLint("HardwareIds") String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         // Default guest ID to avoid crash
         currentUserId = "guest_" + androidId;
         chatId = "guest_" + androidId;
@@ -71,7 +71,7 @@ public class ChatActivity extends AppCompatActivity {
 
         recyclerMessages = findViewById(R.id.recycler_messages);
         editMessage = findViewById(R.id.edit_message);
-        btnSend = findViewById(R.id.btn_send);
+        ImageButton btnSend = findViewById(R.id.btn_send);
 
         adapter = new MessageAdapter(currentUserId);
         recyclerMessages.setLayoutManager(new LinearLayoutManager(this));
@@ -89,7 +89,6 @@ public class ChatActivity extends AppCompatActivity {
                 .orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) {
-                        android.widget.Toast.makeText(this, "Ошибка загрузки: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if (snapshot == null) return;
@@ -98,7 +97,7 @@ public class ChatActivity extends AppCompatActivity {
                         messages.add(doc.toObject(Message.class));
                     }
                     adapter.setMessages(messages);
-                    if (messages.size() > 0) {
+                    if (!messages.isEmpty()) {
                         recyclerMessages.scrollToPosition(messages.size() - 1);
                     }
                 });
@@ -145,8 +144,7 @@ public class ChatActivity extends AppCompatActivity {
         String messageId = db.collection("chats").document(chatId).collection("messages").document().getId();
         Message message = new Message(messageId, currentUserId, text, System.currentTimeMillis(), isAdmin);
 
-        db.collection("chats").document(chatId).collection("messages").document(messageId).set(message)
-                .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка отправки: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
+        db.collection("chats").document(chatId).collection("messages").document(messageId).set(message);
 
         // Update chat metadata for admin list
         java.util.Map<String, Object> chatMeta = new java.util.HashMap<>();
@@ -159,20 +157,17 @@ public class ChatActivity extends AppCompatActivity {
             if (user != null) {
                 db.collection("users").document(user.getUid()).get().addOnSuccessListener(doc -> {
                     chatMeta.put("userName", doc.getString("username") != null ? doc.getString("username") : "Пользователь");
-                    db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge())
-                            .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка меты: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
+                    db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
                 }).addOnFailureListener(e -> {
                     chatMeta.put("userName", "Пользователь (ошибка)");
                     db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
                 });
             } else {
                 chatMeta.put("userName", "Гость");
-                db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge())
-                        .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка меты гостя: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
+                db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
             }
         } else {
-            db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge())
-                    .addOnFailureListener(e -> android.widget.Toast.makeText(this, "Ошибка меты админа: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show());
+            db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
         }
 
         editMessage.setText("");

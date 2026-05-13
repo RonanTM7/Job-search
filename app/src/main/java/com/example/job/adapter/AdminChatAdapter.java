@@ -1,5 +1,6 @@
 package com.example.job.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import java.util.List;
 public class AdminChatAdapter extends RecyclerView.Adapter<AdminChatAdapter.ChatViewHolder> {
 
     private List<ChatMeta> chats = new ArrayList<>();
-    private OnChatClickListener listener;
+    private final OnChatClickListener listener;
 
     public interface OnChatClickListener {
         void onChatClick(ChatMeta chat);
@@ -24,6 +25,7 @@ public class AdminChatAdapter extends RecyclerView.Adapter<AdminChatAdapter.Chat
         this.listener = listener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setChats(List<ChatMeta> chats) {
         this.chats = chats;
         notifyDataSetChanged();

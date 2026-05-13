@@ -1,5 +1,6 @@
 package com.example.job;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class NewChangeEmailActivity extends AppCompatActivity {
 
     private EditText editTextEmail;
-    private Button btnChangeEmail;
     private TextView textError;
     private FirebaseAuth mAuth;
 
@@ -33,7 +33,7 @@ public class NewChangeEmailActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.edit_text_email);
-        btnChangeEmail = findViewById(R.id.btn_change_email);
+        Button btnChangeEmail = findViewById(R.id.btn_change_email);
         textError = findViewById(R.id.text_error);
         ImageButton backButton = findViewById(R.id.btn_back);
 
@@ -57,6 +57,7 @@ public class NewChangeEmailActivity extends AppCompatActivity {
         btnChangeEmail.setOnClickListener(v -> changeEmail());
     }
 
+    @SuppressLint("SetTextI18n")
     private void changeEmail() {
         String newEmail = editTextEmail.getText().toString().trim();
         FirebaseUser user = mAuth.getCurrentUser();

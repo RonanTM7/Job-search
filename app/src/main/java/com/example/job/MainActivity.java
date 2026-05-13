@@ -27,10 +27,20 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        // Если пользователя нет совсем, идем в LoginActivity (там будет анонимный вход)
         if (currentUser == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            // Если пользователя нет, регистрируем как гостя
+            mAuth.signInAnonymously().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null) {
+                        registerGuestInFirestore(user, savedInstanceState);
+                    }
+                }
+            });
+            return;
+        } else if (currentUser.isAnonymous()) {
+            // Если пользователь уже гость, убеждаемся что он есть в базе и инициализируем
+            registerGuestInFirestore(currentUser, savedInstanceState);
             return;
         }
 
@@ -43,7 +53,27 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        listenToUserStatus(currentUser.getUid());
+        initApp(currentUser, savedInstanceState);
+    }
+
+    private void registerGuestInFirestore(FirebaseUser user, Bundle savedInstanceState) {
+        String uid = user.getUid();
+        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+        java.util.Map<String, Object> guest = new java.util.HashMap<>();
+        guest.put("username", "Гость (" + uid.substring(0, Math.min(4, uid.length())) + ")");
+        guest.put("status", "active");
+        guest.put("email", "guest_" + uid + "@anonymous.auth");
+        guest.put("phone", "N/A");
+
+        db.collection("users").document(uid).set(guest, com.google.firebase.firestore.SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    initApp(user, savedInstanceState);
+                })
+                .addOnFailureListener(e -> android.util.Log.e("MainActivity", "Guest Firestore reg failed", e));
+    }
+
+    private void initApp(FirebaseUser user, Bundle savedInstanceState) {
+        listenToUserStatus(user.getUid());
 
         setContentView(R.layout.activity_main);
 
@@ -108,13 +138,17 @@ public class MainActivity extends AppCompatActivity {
     private void refreshCurrentFragment() {
         androidx.fragment.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (currentFragment instanceof HomeFragment) {
-            ((HomeFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+            assert currentFragment.getView() != null;
+            currentFragment.onViewCreated(currentFragment.getView(), null);
         } else if (currentFragment instanceof FavoritesFragment) {
-            ((FavoritesFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+            assert currentFragment.getView() != null;
+            currentFragment.onViewCreated(currentFragment.getView(), null);
         } else if (currentFragment instanceof ApplicationsFragment) {
-            ((ApplicationsFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+            assert currentFragment.getView() != null;
+            currentFragment.onViewCreated(currentFragment.getView(), null);
         } else if (currentFragment instanceof SettingsFragment) {
-            ((SettingsFragment) currentFragment).onViewCreated(currentFragment.getView(), null);
+            assert currentFragment.getView() != null;
+            currentFragment.onViewCreated(currentFragment.getView(), null);
         }
     }
 

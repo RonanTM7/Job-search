@@ -15,7 +15,6 @@ import java.util.List;
 
 public class AdminUsersActivity extends AppCompatActivity implements AdminUserAdapter.OnUserActionListener {
 
-    private RecyclerView recyclerUsers;
     private AdminUserAdapter adapter;
     private FirebaseFirestore db;
 
@@ -30,7 +29,7 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
         setContentView(R.layout.activity_admin_users);
 
         db = FirebaseFirestore.getInstance();
-        recyclerUsers = findViewById(R.id.recycler_users);
+        RecyclerView recyclerUsers = findViewById(R.id.recycler_admin_users);
         recyclerUsers.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AdminUserAdapter(this);
         recyclerUsers.setAdapter(adapter);
@@ -53,15 +52,13 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
 
                 if (uid.startsWith("guest_") || (user.getEmail() != null && user.getEmail().endsWith("@anonymous.auth"))) continue;
 
-                if (user != null) {
-                    user.setUid(uid);
-                    if ("ronanauf@gmail.com".equals(user.getEmail())) continue;
+                user.setUid(uid);
+                if ("ronanauf@gmail.com".equals(user.getEmail())) continue;
 
-                    String status = user.getStatus();
-                    if ("blocked".equals(status)) blocked.add(user);
-                    else if ("deleted".equals(status)) deleted.add(user);
-                    else active.add(user);
-                }
+                String status = user.getStatus();
+                if ("blocked".equals(status)) blocked.add(user);
+                else if ("deleted".equals(status)) deleted.add(user);
+                else active.add(user);
             }
 
             List<User> all = new ArrayList<>();
