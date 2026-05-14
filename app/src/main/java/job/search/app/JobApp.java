@@ -51,6 +51,11 @@ public class    JobApp extends Application {
                 currentActivity = activity;
                 if (activity instanceof NoInternetActivity) {
                     isNoInternetVisible = true;
+                } else {
+                    // Check internet connection on resume of any activity
+                    if (!isNetworkAvailable()) {
+                        triggerNoInternet(activity);
+                    }
                 }
             }
 
@@ -102,6 +107,27 @@ public class    JobApp extends Application {
         this.isManualRecoveryInProgress = inProgress;
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+            return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
+        }
+        return false;
+    }
+
+    private void triggerNoInternet(Activity activity) {
+        if (!isNoInternetVisible) {
+            activityBeforeNoInternet = activity.getClass().getSimpleName();
+            Intent intent = new Intent(activity, NoInternetActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            isNoInternetVisible = true;
+        }
+    }
+
     private void setupNetworkMonitoring() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return;
@@ -131,14 +157,8 @@ public class    JobApp extends Application {
             @Override
             public void onLost(@NonNull Network network) {
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (!isNoInternetVisible && currentActivity != null && !(currentActivity instanceof NoInternetActivity)) {
-                        // Сохраняем имя текущей активности перед переходом
-                        activityBeforeNoInternet = currentActivity.getClass().getSimpleName();
-
-                        Intent intent = new Intent(currentActivity, NoInternetActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        isNoInternetVisible = true;
+                    if (currentActivity != null && !(currentActivity instanceof NoInternetActivity)) {
+                        triggerNoInternet(currentActivity);
                     }
                 });
             }
