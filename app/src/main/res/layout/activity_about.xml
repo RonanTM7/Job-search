@@ -28,17 +28,56 @@
         android:layout_alignBottom="@id/btn_back"
         android:gravity="center_vertical"/>
 
-    <TextView
-        android:id="@+id/tv_app_version"
+    <LinearLayout
+        android:id="@+id/version_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_version"
-        android:background="?attr/settings_button_color"
-        android:padding="16dp"
+        android:orientation="vertical"
         android:layout_below="@id/tv_title"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/open_sans"
-        android:textColor="?attr/textColor"/>
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/settings_button_color"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_app_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/app_version"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?attr/textColor"/>
+
+            <TextView
+                android:id="@+id/tv_outdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/outdated"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="gone"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/open_sans" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_update_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/update"
+            android:background="?attr/settings_button_color"
+            android:padding="16dp"
+            android:layout_marginTop="1dp"
+            android:fontFamily="@font/open_sans"
+            android:textColor="@color/primary_blue"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_what_new"
@@ -47,7 +86,7 @@
         android:text="@string/what_new"
         android:background="?attr/settings_button_color"
         android:padding="16dp"
-        android:layout_below="@id/tv_app_version"
+        android:layout_below="@id/version_container"
         android:layout_marginTop="1dp"
         android:fontFamily="@font/open_sans"
         android:textColor="@color/primary_blue"/>
