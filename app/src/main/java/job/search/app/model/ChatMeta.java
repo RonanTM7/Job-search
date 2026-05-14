@@ -1,14 +1,12 @@
 package job.search.app.model;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
 
 public class ChatMeta {
     private String chatId;
     private String userName;
     private String lastMessage;
-    @ServerTimestamp
     private Object timestamp;
 
     public ChatMeta() {}
