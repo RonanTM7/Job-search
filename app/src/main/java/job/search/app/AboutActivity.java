@@ -24,6 +24,29 @@ public class AboutActivity extends AppCompatActivity {
         String versionName = getString(R.string.app_version_number);
         appVersionTextView.setText("Версия " + versionName);
 
+        TextView tvOutdated = findViewById(R.id.tv_outdated);
+        TextView tvUpdateApp = findViewById(R.id.tv_update_app);
+
+        job.search.app.utils.UpdateManager.checkForUpdates(new job.search.app.utils.UpdateManager.UpdateCheckCallback() {
+            @Override
+            public void onUpdateAvailable(String latestVersion, String downloadUrl) {
+                tvOutdated.setVisibility(android.view.View.VISIBLE);
+                tvUpdateApp.setVisibility(android.view.View.VISIBLE);
+                tvUpdateApp.setOnClickListener(v -> {
+                    job.search.app.utils.UpdateManager.downloadAndInstallApk(AboutActivity.this, downloadUrl, latestVersion);
+                });
+            }
+
+            @Override
+            public void onNoUpdate() {
+                tvOutdated.setVisibility(android.view.View.GONE);
+                tvUpdateApp.setVisibility(android.view.View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e) {}
+        });
+
         findViewById(R.id.tv_what_new).setOnClickListener(v -> {
             android.content.Intent intent = new android.content.Intent(AboutActivity.this, UpdatesActivity.class);
             startActivity(intent);

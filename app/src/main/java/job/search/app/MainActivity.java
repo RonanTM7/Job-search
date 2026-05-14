@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         listenToUserStatus(user.getUid());
 
         setContentView(R.layout.activity_main);
+        checkForUpdates();
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
         setupBottomNavigation();
@@ -182,6 +183,61 @@ public class MainActivity extends AppCompatActivity {
         if (userStatusListener != null) {
             userStatusListener.remove();
         }
+    }
+
+    private void checkForUpdates() {
+        job.search.app.utils.UpdateManager.checkForUpdates(new job.search.app.utils.UpdateManager.UpdateCheckCallback() {
+            @Override
+            public void onUpdateAvailable(String latestVersion, String downloadUrl) {
+                showUpdateNotification(latestVersion, downloadUrl);
+            }
+
+            @Override
+            public void onNoUpdate() {}
+
+            @Override
+            public void onError(Exception e) {}
+        });
+    }
+
+    private void showUpdateNotification(String version, String url) {
+        android.view.ViewGroup rootView = findViewById(android.R.id.content);
+        if (rootView.findViewById(R.id.update_notification_card) != null) return;
+
+        android.view.View notificationView = getLayoutInflater().inflate(R.layout.layout_update_notification, rootView, false);
+        rootView.addView(notificationView);
+
+        notificationView.findViewById(R.id.btn_update_now).setOnClickListener(v -> {
+            job.search.app.utils.UpdateManager.downloadAndInstallApk(MainActivity.this, url, version);
+            rootView.removeView(notificationView);
+        });
+
+        // Simple swipe up to dismiss logic
+        notificationView.setOnTouchListener(new android.view.View.OnTouchListener() {
+            private float initialY;
+            @Override
+            public boolean onTouch(android.view.View v, android.view.MotionEvent event) {
+                switch (event.getAction()) {
+                    case android.view.MotionEvent.ACTION_DOWN:
+                        initialY = event.getRawY();
+                        return true;
+                    case android.view.MotionEvent.ACTION_MOVE:
+                        float deltaY = event.getRawY() - initialY;
+                        if (deltaY < 0) {
+                            v.setTranslationY(deltaY);
+                        }
+                        return true;
+                    case android.view.MotionEvent.ACTION_UP:
+                        if (v.getTranslationY() < -v.getHeight() / 2) {
+                            rootView.removeView(v);
+                        } else {
+                            v.animate().translationY(0).setDuration(200).start();
+                        }
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void applySavedTheme() {
