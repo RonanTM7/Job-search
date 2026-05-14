@@ -12,12 +12,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import androidx.core.content.FileProvider;
 import job.search.app.BuildConfig;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,7 +52,7 @@ public class UpdateManager {
                 reader.close();
 
                 JSONObject jsonObject = new JSONObject(response.toString());
-                String latestVersion = jsonObject.getString("tag_name");
+                String latestVersion = jsonObject.getString("name");
                 String currentVersion = BuildConfig.VERSION_NAME;
 
                 Log.d(TAG, "Current version: " + currentVersion + ", Latest version: " + latestVersion);
