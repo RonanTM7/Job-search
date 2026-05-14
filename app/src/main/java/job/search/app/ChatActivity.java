@@ -13,9 +13,12 @@ import job.search.app.adapter.MessageAdapter;
 import job.search.app.model.Message;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -94,8 +97,15 @@ public class ChatActivity extends AppCompatActivity {
                     if (snapshot == null) return;
                     List<Message> messages = new ArrayList<>();
                     for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
-                        messages.add(doc.toObject(Message.class));
+                        Message msg = doc.toObject(Message.class);
+                        if (msg != null) {
+                            messages.add(msg);
+                        }
                     }
+
+                    // Extra sort to be sure
+                    Collections.sort(messages, (m1, m2) -> Long.compare(m1.getTimestampLong(), m2.getTimestampLong()));
+
                     adapter.setMessages(messages);
                     if (!messages.isEmpty()) {
                         recyclerMessages.scrollToPosition(messages.size() - 1);
@@ -142,14 +152,14 @@ public class ChatActivity extends AppCompatActivity {
         if (text.isEmpty()) return;
 
         String messageId = db.collection("chats").document(chatId).collection("messages").document().getId();
-        Message message = new Message(messageId, currentUserId, text, System.currentTimeMillis(), isAdmin);
+        Message message = new Message(messageId, currentUserId, text, FieldValue.serverTimestamp(), isAdmin);
 
         db.collection("chats").document(chatId).collection("messages").document(messageId).set(message);
 
         // Update chat metadata for admin list
         java.util.Map<String, Object> chatMeta = new java.util.HashMap<>();
         chatMeta.put("lastMessage", text);
-        chatMeta.put("timestamp", System.currentTimeMillis());
+        chatMeta.put("timestamp", FieldValue.serverTimestamp());
         chatMeta.put("chatId", chatId);
 
         if (!isAdmin) {

@@ -58,8 +58,15 @@ public class AdminChatsActivity extends AppCompatActivity {
 
                     List<ChatMeta> chats = new ArrayList<>();
                     for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
-                        chats.add(doc.toObject(ChatMeta.class));
+                        ChatMeta meta = doc.toObject(ChatMeta.class);
+                        if (meta != null) {
+                            chats.add(meta);
+                        }
                     }
+
+                    // Extra sort to be sure
+                    java.util.Collections.sort(chats, (c1, c2) -> Long.compare(c2.getTimestampLong(), c1.getTimestampLong()));
+
                     adapter.setChats(chats);
                 });
     }
