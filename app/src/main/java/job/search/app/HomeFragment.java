@@ -163,7 +163,6 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
         if (user == null || user.isAnonymous()) {
             CustomToast.showToast(requireActivity(), "Для начала авторизуйтесь", 4000);
             Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             return;
         }
@@ -175,7 +174,7 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
             db.collection("favorites").document(favoriteId).delete().addOnSuccessListener(aVoid -> {
                 favoriteJobIds.remove(vacancyId);
                 jobAdapter.updateFavorites(favoriteJobIds);
-            });
+            }).addOnFailureListener(e -> CustomToast.showToast(requireActivity(), "Ошибка: " + e.getMessage(), 4000));
         } else {
             Map<String, Object> favorite = new HashMap<>();
             favorite.put("userId", userId);
@@ -183,7 +182,7 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
             db.collection("favorites").document(favoriteId).set(favorite).addOnSuccessListener(aVoid -> {
                 favoriteJobIds.add(vacancyId);
                 jobAdapter.updateFavorites(favoriteJobIds);
-            });
+            }).addOnFailureListener(e -> CustomToast.showToast(requireActivity(), "Ошибка: " + e.getMessage(), 4000));
         }
     }
 }

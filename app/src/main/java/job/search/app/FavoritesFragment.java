@@ -69,6 +69,11 @@ public class FavoritesFragment extends Fragment implements JobAdapter.OnFavorite
                     favoriteJobs.clear();
                     jobAdapter.updateData(favoriteJobs);
                 }
+            } else {
+                binding.progressBar.setVisibility(View.GONE);
+                if (task.getException() != null) {
+                    job.search.app.utils.CustomToast.showToast(requireActivity(), "Ошибка: " + task.getException().getMessage(), 4000);
+                }
             }
         });
     }

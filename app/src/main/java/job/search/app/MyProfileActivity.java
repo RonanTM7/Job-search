@@ -43,11 +43,9 @@ public class MyProfileActivity extends AppCompatActivity {
 
         myResumeButton.setOnClickListener(v -> {
             if (currentUser != null && currentUser.isAnonymous()) {
-                CustomToast.showToast(MyProfileActivity.this, "Для начала зарегистрируйтесь", 4000);
+                CustomToast.showToast(MyProfileActivity.this, "Для начала авторизуйтесь", 4000);
                 Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                finish();
             } else {
                 startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
             }
@@ -65,9 +63,7 @@ public class MyProfileActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> {
             if (currentUser != null && currentUser.isAnonymous()) {
                 Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                finish();
             } else {
                 final Dialog dialog = new Dialog(this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
