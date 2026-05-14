@@ -72,6 +72,5 @@ public class NoInternetActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Блокируем кнопку назад
-        super.onBackPressed();
     }
 }

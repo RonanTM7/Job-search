@@ -41,7 +41,7 @@ public class JobDetailActivity extends AppCompatActivity {
         binding.applyButton.setOnClickListener(v -> {
             if (job != null && currentUser != null) {
                 if (currentUser.isAnonymous()) {
-                    startActivity(new Intent(this, LoginActivity.class));
+                    CustomToast.showToast(this, "Для начала авторизуйтесь", 4000);
                 } else {
                     checkResumeAndApply(job);
                 }
