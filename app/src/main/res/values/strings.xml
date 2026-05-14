@@ -104,6 +104,9 @@
     <string name="connection_restored_toast">Подключение к интернету восстановлено</string>
 
     <!-- Updates -->
+    <string name="new_version_available">Вышла новая версия - обновить</string>
+    <string name="update">Обновить</string>
+    <string name="outdated">устарела</string>
     <string name="what_new">Что нового?</string>
     <string name="updates_history">История обновлений</string>
     <string name="version_prefix">Версия </string>
