@@ -1,15 +1,18 @@
 package job.search.app.model;
 
+import com.google.firebase.Timestamp;
+import java.util.Date;
+
 public class Message {
     private String id;
     private String senderId;
     private String text;
-    private long timestamp;
+    private Object timestamp;
     private boolean admin;
 
     public Message() {}
 
-    public Message(String id, String senderId, String text, long timestamp, boolean admin) {
+    public Message(String id, String senderId, String text, Object timestamp, boolean admin) {
         this.id = id;
         this.senderId = senderId;
         this.text = text;
@@ -26,8 +29,16 @@ public class Message {
     public String getText() { return text; }
     public void setText(String text) { this.text = text; }
 
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public Object getTimestamp() { return timestamp; }
+
+    public long getTimestampLong() {
+        if (timestamp instanceof Long) return (Long) timestamp;
+        if (timestamp instanceof Timestamp) return ((Timestamp) timestamp).toDate().getTime();
+        if (timestamp instanceof Date) return ((Date) timestamp).getTime();
+        return System.currentTimeMillis(); // Fallback for local messages without server timestamp yet
+    }
+
+    public void setTimestamp(Object timestamp) { this.timestamp = timestamp; }
 
     public boolean isAdmin() { return admin; }
     public void setAdmin(boolean admin) { this.admin = admin; }
