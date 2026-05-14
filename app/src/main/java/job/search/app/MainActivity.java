@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import job.search.app.utils.CustomToast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nav_favorites) {
                 if (isAnonymous) {
+                    CustomToast.showToast(this, "Для начала авторизуйтесь", 4000);
                     startActivity(new Intent(this, LoginActivity.class));
                     return false;
                 }
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.nav_applications) {
                 if (isAnonymous) {
+                    CustomToast.showToast(this, "Для начала авторизуйтесь", 4000);
                     startActivity(new Intent(this, LoginActivity.class));
                     return false;
                 }
