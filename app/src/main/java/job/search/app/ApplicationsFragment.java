@@ -90,7 +90,12 @@ public class ApplicationsFragment extends Fragment implements ApplicationAdapter
 
                 String chatId = userId + "_" + item.vacancyId;
                 db.collection("employer_chats").document(chatId).get().addOnSuccessListener(chatDoc -> {
-                    item.hasChat = chatDoc.exists();
+                    if (chatDoc.exists()) {
+                        Boolean employerReplied = chatDoc.getBoolean("employerReplied");
+                        item.hasChat = employerReplied != null && employerReplied;
+                    } else {
+                        item.hasChat = false;
+                    }
                     applicationAdapter.notifyDataSetChanged();
                 });
             });
@@ -133,7 +138,10 @@ public class ApplicationsFragment extends Fragment implements ApplicationAdapter
                         vacancy.getDescription(),
                         vacancy.getRequirements(),
                         "Удалённо".equals(vacancy.getJobFormat()),
-                        vacancy.getWorkType()
+                        vacancy.getCategory(),
+                        vacancy.getWorkType(),
+                        vacancy.getSchedule(),
+                        vacancy.getEmployerId()
                 );
                 Intent intent = new Intent(getActivity(), JobDetailActivity.class);
                 intent.putExtra("job", job);

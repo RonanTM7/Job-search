@@ -71,7 +71,10 @@ public class EmployerVacanciesActivity extends AppCompatActivity {
                                     vacancy.getDescription(),
                                     vacancy.getRequirements(),
                                     "Удалённо".equals(vacancy.getJobFormat()),
-                                    vacancy.getWorkType()
+                                    vacancy.getCategory(),
+                                    vacancy.getWorkType(),
+                                    vacancy.getSchedule(),
+                                    vacancy.getEmployerId()
                             ));
                         }
                         adapter.updateData(jobList);

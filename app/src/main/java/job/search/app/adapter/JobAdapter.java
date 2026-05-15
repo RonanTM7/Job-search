@@ -103,8 +103,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
                 remoteBadge.setVisibility(View.GONE);
             }
 
-            if (job.getCategory() != null && !job.getCategory().isEmpty()) {
-                employmentBadge.setText(job.getCategory());
+            if (job.getWorkType() != null && !job.getWorkType().isEmpty()) {
+                employmentBadge.setText(job.getWorkType());
                 employmentBadge.setVisibility(View.VISIBLE);
             } else {
                 employmentBadge.setVisibility(View.GONE);

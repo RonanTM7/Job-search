@@ -89,6 +89,7 @@ public class JobDetailActivity extends AppCompatActivity {
         Map<String, Object> application = new HashMap<>();
         application.put("userId", currentUser.getUid());
         application.put("vacancyId", job.getId());
+        application.put("employerId", job.getEmployerId());
         application.put("timestamp", System.currentTimeMillis());
 
         db.collection("applications").document(applicationId).set(application)
@@ -110,6 +111,12 @@ public class JobDetailActivity extends AppCompatActivity {
     private void displayJobDetails(Job job) {
         binding.jobTitle.setText(job.getTitle());
         binding.salaryText.setText(FormatUtils.formatSalary(job.getSalary()));
+        if (job.getSchedule() != null && !job.getSchedule().isEmpty()) {
+            binding.tvSchedule.setText(job.getSchedule());
+            binding.tvSchedule.setVisibility(android.view.View.VISIBLE);
+        } else {
+            binding.tvSchedule.setVisibility(android.view.View.GONE);
+        }
         binding.companyName.setText(job.getCompany());
         binding.locationText.setText(job.getLocation());
         binding.descriptionText.setText(job.getDescription());

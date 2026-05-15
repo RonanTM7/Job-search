@@ -10,6 +10,9 @@ public class Vacancy {
     private String workType;
     private String jobFormat;
     private String employerId;
+    private String category;
+    private String schedule;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -37,6 +40,12 @@ public class Vacancy {
     }
     public String getEmployerId() {
         return employerId;
+    }
+    public String getCategory() {
+        return category;
+    }
+    public String getSchedule() {
+        return schedule;
     }
     public void setEmployerId(String employerId) {
         this.employerId = employerId;
