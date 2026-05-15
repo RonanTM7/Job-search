@@ -22,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText usernameEditText, phoneEditText, emailEditText, passwordEditText;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private String userRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         Button registerButton = findViewById(R.id.registerButton);
         TextView loginTextView = findViewById(R.id.loginTextView);
+
+        userRole = getIntent().getStringExtra("ROLE");
+        if (userRole == null) userRole = "seeker";
 
         registerButton.setOnClickListener(v -> registerUser());
         loginTextView.setOnClickListener(v -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
@@ -142,7 +146,9 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        db.collection("users").whereEqualTo("username", username).get().addOnCompleteListener(task -> {
+        String collection = "seeker".equals(userRole) ? "seekers" : "employers";
+
+        db.collection(collection).whereEqualTo("username", username).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && !task.getResult().isEmpty()) {
                 boolean isOccupied = false;
                 for (com.google.firebase.firestore.DocumentSnapshot doc : task.getResult()) {
@@ -158,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
             }
-            db.collection("users").whereEqualTo("email", email).get().addOnCompleteListener(task2 -> {
+            db.collection(collection).whereEqualTo("email", email).get().addOnCompleteListener(task2 -> {
                 if (task2.isSuccessful() && !task2.getResult().isEmpty()) {
                     boolean isOccupied = false;
                     for (com.google.firebase.firestore.DocumentSnapshot doc : task2.getResult()) {
@@ -174,7 +180,7 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
                 }
-                db.collection("users").whereEqualTo("phone", phone).get().addOnCompleteListener(task3 -> {
+                db.collection(collection).whereEqualTo("phone", phone).get().addOnCompleteListener(task3 -> {
                     if (task3.isSuccessful() && !task3.getResult().isEmpty()) {
                         boolean isOccupied = false;
                         for (com.google.firebase.firestore.DocumentSnapshot doc : task3.getResult()) {
@@ -223,8 +229,11 @@ public class RegisterActivity extends AppCompatActivity {
         user.put("phone", phone);
         user.put("email", email);
         user.put("status", "active");
+        user.put("role", userRole);
 
-        db.collection("users").document(userId)
+        String collection = "seeker".equals(userRole) ? "seekers" : "employers";
+
+        db.collection(collection).document(userId)
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
                 })

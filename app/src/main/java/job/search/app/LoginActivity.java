@@ -111,53 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (authTask.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            db.collection("users").document(user.getUid()).get().addOnCompleteListener(dbTask -> {
-                                if (dbTask.isSuccessful() && dbTask.getResult() != null) {
-                                    String status = dbTask.getResult().getString("status");
-                                    if ("blocked".equals(status)) {
-                                        mAuth.signOut();
-                                        errorTextView.setText("этот аккаунт заблокирован");
-                                        errorTextView.setVisibility(TextView.VISIBLE);
-                                        buttonLogin.setEnabled(true);
-                                        buttonLogin.setText("Войти");
-                                    } else if ("deleted".equals(status)) {
-                                        mAuth.signOut();
-                                        errorTextView.setText("Аккаунт удален, зарегистрируйтесь под новыми данными");
-                                        errorTextView.setVisibility(TextView.VISIBLE);
-                                        buttonLogin.setEnabled(true);
-                                        buttonLogin.setText("Войти");
-                                    } else {
-                                        if (user.isEmailVerified() || email.equals("ronanauf@gmail.com")) {
-                                            if (email.equals("ronanauf@gmail.com")) {
-                                                startActivity(new Intent(LoginActivity.this, AdminMainActivity.class));
-                                            } else {
-                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                            }
-                                            finish();
-                                        } else {
-                                            errorTextView.setText("Пожалуйста, подтвердите вашу почту");
-                                            errorTextView.setVisibility(TextView.VISIBLE);
-                                            buttonLogin.setEnabled(true);
-                                            buttonLogin.setText("Войти");
-                                        }
-                                    }
-                                } else {
-                                    // If no doc in Firestore, but Auth succeeds (shouldn't happen with normal flow)
-                                    if (user.isEmailVerified() || email.equals("ronanauf@gmail.com")) {
-                                        if (email.equals("ronanauf@gmail.com")) {
-                                            startActivity(new Intent(LoginActivity.this, AdminMainActivity.class));
-                                        } else {
-                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                        }
-                                        finish();
-                                    } else {
-                                        errorTextView.setText("Пожалуйста, подтвердите вашу почту");
-                                        errorTextView.setVisibility(TextView.VISIBLE);
-                                        buttonLogin.setEnabled(true);
-                                        buttonLogin.setText("Войти");
-                                    }
-                                }
-                            });
+                            checkUserRoleAndLogin(user, email);
                         }
                     } else {
                         String errorMessage = "Неверный логин или пароль";
@@ -178,6 +132,83 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void register() {
-        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        startActivity(new Intent(LoginActivity.this, RoleSelectionActivity.class));
+    }
+
+    private void checkUserRoleAndLogin(FirebaseUser user, String email) {
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        db.collection("admins").document(user.getUid()).get().addOnCompleteListener(adminTask -> {
+            if (adminTask.isSuccessful() && adminTask.getResult() != null && adminTask.getResult().exists()) {
+                // User is Admin
+                proceedToLogin(user, "admin", true);
+            } else {
+                db.collection("employers").document(user.getUid()).get().addOnCompleteListener(employerTask -> {
+                    if (employerTask.isSuccessful() && employerTask.getResult() != null && employerTask.getResult().exists()) {
+                        // User is Employer
+                        String status = employerTask.getResult().getString("status");
+                        if (checkStatus(status)) {
+                            proceedToLogin(user, "employer", user.isEmailVerified());
+                        }
+                    } else {
+                        db.collection("seekers").document(user.getUid()).get().addOnCompleteListener(seekerTask -> {
+                            if (seekerTask.isSuccessful() && seekerTask.getResult() != null && seekerTask.getResult().exists()) {
+                                // User is Seeker
+                                String status = seekerTask.getResult().getString("status");
+                                if (checkStatus(status)) {
+                                    proceedToLogin(user, "seeker", user.isEmailVerified());
+                                }
+                            } else {
+                                // Not found in any new collection, maybe old user or error
+                                errorTextView.setText("Аккаунт не найден");
+                                errorTextView.setVisibility(TextView.VISIBLE);
+                                buttonLogin.setEnabled(true);
+                                buttonLogin.setText("Войти");
+                                mAuth.signOut();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private boolean checkStatus(String status) {
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        if ("blocked".equals(status)) {
+            mAuth.signOut();
+            errorTextView.setText("этот аккаунт заблокирован");
+            errorTextView.setVisibility(TextView.VISIBLE);
+            buttonLogin.setEnabled(true);
+            buttonLogin.setText("Войти");
+            return false;
+        } else if ("deleted".equals(status)) {
+            mAuth.signOut();
+            errorTextView.setText("Аккаунт удален, зарегистрируйтесь под новыми данными");
+            errorTextView.setVisibility(TextView.VISIBLE);
+            buttonLogin.setEnabled(true);
+            buttonLogin.setText("Войти");
+            return false;
+        }
+        return true;
+    }
+
+    private void proceedToLogin(FirebaseUser user, String role, boolean isVerified) {
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        if (isVerified) {
+            getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userRole", role).apply();
+            Intent intent;
+            if ("admin".equals(role)) {
+                intent = new Intent(LoginActivity.this, AdminMainActivity.class);
+            } else {
+                intent = new Intent(LoginActivity.this, MainActivity.class);
+            }
+            startActivity(intent);
+            finish();
+        } else {
+            errorTextView.setText("Пожалуйста, подтвердите вашу почту");
+            errorTextView.setVisibility(TextView.VISIBLE);
+            buttonLogin.setEnabled(true);
+            buttonLogin.setText("Войти");
+        }
     }
 }

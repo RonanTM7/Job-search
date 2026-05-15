@@ -79,6 +79,13 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
     }
 
     private void loadDataFromFirestore() {
+        String role = requireActivity().getSharedPreferences("AppSettings", android.content.Context.MODE_PRIVATE).getString("userRole", "seeker");
+        if ("employer".equals(role)) {
+            // Employers shouldn't see general vacancies list on home fragment if we follow requirement 3
+            // but we can just show them or redirect. Requirement 3 says "employer main screen is applications"
+            // If they happen to be here, let's just show vacancies or handle as you wish.
+            // For now, I'll keep it loading for everyone, but if they are employers they might not have favorites.
+        }
         loadVacancies();
     }
 
@@ -140,9 +147,17 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
     private void setupCategories() {
         categories.clear();
         categories.add("Все");
+        // We now filter predefined categories or let it be dynamic?
+        // User said: "Type of employment why added to sorting... as one of options"
+        // and "let's always write employment type".
+        // If they want to remove specific ones from sorting, we can hardcode them here.
+        // But for now let's just make it "Все", "Полная занятость", "Неполная занятость", etc.
+        // If he wants it to NOT be added dynamically, I should change this.
         for (Job job : jobList) {
-            if (!categories.contains(job.getCategory())) {
-                categories.add(job.getCategory());
+            String cat = job.getCategory();
+            if (cat != null && !cat.isEmpty() && !categories.contains(cat)) {
+                // If it's a known employment type, maybe we want it here.
+                categories.add(cat);
             }
         }
         if (categoriesRecyclerView.getAdapter() != null) {

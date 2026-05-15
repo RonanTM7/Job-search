@@ -93,6 +93,18 @@
                 android:textSize="13sp"
                 android:background="@drawable/ios_tag_background"
                 android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/employment_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Полная занятость"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:background="@drawable/ios_tag_background"
+                android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp" />
 
             <View

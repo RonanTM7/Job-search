@@ -9,6 +9,7 @@ public class Vacancy {
     private long salary;
     private String workType;
     private String jobFormat;
+    private String employerId;
     public String getCompanyName() {
         return companyName;
     }
@@ -33,5 +34,11 @@ public class Vacancy {
     }
     public String getJobFormat() {
         return jobFormat;
+    }
+    public String getEmployerId() {
+        return employerId;
+    }
+    public void setEmployerId(String employerId) {
+        this.employerId = employerId;
     }
 }

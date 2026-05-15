@@ -77,6 +77,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         private final TextView jobSalary;
         private final TextView jobLocation;
         private final TextView remoteBadge;
+        private final TextView employmentBadge;
         private final ImageButton favoriteButton;
 
         public JobViewHolder(@NonNull View itemView) {
@@ -86,6 +87,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             jobSalary = itemView.findViewById(R.id.job_salary);
             jobLocation = itemView.findViewById(R.id.job_location);
             remoteBadge = itemView.findViewById(R.id.remote_badge);
+            employmentBadge = itemView.findViewById(R.id.employment_badge);
             favoriteButton = itemView.findViewById(R.id.favorite_button);
         }
 
@@ -101,8 +103,20 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
                 remoteBadge.setVisibility(View.GONE);
             }
 
-            favoriteButton.setImageResource(isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
-            favoriteButton.setOnClickListener(v -> favoriteListener.onFavoriteClick(job));
+            if (job.getCategory() != null && !job.getCategory().isEmpty()) {
+                employmentBadge.setText(job.getCategory());
+                employmentBadge.setVisibility(View.VISIBLE);
+            } else {
+                employmentBadge.setVisibility(View.GONE);
+            }
+
+            if (favoriteListener == null) {
+                favoriteButton.setVisibility(View.GONE);
+            } else {
+                favoriteButton.setVisibility(View.VISIBLE);
+                favoriteButton.setImageResource(isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border);
+                favoriteButton.setOnClickListener(v -> favoriteListener.onFavoriteClick(job));
+            }
             itemView.setOnClickListener(v -> listener.onItemClick(job));
         }
     }

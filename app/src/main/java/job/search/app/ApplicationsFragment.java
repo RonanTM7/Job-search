@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import job.search.app.adapter.JobAdapter;
+import job.search.app.adapter.ApplicationAdapter;
 import job.search.app.databinding.FragmentApplicationsBinding;
 import job.search.app.model.Job;
 import job.search.app.model.Vacancy;
@@ -22,14 +22,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ApplicationsFragment extends Fragment {
+public class ApplicationsFragment extends Fragment implements ApplicationAdapter.OnApplicationActionListener {
 
     private FragmentApplicationsBinding binding;
-    private JobAdapter jobAdapter;
+    private ApplicationAdapter applicationAdapter;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private final List<Job> appliedJobs = new ArrayList<>();
-    private final Set<String> favoriteJobIds = new HashSet<>();
+    private final List<ApplicationAdapter.ApplicationItem> applicationItems = new ArrayList<>();
 
     @Nullable
     @Override
@@ -49,9 +48,9 @@ public class ApplicationsFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        jobAdapter = new JobAdapter(appliedJobs, favoriteJobIds, this::openJobDetails, null);
+        applicationAdapter = new ApplicationAdapter(applicationItems, this);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerView.setAdapter(jobAdapter);
+        binding.recyclerView.setAdapter(applicationAdapter);
     }
 
     private void loadAppliedJobs() {
@@ -61,69 +60,88 @@ public class ApplicationsFragment extends Fragment {
         }
         String userId = mAuth.getCurrentUser().getUid();
 
-        db.collection("favorites").whereEqualTo("userId", userId).get().addOnCompleteListener(favoriteTask -> {
-            if (favoriteTask.isSuccessful()) {
-                favoriteJobIds.clear();
-                for (QueryDocumentSnapshot document : favoriteTask.getResult()) {
-                    favoriteJobIds.add(document.getString("vacancyId"));
+        db.collection("applications").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                applicationItems.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String vacancyId = document.getString("vacancyId");
+                    applicationItems.add(new ApplicationAdapter.ApplicationItem(document.getId(), vacancyId));
                 }
-            }
-
-            db.collection("applications").whereEqualTo("userId", userId).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Set<String> appliedIds = new HashSet<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        appliedIds.add(document.getString("vacancyId"));
-                    }
-                    if (!appliedIds.isEmpty()) {
-                        fetchJobsByIds(new ArrayList<>(appliedIds));
-                    } else {
-                        binding.progressBar.setVisibility(View.GONE);
-                        appliedJobs.clear();
-                        jobAdapter.updateData(appliedJobs);
-                    }
+                if (!applicationItems.isEmpty()) {
+                    fetchJobsData();
                 } else {
                     binding.progressBar.setVisibility(View.GONE);
-                    if (task.getException() != null) {
-                        job.search.app.utils.CustomToast.showToast(requireActivity(), "Ошибка: " + task.getException().getMessage(), 4000);
-                    }
+                    applicationAdapter.updateData(applicationItems);
                 }
-            });
-        });
-    }
-
-    private void fetchJobsByIds(List<String> jobIds) {
-        db.collection("vacancies").whereIn(FieldPath.documentId(), jobIds).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                appliedJobs.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Vacancy vacancy = document.toObject(Vacancy.class);
-                    Job job = new Job(
-                            document.getId(),
-                            vacancy.getTitle(),
-                            vacancy.getCompanyName(),
-                            String.valueOf(vacancy.getSalary()),
-                            vacancy.getCity(),
-                            vacancy.getDescription(),
-                            vacancy.getRequirements(),
-                            "Удалённо".equals(vacancy.getJobFormat()),
-                            vacancy.getWorkType()
-                    );
-                    appliedJobs.add(job);
-                }
-                jobAdapter.updateData(appliedJobs);
-                jobAdapter.updateFavorites(favoriteJobIds);
+            } else {
+                binding.progressBar.setVisibility(View.GONE);
             }
-            binding.progressBar.setVisibility(View.GONE);
         });
     }
 
-    private void openJobDetails(Job job) {
-        Intent intent = new Intent(getActivity(), JobDetailActivity.class);
-        intent.putExtra("job", job);
-        startActivity(intent);
-        if (getActivity() != null) {
-            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    private void fetchJobsData() {
+        String userId = mAuth.getCurrentUser().getUid();
+        for (ApplicationAdapter.ApplicationItem item : applicationItems) {
+            db.collection("vacancies").document(item.vacancyId).get().addOnSuccessListener(doc -> {
+                if (doc.exists()) {
+                    item.vacancyTitle = doc.getString("title");
+                    item.companyName = doc.getString("companyName");
+                }
+
+                String chatId = userId + "_" + item.vacancyId;
+                db.collection("employer_chats").document(chatId).get().addOnSuccessListener(chatDoc -> {
+                    item.hasChat = chatDoc.exists();
+                    applicationAdapter.notifyDataSetChanged();
+                });
+            });
         }
+        binding.progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDelete(ApplicationAdapter.ApplicationItem item) {
+        db.collection("applications").document(item.applicationId).delete().addOnSuccessListener(aVoid -> {
+            applicationItems.remove(item);
+            applicationAdapter.updateData(applicationItems);
+        });
+    }
+
+    @Override
+    public void onChat(ApplicationAdapter.ApplicationItem item) {
+        String userId = mAuth.getCurrentUser().getUid();
+        String chatId = userId + "_" + item.vacancyId;
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("CHAT_ID", chatId);
+        intent.putExtra("USER_NAME", item.companyName);
+        intent.putExtra("IS_EMPLOYER_CHAT", true);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onClick(ApplicationAdapter.ApplicationItem item) {
+        if (item.vacancyTitle == null) return;
+
+        db.collection("vacancies").document(item.vacancyId).get().addOnSuccessListener(document -> {
+            if (document.exists()) {
+                Vacancy vacancy = document.toObject(Vacancy.class);
+                Job job = new Job(
+                        document.getId(),
+                        vacancy.getTitle(),
+                        vacancy.getCompanyName(),
+                        String.valueOf(vacancy.getSalary()),
+                        vacancy.getCity(),
+                        vacancy.getDescription(),
+                        vacancy.getRequirements(),
+                        "Удалённо".equals(vacancy.getJobFormat()),
+                        vacancy.getWorkType()
+                );
+                Intent intent = new Intent(getActivity(), JobDetailActivity.class);
+                intent.putExtra("job", job);
+                startActivity(intent);
+                if (getActivity() != null) {
+                    getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }
+            }
+        });
     }
 }

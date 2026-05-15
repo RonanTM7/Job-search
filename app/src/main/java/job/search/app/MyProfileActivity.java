@@ -41,13 +41,22 @@ public class MyProfileActivity extends AppCompatActivity {
         Button myResumeButton = findViewById(R.id.btn_my_resume);
         Button logoutButton = findViewById(R.id.btn_logout);
 
+        String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+        if ("employer".equals(role)) {
+            myResumeButton.setText("Мои вакансии");
+        }
+
         myResumeButton.setOnClickListener(v -> {
             if (currentUser != null && currentUser.isAnonymous()) {
                 CustomToast.showToast(MyProfileActivity.this, "Для начала авторизуйтесь", 4000);
                 Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
             } else {
-                startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
+                if ("employer".equals(role)) {
+                    startActivity(new Intent(MyProfileActivity.this, EmployerVacanciesActivity.class));
+                } else {
+                    startActivity(new Intent(MyProfileActivity.this, ResumeActivity.class));
+                }
             }
         });
 
@@ -92,7 +101,9 @@ public class MyProfileActivity extends AppCompatActivity {
 
     private void loadUserProfile() {
         if (currentUser != null) {
-            db.collection("users").document(currentUser.getUid()).get()
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            String collection = "employer".equals(role) ? "employers" : "seekers";
+            db.collection(collection).document(currentUser.getUid()).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             usernameTextView.setText(documentSnapshot.getString("username"));

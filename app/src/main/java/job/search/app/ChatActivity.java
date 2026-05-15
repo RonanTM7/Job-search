@@ -30,6 +30,7 @@ public class ChatActivity extends AppCompatActivity {
     private String chatId;
     private String currentUserId;
     private boolean isAdmin = false;
+    private boolean isEmployerChat = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +53,16 @@ public class ChatActivity extends AppCompatActivity {
         if (user != null) {
             currentUserId = user.getUid();
             chatId = user.getUid();
-            isAdmin = "ronanauf@gmail.com".equals(user.getEmail());
+            isAdmin = "ronanauf@gmail.com".equals(user.getEmail()); // Legacy check
 
-            // If admin is opening a specific chat
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            if ("admin".equals(role)) isAdmin = true;
+
+            isEmployerChat = getIntent().getBooleanExtra("IS_EMPLOYER_CHAT", false);
+
+            // If admin or employer is opening a specific chat
             String targetChatId = getIntent().getStringExtra("CHAT_ID");
-            if (isAdmin && targetChatId != null) {
+            if ((isAdmin || isEmployerChat) && targetChatId != null) {
                 chatId = targetChatId;
                 String userName = getIntent().getStringExtra("USER_NAME");
                 if (userName != null) {
@@ -88,7 +94,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadMessages() {
-        db.collection("chats").document(chatId).collection("messages")
+        String collection = isEmployerChat ? "employer_chats" : "chats";
+        db.collection(collection).document(chatId).collection("messages")
                 .orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) {
@@ -132,7 +139,7 @@ public class ChatActivity extends AppCompatActivity {
             guest.put("email", "guest_" + currentUserId + "@anonymous.auth");
             guest.put("phone", "N/A");
 
-            db.collection("users").document(currentUserId).set(guest, com.google.firebase.firestore.SetOptions.merge())
+            db.collection("seekers").document(currentUserId).set(guest, com.google.firebase.firestore.SetOptions.merge())
                     .addOnFailureListener(e -> android.util.Log.e("ChatActivity", "Guest reg failed", e));
         } else if (user == null) {
             // If still no user, try to sign in anonymously
@@ -151,33 +158,37 @@ public class ChatActivity extends AppCompatActivity {
         String text = editMessage.getText().toString().trim();
         if (text.isEmpty()) return;
 
-        String messageId = db.collection("chats").document(chatId).collection("messages").document().getId();
+        String collection = isEmployerChat ? "employer_chats" : "chats";
+
+        String messageId = db.collection(collection).document(chatId).collection("messages").document().getId();
         Message message = new Message(messageId, currentUserId, text, FieldValue.serverTimestamp(), isAdmin);
 
-        db.collection("chats").document(chatId).collection("messages").document(messageId).set(message);
+        db.collection(collection).document(chatId).collection("messages").document(messageId).set(message);
 
-        // Update chat metadata for admin list
+        // Update chat metadata for list (admin or employer)
         java.util.Map<String, Object> chatMeta = new java.util.HashMap<>();
         chatMeta.put("lastMessage", text);
         chatMeta.put("timestamp", FieldValue.serverTimestamp());
         chatMeta.put("chatId", chatId);
 
-        if (!isAdmin) {
+        if (isEmployerChat) {
+            db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+        } else if (!isAdmin) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
-                db.collection("users").document(user.getUid()).get().addOnSuccessListener(doc -> {
+                db.collection("seekers").document(user.getUid()).get().addOnSuccessListener(doc -> {
                     chatMeta.put("userName", doc.getString("username") != null ? doc.getString("username") : "Пользователь");
-                    db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+                    db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
                 }).addOnFailureListener(e -> {
                     chatMeta.put("userName", "Пользователь (ошибка)");
-                    db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+                    db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
                 });
             } else {
                 chatMeta.put("userName", "Гость");
-                db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+                db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
             }
         } else {
-            db.collection("chats").document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
+            db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
         }
 
         editMessage.setText("");

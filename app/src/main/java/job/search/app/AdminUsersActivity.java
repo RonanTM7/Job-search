@@ -17,6 +17,7 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
 
     private AdminUserAdapter adapter;
     private FirebaseFirestore db;
+    private String currentCollection = "seekers";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +37,21 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
+        findViewById(R.id.btn_show_seekers).setOnClickListener(v -> {
+            currentCollection = "seekers";
+            loadUsers();
+        });
+
+        findViewById(R.id.btn_show_employers).setOnClickListener(v -> {
+            currentCollection = "employers";
+            loadUsers();
+        });
+
         loadUsers();
     }
 
     private void loadUsers() {
-        db.collection("users").get().addOnSuccessListener(snapshot -> {
+        db.collection(currentCollection).get().addOnSuccessListener(snapshot -> {
             List<User> active = new ArrayList<>();
             List<User> blocked = new ArrayList<>();
             List<User> deleted = new ArrayList<>();
@@ -84,7 +95,7 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
     @Override
     public void onBlockToggle(User user) {
         String newStatus = "blocked".equals(user.getStatus()) ? "active" : "blocked";
-        db.collection("users").document(user.getUid()).update("status", newStatus)
+        db.collection(currentCollection).document(user.getUid()).update("status", newStatus)
                 .addOnSuccessListener(aVoid -> loadUsers());
     }
 
@@ -93,7 +104,7 @@ public class AdminUsersActivity extends AppCompatActivity implements AdminUserAd
         String originalEmail = user.getEmail();
         String deletedMarker = "deleted_" + System.currentTimeMillis() + "_" + originalEmail;
 
-        db.collection("users").document(user.getUid())
+        db.collection(currentCollection).document(user.getUid())
                 .update("status", "deleted", "email", deletedMarker)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Пользователь помечен как удаленный. Почта освобождена.", Toast.LENGTH_LONG).show();

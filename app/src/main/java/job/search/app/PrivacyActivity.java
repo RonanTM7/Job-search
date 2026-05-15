@@ -81,7 +81,9 @@ public class PrivacyActivity extends AppCompatActivity {
                         String newEmail = freshUser.getEmail();
                         String userId = freshUser.getUid();
 
-                        db.collection("users").document(userId).update("email", newEmail)
+                        String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+                        String collection = "employer".equals(role) ? "employers" : "seekers";
+                        db.collection(collection).document(userId).update("email", newEmail)
                                 .addOnSuccessListener(aVoid -> {
                                     Toast.makeText(PrivacyActivity.this, "Почта успешно обновлена.", Toast.LENGTH_SHORT).show();
                                 })
@@ -116,7 +118,9 @@ public class PrivacyActivity extends AppCompatActivity {
         if (user != null) {
             emailTextView.setText(user.getEmail());
 
-            db.collection("users").document(user.getUid()).get()
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            String collection = "employer".equals(role) ? "employers" : "seekers";
+            db.collection(collection).document(user.getUid()).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             phoneNumberTextView.setText(documentSnapshot.getString("phone"));
@@ -287,7 +291,9 @@ public class PrivacyActivity extends AppCompatActivity {
                     textError.setVisibility(TextView.VISIBLE);
                     return;
                 }
-                db.collection("users").document(user.getUid())
+                String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+                String collection = "employer".equals(role) ? "employers" : "seekers";
+                db.collection(collection).document(user.getUid())
                         .update(field, newValue)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(PrivacyActivity.this, "Данные успешно обновлены", Toast.LENGTH_SHORT).show();

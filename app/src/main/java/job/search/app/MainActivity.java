@@ -47,13 +47,15 @@ public class MainActivity extends AppCompatActivity {
         // Если пользователь анонимный, позволяем ему видеть MainActivity (вакансии)
         // Но скрываем/блокируем функции, требующие полной регистрации (favorites, applications)
 
-        if ("ronanauf@gmail.com".equals(currentUser.getEmail())) {
+        String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+
+        if ("admin".equals(role)) {
             startActivity(new Intent(this, AdminMainActivity.class));
             finish();
             return;
         }
 
-        initApp(currentUser, savedInstanceState);
+        initApp(currentUser, savedInstanceState, role);
     }
 
     private void registerGuestInFirestore(FirebaseUser user, Bundle savedInstanceState) {
@@ -65,32 +67,45 @@ public class MainActivity extends AppCompatActivity {
         guest.put("email", "guest_" + uid + "@anonymous.auth");
         guest.put("phone", "N/A");
 
-        db.collection("users").document(uid).set(guest, com.google.firebase.firestore.SetOptions.merge())
+        db.collection("seekers").document(uid).set(guest, com.google.firebase.firestore.SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
-                    initApp(user, savedInstanceState);
+                    getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userRole", "seeker").apply();
+                    initApp(user, savedInstanceState, "seeker");
                 })
                 .addOnFailureListener(e -> android.util.Log.e("MainActivity", "Guest Firestore reg failed", e));
     }
 
-    private void initApp(FirebaseUser user, Bundle savedInstanceState) {
-        listenToUserStatus(user.getUid());
+    private void initApp(FirebaseUser user, Bundle savedInstanceState, String role) {
+        listenToUserStatus(user.getUid(), role);
 
         setContentView(R.layout.activity_main);
         checkForUpdates();
 
         bottomNavigation = findViewById(R.id.bottom_navigation);
-        setupBottomNavigation();
+        setupBottomNavigation(role);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
+            if ("employer".equals(role)) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new EmployerApplicationsFragment())
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment())
+                        .commit();
+            }
         }
     }
 
-    private void setupBottomNavigation() {
+    private void setupBottomNavigation(String role) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         boolean isAnonymous = user != null && user.isAnonymous();
+
+        if ("employer".equals(role)) {
+            bottomNavigation.getMenu().findItem(R.id.nav_home).setVisible(false);
+            bottomNavigation.getMenu().findItem(R.id.nav_favorites).setVisible(false);
+            bottomNavigation.getMenu().findItem(R.id.nav_applications).setTitle("Отклики");
+        }
 
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -113,9 +128,15 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(this, LoginActivity.class));
                     return false;
                 }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new ApplicationsFragment())
-                        .commit();
+                if ("employer".equals(role)) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new EmployerApplicationsFragment())
+                            .commit();
+                } else {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new ApplicationsFragment())
+                            .commit();
+                }
                 return true;
             } else if (itemId == R.id.nav_settings) {
                 getSupportFragmentManager().beginTransaction()
@@ -147,15 +168,19 @@ public class MainActivity extends AppCompatActivity {
         } else if (currentFragment instanceof ApplicationsFragment) {
             assert currentFragment.getView() != null;
             currentFragment.onViewCreated(currentFragment.getView(), null);
+        } else if (currentFragment instanceof EmployerApplicationsFragment) {
+            assert currentFragment.getView() != null;
+            currentFragment.onViewCreated(currentFragment.getView(), null);
         } else if (currentFragment instanceof SettingsFragment) {
             assert currentFragment.getView() != null;
             currentFragment.onViewCreated(currentFragment.getView(), null);
         }
     }
 
-    private void listenToUserStatus(String uid) {
+    private void listenToUserStatus(String uid, String role) {
+        String collection = "seeker".equals(role) ? "seekers" : "employers";
         userStatusListener = com.google.firebase.firestore.FirebaseFirestore.getInstance()
-                .collection("users").document(uid)
+                .collection(collection).document(uid)
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) return;
                     if (snapshot != null && snapshot.exists()) {

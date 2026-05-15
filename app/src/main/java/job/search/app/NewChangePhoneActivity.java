@@ -112,7 +112,9 @@ public class NewChangePhoneActivity extends AppCompatActivity {
             return;
         }
 
-        db.collection("users").document(currentUser.getUid()).get()
+        String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+        String collection = "employer".equals(role) ? "employers" : "seekers";
+        db.collection(collection).document(currentUser.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String currentPhone = documentSnapshot.getString("phone");
@@ -122,7 +124,7 @@ public class NewChangePhoneActivity extends AppCompatActivity {
                             return;
                         }
 
-                        db.collection("users").document(currentUser.getUid())
+                        db.collection(collection).document(currentUser.getUid())
                                 .update("phone", newPhone)
                                 .addOnSuccessListener(aVoid -> {
                                     CustomToast.showToast(this, "Номер успешно изменен", Toast.LENGTH_SHORT);
