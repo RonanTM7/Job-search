@@ -172,6 +172,10 @@ public class ChatActivity extends AppCompatActivity {
         chatMeta.put("chatId", chatId);
 
         if (isEmployerChat) {
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            if ("employer".equals(role)) {
+                chatMeta.put("employerReplied", true);
+            }
             db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
         } else if (!isAdmin) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

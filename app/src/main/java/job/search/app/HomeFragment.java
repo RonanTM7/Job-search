@@ -105,7 +105,10 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
                             vacancy.getDescription(),
                             vacancy.getRequirements(),
                             "Удалённо".equals(vacancy.getJobFormat()),
-                            vacancy.getWorkType()
+                            vacancy.getCategory(),
+                            vacancy.getWorkType(),
+                            vacancy.getSchedule(),
+                            vacancy.getEmployerId()
                     ));
                 }
                 filteredJobList.clear();
@@ -147,19 +150,13 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
     private void setupCategories() {
         categories.clear();
         categories.add("Все");
-        // We now filter predefined categories or let it be dynamic?
-        // User said: "Type of employment why added to sorting... as one of options"
-        // and "let's always write employment type".
-        // If they want to remove specific ones from sorting, we can hardcode them here.
-        // But for now let's just make it "Все", "Полная занятость", "Неполная занятость", etc.
-        // If he wants it to NOT be added dynamically, I should change this.
-        for (Job job : jobList) {
-            String cat = job.getCategory();
-            if (cat != null && !cat.isEmpty() && !categories.contains(cat)) {
-                // If it's a known employment type, maybe we want it here.
-                categories.add(cat);
-            }
-        }
+        categories.add("Фронтенд");
+        categories.add("Мобильная разработка");
+        categories.add("Тестирование");
+        categories.add("Аналитика");
+        categories.add("Бэкенд");
+        categories.add("Менеджмент");
+
         if (categoriesRecyclerView.getAdapter() != null) {
             categoriesRecyclerView.getAdapter().notifyDataSetChanged();
         }
