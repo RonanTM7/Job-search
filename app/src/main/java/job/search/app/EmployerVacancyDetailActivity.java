@@ -61,6 +61,7 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
                             long timestamp = document.getLong("timestamp") != null ? document.getLong("timestamp") : 0;
                             applicantList.add(new Applicant(userId, timestamp));
                         }
+                        adapter.notifyDataSetChanged();
                         loadApplicantNames();
                     }
                 });
@@ -72,7 +73,13 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
                 if (doc.exists()) {
                     applicant.name = doc.getString("username");
                     adapter.notifyDataSetChanged();
+                } else {
+                    applicant.name = "Анонимный пользователь";
+                    adapter.notifyDataSetChanged();
                 }
+            }).addOnFailureListener(e -> {
+                applicant.name = "Ошибка загрузки";
+                adapter.notifyDataSetChanged();
             });
         }
     }
@@ -112,6 +119,15 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
                 intent.putExtra("vacancyId", vacancyId);
                 startActivity(intent);
             });
+
+            holder.btnChat.setOnClickListener(v -> {
+                String chatId = applicant.userId + "_" + vacancyId;
+                Intent intent = new Intent(EmployerVacancyDetailActivity.this, ChatActivity.class);
+                intent.putExtra("CHAT_ID", chatId);
+                intent.putExtra("USER_NAME", applicant.name);
+                intent.putExtra("IS_EMPLOYER_CHAT", true);
+                startActivity(intent);
+            });
         }
 
         @Override
@@ -121,10 +137,12 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvName, tvDate;
+            View btnChat;
             ViewHolder(View itemView) {
                 super(itemView);
                 tvName = itemView.findViewById(R.id.tv_applicant_name);
                 tvDate = itemView.findViewById(R.id.tv_applied_date);
+                btnChat = itemView.findViewById(R.id.btn_item_chat);
             }
         }
     }
