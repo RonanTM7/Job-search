@@ -12,10 +12,13 @@ public class Job implements Serializable {
     private final String requirements;
     private final boolean isRemote;
     private final String category;
+    private final String workType;
+    private final String schedule;
+    private String employerId;
 
 
     public Job(String id, String title, String company, String salary, String location,
-               String description, String requirements, boolean isRemote, String category) {
+               String description, String requirements, boolean isRemote, String category, String workType, String schedule, String employerId) {
         this.id = id;
         this.title = title;
         this.company = company;
@@ -25,6 +28,9 @@ public class Job implements Serializable {
         this.requirements = requirements;
         this.isRemote = isRemote;
         this.category = category;
+        this.workType = workType;
+        this.schedule = schedule;
+        this.employerId = employerId;
     }
 
     public String getId() { return id; }
@@ -44,5 +50,9 @@ public class Job implements Serializable {
 
     public boolean isRemote() { return isRemote; }
     public String getCategory() { return category; }
+    public String getWorkType() { return workType; }
+    public String getSchedule() { return schedule; }
+    public String getEmployerId() { return employerId; }
+    public void setEmployerId(String employerId) { this.employerId = employerId; }
 
 }

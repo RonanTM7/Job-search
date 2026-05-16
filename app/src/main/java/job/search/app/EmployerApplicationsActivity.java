@@ -46,7 +46,25 @@ public class EmployerApplicationsActivity extends AppCompatActivity {
     }
 
     private void loadVacancies() {
-        db.collection("vacancies").whereEqualTo("employerId", employerId).get()
+        db.collection("applications").whereEqualTo("employerId", employerId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        HashSet<String> vacancyIds = new HashSet<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            vacancyIds.add(document.getString("vacancyId"));
+                        }
+                        if (vacancyIds.isEmpty()) {
+                            jobList.clear();
+                            adapter.updateData(jobList);
+                        } else {
+                            fetchVacanciesByIds(new ArrayList<>(vacancyIds));
+                        }
+                    }
+                });
+    }
+
+    private void fetchVacanciesByIds(List<String> ids) {
+        db.collection("vacancies").whereIn(com.google.firebase.firestore.FieldPath.documentId(), ids).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         jobList.clear();
@@ -61,7 +79,10 @@ public class EmployerApplicationsActivity extends AppCompatActivity {
                                     vacancy.getDescription(),
                                     vacancy.getRequirements(),
                                     "Удалённо".equals(vacancy.getJobFormat()),
-                                    vacancy.getWorkType()
+                                    vacancy.getCategory(),
+                                    vacancy.getWorkType(),
+                                    vacancy.getSchedule(),
+                                    vacancy.getEmployerId()
                             ));
                         }
                         adapter.updateData(jobList);

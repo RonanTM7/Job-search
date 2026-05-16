@@ -2,8 +2,10 @@ package job.search.app;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,7 +17,8 @@ import job.search.app.utils.CustomToast;
 
 public class AddEditVacancyActivity extends AppCompatActivity {
 
-    private EditText etCompanyName, etVacancyTitle, etSalaryMin, etSalaryMax, etCity, etDescription, etRequirements, etWorkType, etJobFormat;
+    private EditText etCompanyName, etVacancyTitle, etSalaryMin, etSalaryMax, etCity, etDescription, etRequirements, etWorkType, etJobFormat, etSchedule;
+    private Spinner spinnerCategory;
     private Button btnSave, btnDelete;
     private FirebaseFirestore db;
     private String employerId;
@@ -44,10 +47,14 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         etRequirements = findViewById(R.id.et_requirements);
         etWorkType = findViewById(R.id.et_work_type);
         etJobFormat = findViewById(R.id.et_job_format);
+        etSchedule = findViewById(R.id.et_schedule);
+        spinnerCategory = findViewById(R.id.spinner_category);
         btnSave = findViewById(R.id.btn_save_vacancy);
         btnDelete = findViewById(R.id.btn_delete_vacancy);
 
         Job job = (Job) getIntent().getSerializableExtra("job");
+        setupCategorySpinner();
+
         if (job != null) {
             isEditing = true;
             vacancyId = job.getId();
@@ -58,6 +65,13 @@ public class AddEditVacancyActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> saveVacancy());
         btnDelete.setOnClickListener(v -> deleteVacancy());
+    }
+
+    private void setupCategorySpinner() {
+        String[] categories = {"Фронтенд", "Мобильная разработка", "Тестирование", "Аналитика", "Бэкенд", "Менеджмент"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(adapter);
     }
 
     private void fillData(Job job) {
@@ -76,8 +90,16 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         etCity.setText(job.getLocation());
         etDescription.setText(job.getDescription());
         etRequirements.setText(job.getRequirements());
-        etWorkType.setText(job.getCategory());
+        etWorkType.setText(job.getWorkType()); // Note: workType was wrongly mapped to getCategory in fillData
         etJobFormat.setText(job.isRemote() ? "Удалённо" : "В офисе");
+        etSchedule.setText(job.getSchedule());
+
+        String category = job.getCategory();
+        if (category != null) {
+            ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerCategory.getAdapter();
+            int pos = adapter.getPosition(category);
+            if (pos >= 0) spinnerCategory.setSelection(pos);
+        }
     }
 
     private void saveVacancy() {
@@ -90,6 +112,8 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         String requirements = etRequirements.getText().toString().trim();
         String workType = etWorkType.getText().toString().trim();
         String jobFormat = etJobFormat.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        String schedule = etSchedule.getText().toString().trim();
 
         if (company.isEmpty() || title.isEmpty() || salaryMin.isEmpty() || salaryMax.isEmpty() || city.isEmpty()) {
             CustomToast.showToast(this, "Заполните основные поля", 4000);
@@ -108,6 +132,8 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         vacancy.put("workType", workType);
         vacancy.put("jobFormat", jobFormat);
         vacancy.put("employerId", employerId);
+        vacancy.put("category", category);
+        vacancy.put("schedule", schedule);
 
         if (isEditing) {
             db.collection("vacancies").document(vacancyId).set(vacancy)
