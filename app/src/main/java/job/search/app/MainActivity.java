@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initApp(FirebaseUser user, Bundle savedInstanceState, String role) {
         listenToUserStatus(user.getUid(), role);
+        updateFcmToken(user.getUid(), role);
 
         setContentView(R.layout.activity_main);
         checkForUpdates();
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigation.getMenu().findItem(R.id.nav_home).setVisible(false);
             bottomNavigation.getMenu().findItem(R.id.nav_favorites).setVisible(false);
             bottomNavigation.getMenu().findItem(R.id.nav_applications).setTitle("Отклики");
+            bottomNavigation.getMenu().findItem(R.id.nav_add_vacancy).setVisible(true);
         }
 
         bottomNavigation.setOnNavigationItemSelectedListener(item -> {
@@ -138,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
                             .commit();
                 }
                 return true;
+            } else if (itemId == R.id.nav_add_vacancy) {
+                startActivity(new Intent(this, AddEditVacancyActivity.class));
+                return false; // Don't select it as a fragment
             } else if (itemId == R.id.nav_settings) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new SettingsFragment())
@@ -263,6 +268,18 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void updateFcmToken(String uid, String role) {
+        com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) return;
+                    String token = task.getResult();
+                    String collection = "employer".equals(role) ? "employers" : "seekers";
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                            .collection(collection).document(uid)
+                            .update("fcmToken", token);
+                });
     }
 
     private void applySavedTheme() {

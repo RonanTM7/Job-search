@@ -25,6 +25,7 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
     private List<Applicant> applicantList = new ArrayList<>();
     private FirebaseFirestore db;
     private String vacancyId;
+    private final List<com.google.firebase.firestore.ListenerRegistration> chatListeners = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
                             applicantList.add(new Applicant(userId, timestamp));
                         }
                         loadApplicantNames();
+                        loadUnreadCounts();
                     }
                 });
     }
@@ -77,10 +79,24 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void loadUnreadCounts() {
+        for (Applicant applicant : applicantList) {
+            String chatId = applicant.userId + "_" + vacancyId;
+            chatListeners.add(db.collection("employer_chats").document(chatId).addSnapshotListener((doc, e) -> {
+                if (doc != null && doc.exists()) {
+                    Long count = doc.getLong("unreadCountEmployer");
+                    applicant.unreadCount = count != null ? count.intValue() : 0;
+                    adapter.notifyDataSetChanged();
+                }
+            }));
+        }
+    }
+
     private static class Applicant {
         String userId;
         long timestamp;
         String name = "Загрузка...";
+        int unreadCount = 0;
 
         Applicant(String userId, long timestamp) {
             this.userId = userId;
@@ -105,6 +121,13 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
             holder.tvDate.setText(sdf.format(new Date(applicant.timestamp)));
 
+            if (applicant.unreadCount > 0) {
+                holder.tvUnreadCount.setVisibility(View.VISIBLE);
+                holder.tvUnreadCount.setText(String.valueOf(applicant.unreadCount));
+            } else {
+                holder.tvUnreadCount.setVisibility(View.GONE);
+            }
+
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(EmployerVacancyDetailActivity.this, ApplicantResumeActivity.class);
                 intent.putExtra("userId", applicant.userId);
@@ -120,12 +143,22 @@ public class EmployerVacancyDetailActivity extends AppCompatActivity {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvName, tvDate;
+            TextView tvName, tvDate, tvUnreadCount;
             ViewHolder(View itemView) {
                 super(itemView);
                 tvName = itemView.findViewById(R.id.tv_applicant_name);
                 tvDate = itemView.findViewById(R.id.tv_applied_date);
+                tvUnreadCount = itemView.findViewById(R.id.tv_unread_count);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        for (com.google.firebase.firestore.ListenerRegistration lr : chatListeners) {
+            lr.remove();
+        }
+        chatListeners.clear();
     }
 }
