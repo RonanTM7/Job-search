@@ -29,6 +29,7 @@ public class ApplicationsFragment extends Fragment implements ApplicationAdapter
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private final List<ApplicationAdapter.ApplicationItem> applicationItems = new ArrayList<>();
+    private final List<com.google.firebase.firestore.ListenerRegistration> chatListeners = new ArrayList<>();
 
     @Nullable
     @Override
@@ -89,15 +90,18 @@ public class ApplicationsFragment extends Fragment implements ApplicationAdapter
                 }
 
                 String chatId = userId + "_" + item.vacancyId;
-                db.collection("employer_chats").document(chatId).get().addOnSuccessListener(chatDoc -> {
-                    if (chatDoc.exists()) {
+                chatListeners.add(db.collection("employer_chats").document(chatId).addSnapshotListener((chatDoc, e) -> {
+                    if (chatDoc != null && chatDoc.exists()) {
                         Boolean employerReplied = chatDoc.getBoolean("employerReplied");
                         item.hasChat = employerReplied != null && employerReplied;
+                        Long count = chatDoc.getLong("unreadCountSeeker");
+                        item.unreadCount = count != null ? count.intValue() : 0;
                     } else {
                         item.hasChat = false;
+                        item.unreadCount = 0;
                     }
                     applicationAdapter.notifyDataSetChanged();
-                });
+                }));
             });
         }
         binding.progressBar.setVisibility(View.GONE);
@@ -120,6 +124,16 @@ public class ApplicationsFragment extends Fragment implements ApplicationAdapter
         intent.putExtra("USER_NAME", item.companyName);
         intent.putExtra("IS_EMPLOYER_CHAT", true);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for (com.google.firebase.firestore.ListenerRegistration lr : chatListeners) {
+            lr.remove();
+        }
+        chatListeners.clear();
+        binding = null;
     }
 
     @Override

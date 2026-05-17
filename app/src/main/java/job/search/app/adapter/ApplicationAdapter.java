@@ -49,6 +49,12 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         }
 
         holder.btnChat.setVisibility(item.hasChat ? View.VISIBLE : View.GONE);
+        if (item.unreadCount > 0) {
+            holder.tvUnreadCount.setVisibility(View.VISIBLE);
+            holder.tvUnreadCount.setText(String.valueOf(item.unreadCount));
+        } else {
+            holder.tvUnreadCount.setVisibility(View.GONE);
+        }
 
         holder.btnDelete.setOnClickListener(v -> listener.onDelete(item));
         holder.btnChat.setOnClickListener(v -> listener.onChat(item));
@@ -66,7 +72,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvCompany, tvStatus;
+        TextView tvTitle, tvCompany, tvStatus, tvUnreadCount;
         ImageButton btnDelete;
         Button btnChat;
 
@@ -75,6 +81,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
             tvTitle = itemView.findViewById(R.id.tv_job_title);
             tvCompany = itemView.findViewById(R.id.tv_company_name);
             tvStatus = itemView.findViewById(R.id.tv_status);
+            tvUnreadCount = itemView.findViewById(R.id.tv_unread_count);
             btnDelete = itemView.findViewById(R.id.btn_delete_app);
             btnChat = itemView.findViewById(R.id.btn_chat_with_employer);
         }
@@ -86,6 +93,7 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         public String vacancyTitle;
         public String companyName;
         public boolean hasChat;
+        public int unreadCount;
 
         public ApplicationItem(String applicationId, String vacancyId) {
             this.applicationId = applicationId;
