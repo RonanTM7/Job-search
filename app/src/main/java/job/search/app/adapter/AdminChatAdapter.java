@@ -43,6 +43,14 @@ public class AdminChatAdapter extends RecyclerView.Adapter<AdminChatAdapter.Chat
         ChatMeta chat = chats.get(position);
         holder.userName.setText(chat.getUserName());
         holder.lastMessage.setText(chat.getLastMessage());
+
+        if (chat.getUnreadCountAdmin() > 0) {
+            holder.tvUnreadCount.setVisibility(View.VISIBLE);
+            holder.tvUnreadCount.setText(String.valueOf(chat.getUnreadCountAdmin()));
+        } else {
+            holder.tvUnreadCount.setVisibility(View.GONE);
+        }
+
         holder.itemView.setOnClickListener(v -> listener.onChatClick(chat));
     }
 
@@ -52,12 +60,13 @@ public class AdminChatAdapter extends RecyclerView.Adapter<AdminChatAdapter.Chat
     }
 
     static class ChatViewHolder extends RecyclerView.ViewHolder {
-        TextView userName, lastMessage;
+        TextView userName, lastMessage, tvUnreadCount;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             userName = itemView.findViewById(R.id.chat_user_name);
             lastMessage = itemView.findViewById(R.id.last_message);
+            tvUnreadCount = itemView.findViewById(R.id.tv_unread_count);
         }
     }
 }

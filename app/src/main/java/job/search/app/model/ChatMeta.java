@@ -8,6 +8,9 @@ public class ChatMeta {
     private String userName;
     private String lastMessage;
     private Object timestamp;
+    private int unreadCountSeeker;
+    private int unreadCountAdmin;
+    private int unreadCountEmployer;
 
     public ChatMeta() {}
 
@@ -30,4 +33,13 @@ public class ChatMeta {
     }
 
     public void setTimestamp(Object timestamp) { this.timestamp = timestamp; }
+
+    public int getUnreadCountSeeker() { return unreadCountSeeker; }
+    public void setUnreadCountSeeker(int unreadCountSeeker) { this.unreadCountSeeker = unreadCountSeeker; }
+
+    public int getUnreadCountAdmin() { return unreadCountAdmin; }
+    public void setUnreadCountAdmin(int unreadCountAdmin) { this.unreadCountAdmin = unreadCountAdmin; }
+
+    public int getUnreadCountEmployer() { return unreadCountEmployer; }
+    public void setUnreadCountEmployer(int unreadCountEmployer) { this.unreadCountEmployer = unreadCountEmployer; }
 }

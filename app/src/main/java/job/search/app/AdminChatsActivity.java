@@ -17,6 +17,7 @@ public class AdminChatsActivity extends AppCompatActivity {
     private RecyclerView recyclerChats;
     private AdminChatAdapter adapter;
     private FirebaseFirestore db;
+    private com.google.firebase.firestore.ListenerRegistration chatsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class AdminChatsActivity extends AppCompatActivity {
     }
 
     private void loadChats() {
-        db.collection("chats")
+        chatsListener = db.collection("chats")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) {
@@ -69,5 +70,13 @@ public class AdminChatsActivity extends AppCompatActivity {
 
                     adapter.setChats(chats);
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (chatsListener != null) {
+            chatsListener.remove();
+        }
     }
 }

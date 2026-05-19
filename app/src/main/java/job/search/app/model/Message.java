@@ -9,6 +9,7 @@ public class Message {
     private String text;
     private Object timestamp;
     private boolean admin;
+    private boolean read;
 
     public Message() {}
 
@@ -18,6 +19,7 @@ public class Message {
         this.text = text;
         this.timestamp = timestamp;
         this.admin = admin;
+        this.read = false;
     }
 
     public String getId() { return id; }
@@ -42,4 +44,7 @@ public class Message {
 
     public boolean isAdmin() { return admin; }
     public void setAdmin(boolean admin) { this.admin = admin; }
+
+    public boolean isRead() { return read; }
+    public void setRead(boolean read) { this.read = read; }
 }

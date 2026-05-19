@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -41,7 +43,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         Message message = messages.get(position);
         holder.textMessage.setText(message.getText());
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.textMessage.getLayoutParams();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.container.getLayoutParams();
 
         // If the current user is the sender (either user or admin)
         boolean isMe = message.getSenderId().equals(currentUserId);
@@ -51,13 +53,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
             holder.textMessage.setBackgroundResource(R.drawable.bg_message_user);
             holder.textMessage.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.white));
+            holder.imgStatus.setVisibility(View.VISIBLE);
+            holder.imgStatus.setImageResource(message.isRead() ? R.drawable.ic_done_all : R.drawable.ic_check);
         } else {
             params.addRule(RelativeLayout.ALIGN_PARENT_START);
             params.addRule(RelativeLayout.ALIGN_PARENT_END, 0);
             holder.textMessage.setBackgroundResource(R.drawable.bg_message_admin);
             holder.textMessage.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.black));
+            holder.imgStatus.setVisibility(View.GONE);
         }
-        holder.textMessage.setLayoutParams(params);
+        holder.container.setLayoutParams(params);
     }
 
     @Override
@@ -67,10 +72,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView textMessage;
+        ImageView imgStatus;
+        LinearLayout container;
 
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             textMessage = itemView.findViewById(R.id.text_message);
+            imgStatus = itemView.findViewById(R.id.img_status);
+            container = itemView.findViewById(R.id.message_container);
         }
     }
 }

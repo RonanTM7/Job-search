@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import job.search.app.adapter.MessageAdapter;
 import job.search.app.model.Message;
+import job.search.app.utils.FcmSender;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
@@ -31,6 +32,8 @@ public class ChatActivity extends AppCompatActivity {
     private String currentUserId;
     private boolean isAdmin = false;
     private boolean isEmployerChat = false;
+    private String userRole;
+    private com.google.firebase.firestore.ListenerRegistration messagesListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,8 @@ public class ChatActivity extends AppCompatActivity {
             chatId = user.getUid();
             isAdmin = "ronanauf@gmail.com".equals(user.getEmail()); // Legacy check
 
-            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
-            if ("admin".equals(role)) isAdmin = true;
+            userRole = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            if ("admin".equals(userRole)) isAdmin = true;
 
             isEmployerChat = getIntent().getBooleanExtra("IS_EMPLOYER_CHAT", false);
 
@@ -95,7 +98,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void loadMessages() {
         String collection = isEmployerChat ? "employer_chats" : "chats";
-        db.collection(collection).document(chatId).collection("messages")
+        messagesListener = db.collection(collection).document(chatId).collection("messages")
                 .orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener((snapshot, e) -> {
                     if (e != null) {
@@ -116,8 +119,95 @@ public class ChatActivity extends AppCompatActivity {
                     adapter.setMessages(messages);
                     if (!messages.isEmpty()) {
                         recyclerMessages.scrollToPosition(messages.size() - 1);
+                        markMessagesAsRead(messages);
                     }
                 });
+        resetUnreadCount();
+    }
+
+    private void markMessagesAsRead(List<Message> messages) {
+        String collection = isEmployerChat ? "employer_chats" : "chats";
+        com.google.firebase.firestore.WriteBatch batch = db.batch();
+        boolean hasUpdates = false;
+
+        for (Message msg : messages) {
+            if (!msg.getSenderId().equals(currentUserId) && !msg.isRead()) {
+                batch.update(db.collection(collection).document(chatId).collection("messages")
+                        .document(msg.getId()), "read", true);
+                hasUpdates = true;
+            }
+        }
+
+        if (hasUpdates) {
+            batch.commit();
+        }
+    }
+
+    private void resetUnreadCount() {
+        String collection = isEmployerChat ? "employer_chats" : "chats";
+        String unreadField;
+
+        if (isAdmin) {
+            unreadField = "unreadCountAdmin";
+        } else if ("employer".equals(userRole)) {
+            unreadField = "unreadCountEmployer";
+        } else {
+            unreadField = "unreadCountSeeker";
+        }
+
+        db.collection(collection).document(chatId).update(unreadField, 0);
+    }
+
+    private void sendPushNotification(String text) {
+        String recipientId;
+        String collection;
+
+        if (isEmployerChat) {
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            if ("employer".equals(role)) {
+                // Employer is sending to Seeker
+                recipientId = chatId.split("_")[0];
+                collection = "seekers";
+            } else {
+                // Seeker is sending to Employer (we need to find employerId for this vacancy)
+                db.collection("employer_chats").document(chatId).get().addOnSuccessListener(doc -> {
+                    String employerId = doc.getString("employerId");
+                    if (employerId != null) {
+                        fetchTokenAndSend(employerId, "employers", text);
+                    }
+                });
+                return;
+            }
+        } else if (isAdmin) {
+            // Admin is sending to Seeker
+            recipientId = chatId;
+            collection = "seekers";
+        } else {
+            // Seeker is sending to Admin
+            // Admin token handling is more complex (broadcast or specific admin?)
+            // For now, let's assume we don't send push to admin or send to a fixed UID if known
+            return;
+        }
+
+        fetchTokenAndSend(recipientId, collection, text);
+    }
+
+    private void fetchTokenAndSend(String uid, String collection, String text) {
+        db.collection(collection).document(uid).get().addOnSuccessListener(doc -> {
+            String token = doc.getString("fcmToken");
+            if (token != null) {
+                String senderName = isAdmin ? "Поддержка" : "Новое сообщение";
+                FcmSender.sendNotification(token, senderName, text);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (messagesListener != null) {
+            messagesListener.remove();
+        }
     }
 
     private void registerGuestInFirestore(String androidId) {
@@ -165,6 +255,8 @@ public class ChatActivity extends AppCompatActivity {
 
         db.collection(collection).document(chatId).collection("messages").document(messageId).set(message);
 
+        sendPushNotification(text);
+
         // Update chat metadata for list (admin or employer)
         java.util.Map<String, Object> chatMeta = new java.util.HashMap<>();
         chatMeta.put("lastMessage", text);
@@ -175,9 +267,23 @@ public class ChatActivity extends AppCompatActivity {
             String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
             if ("employer".equals(role)) {
                 chatMeta.put("employerReplied", true);
+                chatMeta.put("unreadCountSeeker", FieldValue.increment(1));
+            } else {
+                chatMeta.put("unreadCountEmployer", FieldValue.increment(1));
+                // Ensure employerId is in ChatMeta for push notifications when seeker replies
+                db.collection("applications").whereEqualTo("userId", currentUserId).whereEqualTo("vacancyId", chatId.substring(currentUserId.length() + 1)).get()
+                        .addOnSuccessListener(querySnapshot -> {
+                            if (!querySnapshot.isEmpty()) {
+                                String employerId = querySnapshot.getDocuments().get(0).getString("employerId");
+                                if (employerId != null) {
+                                    db.collection(collection).document(chatId).update("employerId", employerId);
+                                }
+                            }
+                        });
             }
             db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
         } else if (!isAdmin) {
+            chatMeta.put("unreadCountAdmin", FieldValue.increment(1));
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 db.collection("seekers").document(user.getUid()).get().addOnSuccessListener(doc -> {
@@ -192,6 +298,7 @@ public class ChatActivity extends AppCompatActivity {
                 db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
             }
         } else {
+            chatMeta.put("unreadCountSeeker", FieldValue.increment(1));
             db.collection(collection).document(chatId).set(chatMeta, com.google.firebase.firestore.SetOptions.merge());
         }
 

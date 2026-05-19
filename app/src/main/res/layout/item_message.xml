@@ -4,14 +4,34 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <TextView
-        android:id="@+id/text_message"
+    <LinearLayout
+        android:id="@+id/message_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="260dp"
-        android:padding="12dp"
-        android:textSize="16sp"
-        android:textColor="#FFFFFF"
-        android:background="@drawable/bg_message_admin"/>
+        android:orientation="vertical"
+        android:maxWidth="260dp">
+
+        <TextView
+            android:id="@+id/text_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/bg_message_admin"/>
+
+        <ImageView
+            android:id="@+id/img_status"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="-16dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_check"
+            android:visibility="gone"
+            android:alpha="0.7"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
