@@ -48,6 +48,8 @@
             android:text="@string/disagree"
             android:textColor="@color/primary_red"
             android:background="@drawable/dialog_button_background"
+            android:textAllCaps="false"
+            android:padding="8dp"
             android:layout_marginEnd="8dp"/>
 
         <Button
@@ -58,6 +60,8 @@
             android:text="@string/aple"
             android:textColor="@color/primary_blue"
             android:background="@drawable/dialog_button_background"
+            android:textAllCaps="false"
+            android:padding="8dp"
             android:layout_marginStart="8dp"/>
     </LinearLayout>
 
