@@ -9,20 +9,20 @@ public class Notification {
     private String message;
     private String type; // "chat", "application"
     private String relatedId; // chatId or vacancyId
-    private boolean isEmployerChat;
+    private boolean employerChat;
     private String senderName;
     private Timestamp timestamp;
 
     public Notification() {}
 
-    public Notification(String id, String userId, String title, String message, String type, String relatedId, boolean isEmployerChat, String senderName, Timestamp timestamp) {
+    public Notification(String id, String userId, String title, String message, String type, String relatedId, boolean employerChat, String senderName, Timestamp timestamp) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.message = message;
         this.type = type;
         this.relatedId = relatedId;
-        this.isEmployerChat = isEmployerChat;
+        this.employerChat = employerChat;
         this.senderName = senderName;
         this.timestamp = timestamp;
     }
@@ -45,8 +45,8 @@ public class Notification {
     public String getRelatedId() { return relatedId; }
     public void setRelatedId(String relatedId) { this.relatedId = relatedId; }
 
-    public boolean isEmployerChat() { return isEmployerChat; }
-    public void setEmployerChat(boolean employerChat) { isEmployerChat = employerChat; }
+    public boolean isEmployerChat() { return employerChat; }
+    public void setEmployerChat(boolean employerChat) { this.employerChat = employerChat; }
 
     public String getSenderName() { return senderName; }
     public void setSenderName(String senderName) { this.senderName = senderName; }

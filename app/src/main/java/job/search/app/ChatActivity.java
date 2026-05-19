@@ -63,9 +63,9 @@ public class ChatActivity extends AppCompatActivity {
 
             isEmployerChat = getIntent().getBooleanExtra("IS_EMPLOYER_CHAT", false);
 
-            // If admin or employer is opening a specific chat
+            // If any user is opening a specific chat (e.g. from notification)
             String targetChatId = getIntent().getStringExtra("CHAT_ID");
-            if ((isAdmin || isEmployerChat) && targetChatId != null) {
+            if (targetChatId != null) {
                 chatId = targetChatId;
                 String userName = getIntent().getStringExtra("USER_NAME");
                 if (userName != null) {
@@ -120,6 +120,7 @@ public class ChatActivity extends AppCompatActivity {
                     if (!messages.isEmpty()) {
                         recyclerMessages.scrollToPosition(messages.size() - 1);
                         markMessagesAsRead(messages);
+                        deleteRelatedNotifications();
                     }
                 });
         resetUnreadCount();
@@ -141,6 +142,18 @@ public class ChatActivity extends AppCompatActivity {
         if (hasUpdates) {
             batch.commit();
         }
+    }
+
+    private void deleteRelatedNotifications() {
+        db.collection("notifications")
+                .whereEqualTo("userId", currentUserId)
+                .whereEqualTo("relatedId", chatId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot) {
+                        doc.getReference().delete();
+                    }
+                });
     }
 
     private void resetUnreadCount() {
@@ -211,8 +224,28 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void createInAppNotification(final String text) {
-        String recipientId;
         String senderNameTemp = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userName", "Пользователь");
+
+        if (senderNameTemp == null || "Пользователь".equals(senderNameTemp)) {
+            // Fallback: fetch from Firestore if SharedPreferences is empty
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            String collection = "employer".equals(role) ? "employers" : "seekers";
+            db.collection(collection).document(currentUserId).get().addOnSuccessListener(doc -> {
+                String name = doc.getString("username");
+                if (name != null) {
+                    getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userName", name).apply();
+                    performNotificationCreation(text, name);
+                } else {
+                    performNotificationCreation(text, "Пользователь");
+                }
+            }).addOnFailureListener(e -> performNotificationCreation(text, "Пользователь"));
+        } else {
+            performNotificationCreation(text, senderNameTemp);
+        }
+    }
+
+    private void performNotificationCreation(final String text, String senderName) {
+        String recipientId;
 
         if (isEmployerChat) {
             String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
@@ -221,7 +254,7 @@ public class ChatActivity extends AppCompatActivity {
                 recipientId = chatId.split("_")[0];
             } else {
                 // Seeker is sending to Employer
-                final String finalSenderName = senderNameTemp;
+                final String finalSenderName = senderName;
                 db.collection("employer_chats").document(chatId).get().addOnSuccessListener(doc -> {
                     String employerId = doc.getString("employerId");
                     if (employerId != null) {
@@ -233,14 +266,13 @@ public class ChatActivity extends AppCompatActivity {
         } else if (isAdmin) {
             // Admin is sending to Seeker
             recipientId = chatId;
-            senderNameTemp = "Поддержка";
+            senderName = "Поддержка";
         } else {
             // Seeker is sending to Admin
-            // For now skip admin notifications or send to a specific admin UID
             return;
         }
 
-        saveInAppNotification(recipientId, "Новое сообщение", senderNameTemp + ": " + text, "chat", chatId, senderNameTemp);
+        saveInAppNotification(recipientId, "Новое сообщение", senderName + ": " + text, "chat", chatId, senderName);
     }
 
     private void saveInAppNotification(String userId, String title, String message, String type, String relatedId, String senderName) {
@@ -250,7 +282,7 @@ public class ChatActivity extends AppCompatActivity {
         notification.put("message", message);
         notification.put("type", type);
         notification.put("relatedId", relatedId);
-        notification.put("isEmployerChat", isEmployerChat);
+        notification.put("employerChat", isEmployerChat);
         notification.put("senderName", senderName);
         notification.put("timestamp", FieldValue.serverTimestamp());
 
