@@ -203,6 +203,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     if (user != null) {
                                         user.sendEmailVerification();
                                         saveUserToFirestore(user.getUid(), username, phone, email);
+                                        getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userName", username).apply();
 
                                         runOnUiThread(() -> {
                                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

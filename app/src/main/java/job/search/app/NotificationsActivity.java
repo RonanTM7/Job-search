@@ -55,7 +55,6 @@ public class NotificationsActivity extends AppCompatActivity {
 
         db.collection("notifications")
                 .whereEqualTo("userId", userId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
                     if (error != null) return;
 
@@ -72,6 +71,12 @@ public class NotificationsActivity extends AppCompatActivity {
                         tvNoNotifications.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     } else {
+                        // Sort by timestamp descending
+                        notifications.sort((n1, n2) -> {
+                            if (n1.getTimestamp() == null || n2.getTimestamp() == null) return 0;
+                            return n2.getTimestamp().compareTo(n1.getTimestamp());
+                        });
+
                         tvNoNotifications.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                         adapter.setNotifications(notifications);
@@ -84,6 +89,7 @@ public class NotificationsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ChatActivity.class);
             intent.putExtra("CHAT_ID", notification.getRelatedId());
             intent.putExtra("USER_NAME", notification.getSenderName());
+            intent.putExtra("IS_EMPLOYER_CHAT", notification.isEmployerChat());
             startActivity(intent);
         } else if ("application".equals(notification.getType())) {
             // Depending on role, redirect to vacancy details or applications

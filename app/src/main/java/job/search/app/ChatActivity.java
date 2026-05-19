@@ -250,6 +250,7 @@ public class ChatActivity extends AppCompatActivity {
         notification.put("message", message);
         notification.put("type", type);
         notification.put("relatedId", relatedId);
+        notification.put("isEmployerChat", isEmployerChat);
         notification.put("senderName", senderName);
         notification.put("timestamp", FieldValue.serverTimestamp());
 
