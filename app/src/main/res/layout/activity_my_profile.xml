@@ -24,30 +24,35 @@
         android:textSize="24sp"
         android:textColor="?attr/textColor"
         android:layout_centerHorizontal="true"
-        android:layout_alignTop="@id/btn_back"
-        android:layout_alignBottom="@id/btn_back"
-        android:gravity="center_vertical"/>
+        android:layout_centerVertical="false"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
 
-    <TextView
-        android:id="@+id/tv_phone_number"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/_7_999_999_99_99"
-        android:textColor="@color/phone_number_color"
-        android:background="@drawable/phone_number_background"
-        android:padding="16dp"
+        android:orientation="vertical"
         android:layout_below="@id/tv_username"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="32dp">
 
-    <Button
-        android:id="@+id/btn_my_resume"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/my_resume"
-        android:textColor="?attr/textColor"
-        android:backgroundTint="?attr/settings_button_color"
-        android:layout_below="@id/tv_phone_number"
-        android:layout_marginTop="16dp"/>
+        <Button
+            android:id="@+id/btn_my_resume"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/my_resume"
+            android:textColor="?attr/textColor"
+            android:backgroundTint="?attr/settings_button_color"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btn_change_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сменить ник"
+            android:textColor="?attr/textColor"
+            android:backgroundTint="?attr/settings_button_color" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_logout"

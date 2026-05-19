@@ -47,6 +47,11 @@ public class EmployerApplicationsFragment extends Fragment {
         adapter = new JobAdapter(jobList, new HashSet<>(), this::onJobClick, null);
         recyclerView.setAdapter(adapter);
 
+        view.findViewById(R.id.btn_notifications).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NotificationsActivity.class);
+            startActivity(intent);
+        });
+
         loadVacancies();
     }
 

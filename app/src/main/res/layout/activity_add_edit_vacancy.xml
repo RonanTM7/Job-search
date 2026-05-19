@@ -112,35 +112,29 @@
             android:padding="16dp"
             android:layout_marginBottom="16dp" />
 
-        <EditText
-            android:id="@+id/et_schedule"
-            style="@style/LoginTextInput"
+        <Spinner
+            android:id="@+id/spinner_schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="График работы (напр. 5/2)"
             android:background="@drawable/ios_edittext_background"
             android:padding="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp" />
 
-        <EditText
-            android:id="@+id/et_work_type"
-            style="@style/LoginTextInput"
+        <Spinner
+            android:id="@+id/spinner_work_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Тип занятости (напр. Полная занятость)"
             android:background="@drawable/ios_edittext_background"
             android:padding="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp" />
 
-        <EditText
-            android:id="@+id/et_job_format"
-            style="@style/LoginTextInput"
+        <Spinner
+            android:id="@+id/spinner_job_format"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Формат (напр. Удалённо или В офисе)"
             android:background="@drawable/ios_edittext_background"
             android:padding="16dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp" />
 
         <Button
             android:id="@+id/btn_save_vacancy"

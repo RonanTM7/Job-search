@@ -3,8 +3,11 @@ package job.search.app;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +20,7 @@ import job.search.app.utils.CustomToast;
 
 public class MyProfileActivity extends AppCompatActivity {
 
-    private TextView usernameTextView, phoneTextView;
+    private TextView usernameTextView;
     private FirebaseFirestore db;
     private FirebaseUser currentUser;
 
@@ -35,9 +38,9 @@ public class MyProfileActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         usernameTextView = findViewById(R.id.tv_username);
-        phoneTextView = findViewById(R.id.tv_phone_number);
         ImageButton backButton = findViewById(R.id.btn_back);
 
+        Button changeNicknameButton = findViewById(R.id.btn_change_nickname);
         Button myResumeButton = findViewById(R.id.btn_my_resume);
         Button logoutButton = findViewById(R.id.btn_logout);
 
@@ -45,6 +48,16 @@ public class MyProfileActivity extends AppCompatActivity {
         if ("employer".equals(role)) {
             myResumeButton.setText("Мои вакансии");
         }
+
+        changeNicknameButton.setOnClickListener(v -> {
+            if (currentUser != null && currentUser.isAnonymous()) {
+                CustomToast.showToast(MyProfileActivity.this, "Для начала авторизуйтесь", 4000);
+                Intent intent = new Intent(MyProfileActivity.this, LoginActivity.class);
+                startActivity(intent);
+            } else {
+                showChangeNicknameDialog();
+            }
+        });
 
         myResumeButton.setOnClickListener(v -> {
             if (currentUser != null && currentUser.isAnonymous()) {
@@ -62,7 +75,6 @@ public class MyProfileActivity extends AppCompatActivity {
 
         if (currentUser != null && currentUser.isAnonymous()) {
             usernameTextView.setText("Гость");
-            phoneTextView.setText("Не авторизован");
             logoutButton.setText("Войти");
             logoutButton.setTextColor(ContextCompat.getColor(this, R.color.primary_blue));
         } else {
@@ -107,22 +119,61 @@ public class MyProfileActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             usernameTextView.setText(documentSnapshot.getString("username"));
-                            String phone = documentSnapshot.getString("phone");
-                            if (phone != null) {
-                                String formattedPhone = formatPhoneNumber(phone);
-                                phoneTextView.setText(formattedPhone);
-                            }
                         }
                     })
                     .addOnFailureListener(e -> CustomToast.showToast(MyProfileActivity.this, "Ошибка загрузки данных", 4000));
         }
     }
 
-    private String formatPhoneNumber(String phone) {
-        String digitsOnly = phone.replaceAll("\\D", "");
-        if (digitsOnly.length() == 11) {
-            return "+7 " + digitsOnly.substring(1, 4) + " " + digitsOnly.substring(4, 7) + " " + digitsOnly.substring(7, 9) + " " + digitsOnly.substring(9);
-        }
-        return phone;
+    private void showChangeNicknameDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_edit_data);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+        EditText editTextData = dialog.findViewById(R.id.edit_text_data);
+        TextView textError = dialog.findViewById(R.id.text_error);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnSave = dialog.findViewById(R.id.btn_save);
+
+        dialogTitle.setText("Сменить ник");
+        editTextData.setHint("Новый ник");
+        editTextData.setText(usernameTextView.getText().toString());
+
+        editTextData.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textError.setVisibility(TextView.GONE);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnSave.setOnClickListener(v -> {
+            String newNickname = editTextData.getText().toString().trim();
+            if (newNickname.isEmpty()) {
+                textError.setText("Ник не может быть пустым");
+                textError.setVisibility(TextView.VISIBLE);
+                return;
+            }
+
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            String collection = "employer".equals(role) ? "employers" : "seekers";
+            db.collection(collection).document(currentUser.getUid()).update("username", newNickname)
+                    .addOnSuccessListener(aVoid -> {
+                        usernameTextView.setText(newNickname);
+                        CustomToast.showToast(MyProfileActivity.this, "Ник успешно изменен", 4000);
+                        dialog.dismiss();
+                    })
+                    .addOnFailureListener(e -> {
+                        textError.setText("Ошибка при смене ника");
+                        textError.setVisibility(TextView.VISIBLE);
+                    });
+        });
+        dialog.show();
     }
 }
