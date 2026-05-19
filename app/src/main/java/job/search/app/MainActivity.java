@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra("REFRESH_DATA", false)) {
             refreshCurrentFragment();
         }
+        if (getIntent().getBooleanExtra("open_applications", false)) {
+            // This will be handled in initApp after fragments are ready or by selecting bottom nav
+        }
         applySavedTheme();
         // Проверка авторизации
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -86,16 +89,26 @@ public class MainActivity extends AppCompatActivity {
         setupBottomNavigation(role);
 
         if (savedInstanceState == null) {
-            if ("employer".equals(role)) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new EmployerApplicationsFragment())
-                        .commit();
+            if (getIntent().getBooleanExtra("open_applications", false)) {
+                if ("employer".equals(role)) {
+                    loadFragment(new EmployerApplicationsFragment());
+                    bottomNavigation.setSelectedItemId(R.id.nav_applications);
+                } else {
+                    loadFragment(new ApplicationsFragment());
+                    bottomNavigation.setSelectedItemId(R.id.nav_applications);
+                }
+            } else if ("employer".equals(role)) {
+                loadFragment(new EmployerApplicationsFragment());
             } else {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new HomeFragment())
-                        .commit();
+                loadFragment(new HomeFragment());
             }
         }
+    }
+
+    private void loadFragment(androidx.fragment.app.Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 
     private void setupBottomNavigation(String role) {
@@ -159,6 +172,16 @@ public class MainActivity extends AppCompatActivity {
         setIntent(intent);
         if (intent.getBooleanExtra("REFRESH_DATA", false)) {
             refreshCurrentFragment();
+        }
+        if (intent.getBooleanExtra("open_applications", false)) {
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            if ("employer".equals(role)) {
+                loadFragment(new EmployerApplicationsFragment());
+                bottomNavigation.setSelectedItemId(R.id.nav_applications);
+            } else {
+                loadFragment(new ApplicationsFragment());
+                bottomNavigation.setSelectedItemId(R.id.nav_applications);
+            }
         }
     }
 

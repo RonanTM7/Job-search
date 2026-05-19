@@ -195,6 +195,18 @@ public class LoginActivity extends AppCompatActivity {
     private void proceedToLogin(FirebaseUser user, String role, boolean isVerified) {
         Button buttonLogin = findViewById(R.id.buttonLogin);
         if (isVerified) {
+            String collection = "seeker".equals(role) ? "seekers" : ("employer".equals(role) ? "employers" : "admins");
+            if (!"admin".equals(role)) {
+                db.collection(collection).document(user.getUid()).get().addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String name = doc.getString("username");
+                        getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userName", name).apply();
+                    }
+                });
+            } else {
+                getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userName", "Админ").apply();
+            }
+
             getSharedPreferences("AppSettings", MODE_PRIVATE).edit().putString("userRole", role).apply();
             Intent intent;
             if ("admin".equals(role)) {

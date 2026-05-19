@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import job.search.app.utils.CustomToast;
 import android.text.TextWatcher;
 import android.text.Editable;
 import com.google.firebase.auth.AuthCredential;
@@ -46,6 +47,7 @@ public class PrivacyActivity extends AppCompatActivity {
         emailTextView = findViewById(R.id.tv_email);
         refreshEmailButton = findViewById(R.id.btn_refresh_email);
         Button changePasswordButton = findViewById(R.id.btn_change_password);
+        Button deleteAccountButton = findViewById(R.id.btn_delete_account);
         ImageButton backButton = findViewById(R.id.btn_back);
 
         loadUserData();
@@ -63,7 +65,77 @@ public class PrivacyActivity extends AppCompatActivity {
             Intent intent = new Intent(PrivacyActivity.this, CheckCurrentPasswordActivity.class);
             startActivity(intent);
         });
+        deleteAccountButton.setOnClickListener(v -> showDeleteAccountDialog());
         refreshEmailButton.setOnClickListener(v -> refreshEmailData());
+    }
+
+    private void showDeleteAccountDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_logout);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextView tvTitle = dialog.findViewById(R.id.dialog_title);
+        TextView tvMessage = dialog.findViewById(R.id.dialog_message);
+        Button btnNo = dialog.findViewById(R.id.btn_no);
+        Button btnYes = dialog.findViewById(R.id.btn_yes);
+
+        tvTitle.setText("Удаление аккаунта");
+        tvMessage.setText("Вы точно хотите удалить аккаунт?");
+        btnYes.setText("Удалить");
+
+        btnNo.setOnClickListener(view -> dialog.dismiss());
+        btnYes.setOnClickListener(view -> {
+            deleteAccount();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void deleteAccount() {
+        if (currentUser == null) return;
+
+        String uid = currentUser.getUid();
+        String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+
+        // 1. Delete user data based on role
+        if ("employer".equals(role)) {
+            // Delete employer's vacancies
+            db.collection("vacancies").whereEqualTo("employerId", uid).get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                            doc.getReference().delete();
+                        }
+                    });
+            // Delete employer document
+            db.collection("employers").document(uid).update("status", "deleted", "username", "Удалённый пользователь");
+        } else {
+            // Delete seeker's applications
+            db.collection("applications").whereEqualTo("userId", uid).get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
+                            doc.getReference().delete();
+                        }
+                    });
+            // Delete seeker's resume
+            db.collection("resumes").document(uid).delete();
+            // Delete seeker document
+            db.collection("seekers").document(uid).update("status", "deleted", "username", "Удалённый пользователь");
+        }
+
+        // 2. Delete from Firebase Auth
+        currentUser.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                CustomToast.showToast(PrivacyActivity.this, "Аккаунт удален", 4000);
+                Intent intent = new Intent(PrivacyActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                CustomToast.showToast(PrivacyActivity.this, "Ошибка при удалении: " + Objects.requireNonNull(task.getException()).getMessage(), 4000);
+            }
+        });
     }
 
     @Override

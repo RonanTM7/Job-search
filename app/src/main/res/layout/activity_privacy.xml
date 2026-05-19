@@ -83,4 +83,14 @@
         android:text="@string/re_сhange_password"
         android:textColor="?attr/textColor" />
 
+    <Button
+        android:id="@+id/btn_delete_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/primary_red"
+        android:text="Удалить аккаунт"
+        android:textColor="@android:color/white" />
+
 </RelativeLayout>
