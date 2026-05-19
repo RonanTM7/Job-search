@@ -17,8 +17,8 @@ import job.search.app.utils.CustomToast;
 
 public class AddEditVacancyActivity extends AppCompatActivity {
 
-    private EditText etCompanyName, etVacancyTitle, etSalaryMin, etSalaryMax, etCity, etDescription, etRequirements, etWorkType, etJobFormat, etSchedule;
-    private Spinner spinnerCategory;
+    private EditText etCompanyName, etVacancyTitle, etSalaryMin, etSalaryMax, etCity, etDescription, etRequirements;
+    private Spinner spinnerCategory, spinnerSchedule, spinnerWorkType, spinnerJobFormat;
     private Button btnSave, btnDelete;
     private FirebaseFirestore db;
     private String employerId;
@@ -45,9 +45,9 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         etCity = findViewById(R.id.et_city);
         etDescription = findViewById(R.id.et_description);
         etRequirements = findViewById(R.id.et_requirements);
-        etWorkType = findViewById(R.id.et_work_type);
-        etJobFormat = findViewById(R.id.et_job_format);
-        etSchedule = findViewById(R.id.et_schedule);
+        spinnerSchedule = findViewById(R.id.spinner_schedule);
+        spinnerWorkType = findViewById(R.id.spinner_work_type);
+        spinnerJobFormat = findViewById(R.id.spinner_job_format);
         spinnerCategory = findViewById(R.id.spinner_category);
         btnSave = findViewById(R.id.btn_save_vacancy);
         btnDelete = findViewById(R.id.btn_delete_vacancy);
@@ -72,6 +72,21 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapter);
+
+        String[] schedules = {"2/2", "3/3", "5/2", "6/1", "7/0", "Гибкий"};
+        ArrayAdapter<String> scheduleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schedules);
+        scheduleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSchedule.setAdapter(scheduleAdapter);
+
+        String[] workTypes = {"Полная", "Частичная"};
+        ArrayAdapter<String> workTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, workTypes);
+        workTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerWorkType.setAdapter(workTypeAdapter);
+
+        String[] formats = {"Удалённо", "В офисе"};
+        ArrayAdapter<String> formatAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, formats);
+        formatAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerJobFormat.setAdapter(formatAdapter);
     }
 
     private void fillData(Job job) {
@@ -90,15 +105,18 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         etCity.setText(job.getLocation());
         etDescription.setText(job.getDescription());
         etRequirements.setText(job.getRequirements());
-        etWorkType.setText(job.getWorkType()); // Note: workType was wrongly mapped to getCategory in fillData
-        etJobFormat.setText(job.isRemote() ? "Удалённо" : "В офисе");
-        etSchedule.setText(job.getSchedule());
 
-        String category = job.getCategory();
-        if (category != null) {
-            ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerCategory.getAdapter();
-            int pos = adapter.getPosition(category);
-            if (pos >= 0) spinnerCategory.setSelection(pos);
+        setSpinnerValue(spinnerCategory, job.getCategory());
+        setSpinnerValue(spinnerSchedule, job.getSchedule());
+        setSpinnerValue(spinnerWorkType, job.getWorkType());
+        setSpinnerValue(spinnerJobFormat, job.isRemote() ? "Удалённо" : "В офисе");
+    }
+
+    private void setSpinnerValue(Spinner spinner, String value) {
+        if (value != null) {
+            ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
+            int pos = adapter.getPosition(value);
+            if (pos >= 0) spinner.setSelection(pos);
         }
     }
 
@@ -110,10 +128,10 @@ public class AddEditVacancyActivity extends AppCompatActivity {
         String city = etCity.getText().toString().trim();
         String description = etDescription.getText().toString().trim();
         String requirements = etRequirements.getText().toString().trim();
-        String workType = etWorkType.getText().toString().trim();
-        String jobFormat = etJobFormat.getText().toString().trim();
+        String workType = spinnerWorkType.getSelectedItem().toString();
+        String jobFormat = spinnerJobFormat.getSelectedItem().toString();
         String category = spinnerCategory.getSelectedItem().toString();
-        String schedule = etSchedule.getText().toString().trim();
+        String schedule = spinnerSchedule.getSelectedItem().toString();
 
         if (company.isEmpty() || title.isEmpty() || salaryMin.isEmpty() || salaryMax.isEmpty() || city.isEmpty()) {
             CustomToast.showToast(this, "Заполните основные поля", 4000);

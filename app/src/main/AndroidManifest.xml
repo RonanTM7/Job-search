@@ -98,6 +98,9 @@
             android:name=".ApplicantResumeActivity"
             android:exported="false" />
         <activity
+            android:name=".NotificationsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

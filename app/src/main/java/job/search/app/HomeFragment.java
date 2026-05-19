@@ -57,6 +57,11 @@ public class HomeFragment extends Fragment implements JobAdapter.OnFavoriteClick
         setupRecyclerView();
         setupCategoryRecyclerView();
         loadFavoriteJobIds();
+
+        view.findViewById(R.id.btn_notifications).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NotificationsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadFavoriteJobIds() {

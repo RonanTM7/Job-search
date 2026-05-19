@@ -28,14 +28,13 @@
         android:layout_alignBottom="@id/btn_back"
         android:gravity="center_vertical"/>
 
-    <TextView
-        android:id="@+id/tv_phone_number"
+    <Button
+        android:id="@+id/btn_change_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/_7_999_999_99_99"
-        android:textColor="@color/phone_number_color"
-        android:background="@drawable/phone_number_background"
-        android:padding="16dp"
+        android:text="Сменить ник"
+        android:textColor="?attr/textColor"
+        android:backgroundTint="?attr/settings_button_color"
         android:layout_below="@id/tv_username"
         android:layout_marginTop="16dp"/>
 

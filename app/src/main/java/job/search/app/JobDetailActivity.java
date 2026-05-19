@@ -96,8 +96,24 @@ public class JobDetailActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     CustomToast.showToast(this, "Ваше резюме было отправлено", 4000);
                     updateApplyButton(true);
+                    createApplicationNotification(job);
                 })
                 .addOnFailureListener(e -> CustomToast.showToast(this, "Ошибка: " + e.getMessage(), 4000));
+    }
+
+    private void createApplicationNotification(Job job) {
+        String senderName = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userName", "Соискатель");
+
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("userId", job.getEmployerId());
+        notification.put("title", "Новый отклик");
+        notification.put("message", senderName + " откликнулся на вакансию: " + job.getTitle());
+        notification.put("type", "application");
+        notification.put("relatedId", job.getId());
+        notification.put("senderName", senderName);
+        notification.put("timestamp", com.google.firebase.firestore.FieldValue.serverTimestamp());
+
+        db.collection("notifications").add(notification);
     }
 
     private void updateApplyButton(boolean applied) {

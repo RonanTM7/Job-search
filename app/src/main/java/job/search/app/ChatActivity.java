@@ -210,6 +210,52 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    private void createInAppNotification(final String text) {
+        String recipientId;
+        String senderNameTemp = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userName", "Пользователь");
+
+        if (isEmployerChat) {
+            String role = getSharedPreferences("AppSettings", MODE_PRIVATE).getString("userRole", "seeker");
+            if ("employer".equals(role)) {
+                // Employer is sending to Seeker
+                recipientId = chatId.split("_")[0];
+            } else {
+                // Seeker is sending to Employer
+                final String finalSenderName = senderNameTemp;
+                db.collection("employer_chats").document(chatId).get().addOnSuccessListener(doc -> {
+                    String employerId = doc.getString("employerId");
+                    if (employerId != null) {
+                        saveInAppNotification(employerId, "Новое сообщение", finalSenderName + ": " + text, "chat", chatId, finalSenderName);
+                    }
+                });
+                return;
+            }
+        } else if (isAdmin) {
+            // Admin is sending to Seeker
+            recipientId = chatId;
+            senderNameTemp = "Поддержка";
+        } else {
+            // Seeker is sending to Admin
+            // For now skip admin notifications or send to a specific admin UID
+            return;
+        }
+
+        saveInAppNotification(recipientId, "Новое сообщение", senderNameTemp + ": " + text, "chat", chatId, senderNameTemp);
+    }
+
+    private void saveInAppNotification(String userId, String title, String message, String type, String relatedId, String senderName) {
+        java.util.Map<String, Object> notification = new java.util.HashMap<>();
+        notification.put("userId", userId);
+        notification.put("title", title);
+        notification.put("message", message);
+        notification.put("type", type);
+        notification.put("relatedId", relatedId);
+        notification.put("senderName", senderName);
+        notification.put("timestamp", FieldValue.serverTimestamp());
+
+        db.collection("notifications").add(notification);
+    }
+
     private void registerGuestInFirestore(String androidId) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && user.isAnonymous()) {
@@ -256,6 +302,7 @@ public class ChatActivity extends AppCompatActivity {
         db.collection(collection).document(chatId).collection("messages").document(messageId).set(message);
 
         sendPushNotification(text);
+        createInAppNotification(text);
 
         // Update chat metadata for list (admin or employer)
         java.util.Map<String, Object> chatMeta = new java.util.HashMap<>();
