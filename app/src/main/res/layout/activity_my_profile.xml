@@ -24,9 +24,9 @@
         android:textSize="24sp"
         android:textColor="?attr/textColor"
         android:layout_centerHorizontal="true"
-        android:layout_alignTop="@id/btn_back"
-        android:layout_alignBottom="@id/btn_back"
-        android:gravity="center_vertical"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:layout_marginBottom="24dp"/>
 
     <LinearLayout
