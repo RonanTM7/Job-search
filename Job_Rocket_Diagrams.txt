@@ -1,0 +1,151 @@
+ИНСТРУКЦИЯ ПО ИСПОЛЬЗОВАНИЮ:
+1. Откройте сайт draw.io (app.diagrams.net).
+2. Выберите "Создать новую диаграмму" или "Открыть существующую".
+3. В верхнем меню выберите: Arrange -> Insert -> Advanced -> Mermaid...
+4. Скопируйте код нужной диаграммы из этого файла и вставьте в появившееся окно.
+5. Нажмите "Insert".
+
+---------------------------------------------------------
+1. ЛОГИЧЕСКАЯ СТРУКТУРА ПРИЛОЖЕНИЯ (FLOWCHART)
+Эта диаграмма показывает переходы между основными экранами приложения.
+
+```mermaid
+graph TD
+    A[Экран входа / LoginActivity] --> B{Роль определена?}
+    B -->|Соискатель| C[Главный экран / MainActivity]
+    B -->|Работодатель| D[Главный экран / MainActivity]
+    B -->|Администратор| E[Админ-панель / AdminMainActivity]
+
+    subgraph "Функции Соискателя"
+    C --> C1[Поиск вакансий]
+    C --> C2[Избранное]
+    C --> C3[Мое резюме]
+    C --> C4[Мои отклики]
+    C --> C5[Чат с работодателем]
+    end
+
+    subgraph "Функции Работодателя"
+    D --> D1[Создать вакансию]
+    D --> D2[Мои вакансии]
+    D --> D3[Просмотр откликов]
+    D --> D4[Чат с кандидатом]
+    end
+
+    subgraph "Функции Администратора"
+    E --> E1[Список пользователей]
+    E --> E2[Блокировка аккаунтов]
+    E --> E3[Мониторинг чатов]
+    E --> E4[Управление обновлениями]
+    end
+```
+
+---------------------------------------------------------
+2. ДИАГРАММА ВАРИАНТОВ ИСПОЛЬЗОВАНИЯ (UML USE CASE)
+Показывает, какие действия могут совершать разные типы пользователей.
+ПРИМЕЧАНИЕ: Для этой диаграммы в draw.io выберите: Arrange -> Insert -> Advanced -> PlantUML...
+
+```plantuml
+@startuml
+left to right direction
+actor "Соискатель" as Seeker
+actor "Работодатель" as Employer
+actor "Администратор" as Admin
+
+rectangle "Система Job Rocket" {
+    usecase "Регистрация/Вход" as UC1
+    usecase "Поиск вакансий" as UC2
+    usecase "Создание резюме" as UC3
+    usecase "Отклик на вакансию" as UC4
+    usecase "Публикация вакансии" as UC5
+    usecase "Управление вакансиями" as UC6
+    usecase "Переписка в чате" as UC7
+    usecase "Блокировка пользователей" as UC8
+    usecase "Управление контентом" as UC9
+}
+
+Seeker --> UC1
+Seeker --> UC2
+Seeker --> UC3
+Seeker --> UC4
+Seeker --> UC7
+
+Employer --> UC1
+Employer --> UC5
+Employer --> UC6
+Employer --> UC7
+
+Admin --> UC1
+Admin --> UC8
+Admin --> UC9
+Admin --> UC7
+@enduml
+```
+
+---------------------------------------------------------
+3. ER-ДИАГРАММА БАЗЫ ДАННЫХ (FIRESTORE ERD)
+Показывает структуру коллекций в Firebase Firestore и связи между ними.
+
+```mermaid
+erDiagram
+    USERS ||--o{ VACANCIES : creates
+    USERS ||--o{ RESUMES : owns
+    USERS ||--o{ APPLICATIONS : submits
+    USERS ||--o{ MESSAGES : sends
+
+    VACANCIES ||--o{ APPLICATIONS : receives
+
+    CHATS ||--o{ MESSAGES : contains
+
+    USERS {
+        string uid PK
+        string email
+        string username
+        string role
+        string status
+        string fcmToken
+    }
+
+    VACANCIES {
+        string vacancyId PK
+        string employerId FK
+        string title
+        string description
+        string category
+        string salary
+        string schedule
+    }
+
+    RESUMES {
+        string userId PK, FK
+        string fullName
+        string city
+        string skills
+        string experience
+    }
+
+    APPLICATIONS {
+        string applicationId PK
+        string vacancyId FK
+        string seekerId FK
+        string employerId FK
+        string status
+        timestamp createdAt
+    }
+
+    CHATS {
+        string chatId PK
+        string lastMessage
+        timestamp timestamp
+        int unreadCountSeeker
+        int unreadCountEmployer
+    }
+
+    MESSAGES {
+        string messageId PK
+        string chatId FK
+        string senderId FK
+        string text
+        timestamp timestamp
+        boolean read
+    }
+```
