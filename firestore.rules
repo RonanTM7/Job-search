@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if the user is the owner of the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    // - Allow users to read and update their own profile.
+    // - Allow authenticated users to create their profile (e.g., after registration).
+    match /users/{userId} {
+      allow read, update: if isOwner(userId);
+      allow create: if isOwner(userId);
+    }
+
+    // Vacancies collection
+    // - Allow anyone to read vacancies.
+    // - Disallow any client-side writes (managed by admin).
+    match /vacancies/{vacancyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Resumes collection
+    // - Allow users to create, read, and update their own resume.
+    match /resumes/{userId} {
+      allow read, create, update: if isOwner(userId);
+    }
+
+    // Favorites collection
+    // - Allow users to manage their own list of favorites.
+    // - Check against the 'userId' field within the document.
+    match /favorites/{favoriteId} {
+      allow read, delete: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+
+    // Applications collection
+    // - Allow users to create and view their own applications.
+    // - Check against the 'userId' field within the document.
+    match /applications/{applicationId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+  }
+}
