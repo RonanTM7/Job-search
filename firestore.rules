@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Вспомогательная функция для проверки аутентификации пользователя
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Вспомогательная функция для проверки, является ли пользователь владельцем документа
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Коллекция пользователей
+    // - Разрешаем чтение (read), чтобы приложение могло проверять существование email/username/phone при входе и регистрации.
+    // - Запись (create, update) разрешена только самому пользователю для своего собственного документа.
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isOwner(userId);
+    }
+
+    // Коллекция вакансий
+    // - Разрешаем всем читать вакансии.
+    // - Запрещаем любую запись со стороны клиента (управляется администратором).
+    match /vacancies/{vacancyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Коллекция резюме
+    // - Пользователи могут управлять только своим собственным резюме.
+    match /resumes/{userId} {
+      allow read, create, update: if isOwner(userId);
+    }
+
+    // Коллекция избранного
+    // - Пользователи могут управлять своим списком избранного.
+    // - Проверка по полю 'userId' внутри документа.
+    match /favorites/{favoriteId} {
+      allow read, delete: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+
+    // Коллекция откликов
+    // - Пользователи могут создавать и видеть только свои отклики.
+    match /applications/{applicationId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isOwner(request.resource.data.userId);
+    }
+  }
+}
